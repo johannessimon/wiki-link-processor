@@ -1,0 +1,365 @@
+{{About||the magazine|Automobile (magazine)}}
+{{Redirect|Car}}
+
+{{Use dmy dates|date=October 2012}}
+
+{{pp-semi-vandalism|small=yes}}
+{{pp-move-indef}}
+<!-- This article is good and helpful as an outline on automobiles. The summary section does not follow the style guide for articles given the context of the article as it is written today.
+-->
+<!-- NOTE: ANY IMPROPER CHANGES to any of the stats in this article will result in a vandalism warning to the editor. Any needed changes to the stats will have to have the appropriate references/cites included. -->
+{{Infobox machine
+| name           = Automobile
+| image          = Benz-velo.jpg
+| caption        = Benz "Velo" model (1894) by German inventor [[Carl Benz]]&nbsp;– entered into an [[Chicago Times-Herald race|early automobile race]] as a [[motocycle]]<ref>The Motocycle / Automobile (magazine), November Vol 1, No. 2, 1895, pp. 16–45</ref><ref>The Mercedes-Benz book by Victor Boesen, Doubleday 1981, p. 22, ISBN 0-385-12554-2</ref>
+| classification = Vehicle
+| industry       = Various
+| application    = [[:Transportation]]
+| dimensions     =
+| weight         =
+| fuel_source    = [[Gasoline]], [[Diesel fuel|Diesel]], [[Electric]], [[Hydrogen]], [[Solar energy]]
+| powered        = Yes
+| self-propelled = Yes
+| wheels         = 3–4
+| tracks         =
+| legs           =
+| aerofoils      =
+| axles          = 1–2
+| components     =
+| invented       =
+| inventor       = [[Ferdinand Verbiest]]
+| examples       =
+}}
+[[File:Vehicles map 2001-2007.gif|thumb|300px|Vehicles in use per country from 2001 to 2007. It shows the significant growth in [[BRIC]].]]
+[[File:World vehicles per capita.svg|thumb|300px|World map of passenger cars per 1000 people]]
+
+An '''automobile''', '''autocar''', '''motor car''' or '''car''' is a wheeled [[motor vehicle]] used for [[transportation|transporting]] [[passenger]]s, which also carries its own engine or motor. Most definitions of the term specify that automobiles are designed to run primarily on roads, to have seating for one to eight people, to typically have four wheels, and to be constructed principally for the transport of people rather than goods.<ref>{{cite book | title=Pocket Oxford Dictionary |year=1976 |publisher=Oxford University Press |location=London |isbn=0-19-861113-7 | author=compiled by F.G. Fowler and H.W. Fowler.}}</ref>
+
+The year 1886 is regarded the year of birth of the modern automobile - with the [[Benz Patent-Motorwagen]], by German inventor [[Karl Benz]]. Motorized wagons soon replaced animal-drafted [[carriage]]s, especially after automobiles became affordable for many people when the [[Ford Model T]] was introduced in 1908.
+
+The term ''motorcar'' has formerly also been used in the context of electrified rail systems to denote a car which functions as a small locomotive but also provides space for passengers and baggage.  These locomotive cars were often used on suburban routes by both interurban and intercity railroad systems.<ref>{{cite web|url=http://www.laparks.org/grifmet/tt/htmgallery/gallery_urbans/atchison177.htm |title=atchison_177 |publisher=Laparks.org |accessdate=2011-02-13}}</ref>
+
+It was estimated in 2010 that the number of automobiles had risen to over 1 billion vehicles, up from the 500 million of 1986.<ref>{{cite web|last=Sousanis|first=John|title=World Vehicle Population Tops 1 Billion Units|url=http://wardsauto.com/ar/world_vehicle_population_110815|work=Wards Auto|accessdate=17 July 2012|date=15 August 2011}}</ref> The numbers are increasing rapidly, especially in [[Automobile industry in China|China]], [[Automobile industry in India|India]] and other [[Newly industrialized country|NICs]].<ref name="plunkettresearch.com">Plunkett Research, [http://www.plunkettresearch.com/Industries/AutomobilesTrucks/AutomobileTrends/tabid/89/Default.aspx "Automobile Industry Introduction" (2008)]</ref>
+
+==Etymology==
+<!-- The derivation below has been revised to agree with the information on the Wiktionary page. -->
+The word '''automobile''' comes, via the French ''automobile'' from the [[Ancient Greek]] word αὐτός (''autós'', "self") and the [[Latin language|Latin]] ''mobilis'' ("movable"); meaning a vehicle that moves itself. The loanword was first adopted in English by  ''[[The New York Times]]'' in 1899.<ref>{{cite web|url=http://jalopnik.com/5972932/the-word-automobile-was-first-used-in-the-new-york-times-114-years-ago-today|title=The Word ‘Automobile’ Was First Used In The New York Times 114 Years Ago Today|work=Jalopnik|accessdate=3 January 2013}}</ref> The alternative name ''car'' is believed to originate from the Latin word ''carrus'' or ''carrum'' ("wheeled vehicle"), or the [[Middle English]] word ''carre'' ("[[cart]]") (from [[French language|Old North French]]), in turn these are said to have originated from the [[Gaulish language|Gaulish]] word ''karros'' (a [[Gauls|Gallic]] [[Chariot]]).<ref>{{cite web | title = Car | work = (etymology) | publisher = Online Etymology Dictionary | url = http://www.etymonline.com/index.php?term=car | accessdate = 2008-06-02| archiveurl= http://web.archive.org/web/20080524233331/http://www.etymonline.com/index.php?term=car| archivedate= 24 May 2008 <!--DASHBot-->| deadurl= no}}</ref><ref name=Carrus>[http://www.lib.wayne.edu/resources/special_collections/local/cfai/index.php 'Car' derived from 'carrus']</ref>
+
+==History==
+{{Main|History of the automobile}}
+
+The first working steam-powered vehicle was designed — and most likely built — by [[Ferdinand Verbiest]], a [[Flemish people|Flemish]] member of a [[Jesuit China missions|Jesuit mission in China]] around 1672. It was a 65&nbsp;cm-long scale-model toy for the Chinese Emperor, that was unable to carry a driver or a passenger.<ref>{{cite web
+|title=1679-1681–R P Verbiest's Steam Chariot
+|work =History of the Automobile: origin to 1900
+|publisher=[[Hergé]]
+|url=http://translate.google.com/translate?hl=en&sl=fr&u=http://users.skynet.be/tintinpassion/VOIRSAVOIR/Auto/Pages_auto/Auto_001.html&sa=X&oi=translate
+|accessdate=2009-05-08
+}}</ref><ref name=CuriousExp>{{cite web | title = A brief note on Ferdinand Verbiest | publisher = Curious Expeditions | date = 2 July 2007 | url = http://curiousexpeditions.org/?p=52 | accessdate = 2008-03-18| archiveurl= http://web.archive.org/web/20080403101111/http://curiousexpeditions.org/?p=52| archivedate= 3 April 2008 <!--DASHBot-->| deadurl= no}}&nbsp;– Note that the vehicle pictured is the 20th century diecast model made by Brumm, of a later vehicle, not a model based on Verbiest's plans.</ref><ref name="setright">{{cite book
+ | author=Setright, L. J. K.
+ | title=Drive On!: A Social History of the Motor Car
+ | publisher=Granta Books
+ | year=2004
+ | isbn=1-86207-698-7
+ }}</ref>
+It is not known if Verbiest's model was ever built.<ref name=CuriousExp />
+
+[[Nicolas-Joseph Cugnot]] is widely credited with building the first full-scale, self-propelled mechanical vehicle or automobile in about 1769; he created a steam-powered tricycle.<ref>Encyclopaedia Britannica {{cite web |title=Nicolas-Joseph Cugnot|url=http://www.britannica.com/EBchecked/topic/145966/Nicolas-Joseph-Cugnot}}</ref>  He also constructed two steam tractors for the French Army, one of which is preserved in the [[Conservatoire National des Arts et Métiers|French National Conservatory of Arts and Crafts]].<ref name="Encyclopaedia Britannica">Encyclopaedia Britannica</ref> His inventions were however handicapped by problems with water supply and maintaining steam pressure.<ref name="Encyclopaedia Britannica"/> In 1801, [[Richard Trevithick]] built and demonstrated his ''Puffing Devil'' road locomotive, believed by many to be the first demonstration of a steam-powered road vehicle. It was unable to maintain sufficient steam pressure for long periods, and was of little practical use.
+
+The development of external combustion engines is detailed as part of the [[history of the automobile]], but often treated separately from the development of true automobiles.  A variety of steam-powered road vehicles were used during the first part of the 19th century, including [[steam car]]s, [[steam bus]]es, [[phaeton (carriage)|phaetons]], and [[steam roller]]s.  Sentiment against them led to the [[Locomotive Acts]] of 1865.
+
+In 1807 [[Nicéphore Niépce]] and his brother Claude probably created the world's first [[internal combustion engine]] which they called a [[Pyréolophore]], but they chose to install it in a boat on the river [[Saone]] in France.<ref name="NieMus">{{cite web|author=speos.fr |url=http://niepce.house.museum/pagus/pagus-other.html |title=Niepce Museum, Other Inventions |publisher=Niepce.house.museum |accessdate=2010-08-26}}</ref> Coincidentally, in 1807 the Swiss inventor [[François Isaac de Rivaz]] designed his own '[[De Rivaz engine|de Rivaz internal combustion engine]]' and used it to develop the world's first vehicle to be powered by such an engine. The Niépces' Pyréolophore was fuelled by a mixture of [[Lycopodium powder]] (dried spores of the [[Lycopodium]] plant), finely crushed coal dust and resin that were mixed with oil, whereas de Rivaz used a mixture of [[hydrogen]] and [[oxygen]].<ref name="NieMus"/> Neither design was very successful, as was the case with others, such as [[Samuel Brown (engineer)|Samuel Brown]], [[Samuel Morey]], and [[Etienne Lenoir]] with his [[Hippomobile (car)|hippomobile]], who each produced vehicles (usually adapted carriages or carts) powered by internal combustion engines.<ref name=stein>{{cite book
+ | title=The Automobile Book
+ | publisher=Paul Hamlyn Ltd
+ | year=1967
+ | author=Ralph Stein
+ }}</ref>
+
+In November 1881, French inventor [[Gustave Trouvé]] demonstrated a working three-wheeled automobile powered by electricity at the [[International Exposition of Electricity, Paris]].<ref>{{cite book
+ | author=Wakefield, Ernest H.
+ | title=History of the Electric Automobile
+ | publisher=[[Society of Automotive Engineers]], Inc.
+ | year=1994
+ | isbn=1-56091-299-5
+ | pages=2–3
+ }}</ref>
+
+[[File:Carl-Benz coloriert.jpg|upright|left|thumb|[[Karl Benz]], the inventor of the modern automobile]]
+Although several other German engineers (including [[Gottlieb Daimler]], [[Wilhelm Maybach]], and [[Siegfried Marcus]]) were working on the problem at about the same time, [[Karl Benz]] generally is acknowledged as the inventor of the modern automobile.<ref name=stein />
+
+[[File:1885Benz.jpg|right|thumb|A photograph of the original [[Benz Patent-Motorwagen]], first built in 1885 and awarded the patent for the concept]]
+In 1879, Benz was granted a patent for his first engine, which had been designed in 1878. Many of his other inventions made the use of the internal combustion engine feasible for powering a vehicle. His first ''[[Benz Patent Motorwagen|Motorwagen]]'' was built in 1885 in [[Mannheim]], Germany. He was awarded the patent for its invention as of his application on 29 January 1886 (under the auspices of his major company, [[Benz & Cie.]], which was founded in 1883). Benz began promotion of the vehicle on 3 July 1886, and about 25 Benz vehicles were sold between 1888 and 1893, when his first four-wheeler was introduced along with a model intended for affordability. They also were powered with [[Four-stroke cycle|four-stroke]] engines of his own design. [[Emile Roger]] of France, already producing Benz engines under license, now added the Benz automobile to his line of products. Because France was more open to the early automobiles, initially more were built and sold in France through Roger than Benz sold in Germany. In August 1888 [[Bertha Benz]], the wife of Karl Benz, undertook the first [[road trip]] by car, to prove the road-worthiness of her husband's invention.
+
+[[File:Berthabenzportrait.jpg|thumb|left|upright|[[Bertha Benz]], the first long distance automobile driver in the world]]
+
+In 1896, Benz designed and patented the first internal-combustion [[flat engine]], called ''boxermotor''. During the last years of the nineteenth century, Benz was the largest automobile company in the world with 572 units produced in 1899 and, because of its size, Benz & Cie., became a [[joint-stock company]].
+
+The first motor car in central Europe and one of the first factory-made cars in the world, was produced by [[Czech lands|Czech]] company Nesselsdorfer Wagenbau (later renamed to [[Tatra (company)|Tatra]]) in 1897, the [[Präsident]] automobil.
+
+Daimler and Maybach founded [[Daimler Motoren Gesellschaft]] (DMG) in [[Cannstatt]] in 1890, and sold their first automobile in 1892 under the brand name, ''Daimler''. It was a horse-drawn stagecoach built by another manufacturer, that they retrofitted with an engine of their design. By 1895 about 30 vehicles had been built by Daimler and Maybach, either at the Daimler works or in the Hotel Hermann, where they set up shop after disputes with their backers. Benz, Maybach and the Daimler team seem to have been unaware of each other's early work. They never worked together; by the time of the merger of the two companies, Daimler and Maybach were no longer part of DMG.
+
+Daimler died in 1900 and later that year, Maybach designed an engine named ''Daimler-Mercedes'', that was placed in a specially ordered model built to specifications set by [[Emil Jellinek]]. This was a production of a small number of vehicles for Jellinek to race and market in his country. Two years later, in 1902, a new model DMG automobile was produced and the model was named Mercedes after the Maybach engine which generated 35&nbsp;hp. Maybach quit DMG shortly thereafter and opened a business of his own. Rights to the ''Daimler'' brand name were sold to other manufacturers.
+
+Karl Benz proposed co-operation between DMG and Benz & Cie. when economic conditions began to deteriorate in Germany following the [[First World War]], but the directors of DMG refused to consider it initially. Negotiations between the two companies resumed several years later when these conditions worsened and, in 1924 they signed an ''Agreement of Mutual Interest'', valid until the year 2000. Both enterprises standardized design, production, purchasing, and sales and they advertised or marketed their automobile models jointly, although keeping their respective brands. On 28 June 1926, Benz & Cie. and DMG finally merged as the ''Daimler-Benz'' company, baptizing all of its automobiles ''Mercedes Benz'', as a brand honoring the most important model of the DMG automobiles, the Maybach design later referred to as the ''1902 Mercedes-35&nbsp;hp'', along with the Benz name. Karl Benz remained a member of the board of directors of Daimler-Benz until his death in 1929, and at times, his two sons participated in the management of the company as well.
+
+In 1890, [[Émile Levassor]] and [[Armand Peugeot]] of France began producing vehicles with Daimler engines, and so laid the foundation of the [[Automotive industry in France#1900 to 1950|automobile industry in France]].
+
+The first design for an American automobile with a gasoline internal combustion engine was made in 1877 by [[George Baldwin Selden|George Selden]] of [[Rochester, New York]]. Selden applied for a patent for an automobile in 1879, but the patent application expired because the vehicle was never built. After a delay of sixteen years and a series of attachments to his application, on 5 November 1895, Selden was granted a United States patent ({{US patent|549160}}) for a [[two-stroke cycle|two-stroke]] automobile engine, [[George B. Selden#The Selden patent|which hindered, more than encouraged]], development of automobiles in the United States. His patent was challenged by [[Henry Ford]] and others, and overturned in 1911.
+
+In 1893, the first running, gasoline-powered [[American car]] was built and road-tested by the [[Duryea brothers]] of [[Springfield, Massachusetts]]. The first public run of the [[Duryea Motor Wagon]] took place on 21 September 1893, on Taylor Street in [[Metro Center, Springfield, Massachusetts|Metro Center]] Springfield.<ref name="ausbcomp.com">{{cite web|url=http://www.ausbcomp.com/~bbott/cars/carhist.htm |title=The First Car – A History of the Automobile |publisher=Ausbcomp.com |accessdate=2011-07-17| archiveurl= http://web.archive.org/web/20110716152705/http://www.ausbcomp.com/~bbott/cars/carhist.htm| archivedate= 16 July 2011 <!--DASHBot-->| deadurl= no}}</ref><ref>{{cite web|url=http://inventors.about.com/od/dstartinventors/a/DuryeaBrothers.htm |title=The Duryea Brothers – Automobile History |publisher=Inventors.about.com |date=16 September 2010 |accessdate=2011-07-17}}</ref> [[Studebaker|The Studebaker Automobile Company]], subsidiary of a long-established wagon and coach manufacturer, started to build cars in 1897<ref name=Longst>{{cite book|title=A Century on Wheels: The Story of Studebaker|last=Longstreet|first=Stephen|publisher=Henry Holt and Company|location=New York|pages=121|id=1st edn., 1952}}</ref>{{rp|p.66}} and commenced sales of electric vehicles in 1902 and gasoline vehicles in 1904.<ref>Clymer, Floyd. ''Treasury of Early American Automobiles, 1877–1925'' (New York: Bonanza Books, 1950), p.178.</ref>
+
+In Britain, there had been several attempts to build steam cars with varying degrees of success, with [[Rickett (car)|Thomas Rickett]] even attempting a production run in 1860.<ref name=V&VCars>{{cite book
+ |last=Burgess Wise
+ |first=D.
+ |title=Veteran and Vintage Cars
+ |year=1970
+ |publisher=Hamlyn
+ |location=London
+ |isbn=0-600-00283-7
+ }}</ref> [[Santler (car)|Santler]] from Malvern is recognized by the Veteran Car Club of Great Britain as having made the first petrol-powered car in the country in 1894<ref name=Beaulieu>{{cite book
+ |last=Georgano
+ |first=N.
+ |title=Beaulieu Encyclopedia of the Automobile
+ |year=2000
+ |publisher=HMSO
+ |location=London
+ |isbn=1-57958-293-1
+ }}</ref> followed by [[Frederick William Lanchester]] in 1895, but these were both one-offs.<ref name=Beaulieu /> The first production vehicles in Great Britain came from the [[Daimler Company]], a company founded by [[Harry J. Lawson]] in 1896, after purchasing the right to use the name of the engines. Lawson's company made its first automobiles in 1897, and they bore the name ''Daimler''.<ref name=Beaulieu />
+
+In 1892, German engineer [[Rudolf Diesel]] was granted a patent for a "New Rational Combustion Engine". In 1897, he built the first [[Diesel Engine]].<ref name=stein/> Steam-, electric-, and gasoline-powered vehicles competed for decades, with gasoline internal combustion engines achieving dominance in the 1910s.
+
+Although various [[pistonless rotary engine]] designs have attempted to compete with the conventional [[piston]] and [[crankshaft]] design, only [[Mazda Wankel engine|Mazda]]'s version of the [[Wankel engine]] has had more than very limited success.
+
+==Mass production==
+{{See also|Automotive industry}}
+[[File:Olds2.jpg|right|thumb|[[Ransom E. Olds]]]]
+The large-scale, [[production-line]] manufacturing of affordable automobiles was debuted by [[Ransom Olds]] in 1902 at his [[Oldsmobile]] factory located in [[Lansing, Michigan]] and based upon the [[assembly line]] techniques pioneered by [[Marc Isambard Brunel]] at the [[Portsmouth Block Mills]], England in 1802. The assembly line style of mass production and interchangeable parts had been pioneered in the U.S. by [[Thomas Blanchard]] in 1821, at the [[Springfield Armory]] in [[Springfield, Massachusetts]].<ref>{{cite web|url=http://www.engr.sjsu.edu/pabacker/industrial.htm |title=Industrialization of American Society |publisher=Engr.sjsu.edu |accessdate=2011-07-17}}</ref> This concept was greatly expanded by [[Henry Ford]], beginning in 1914.
+
+As a result, Ford's cars came off the line in fifteen-minute intervals, much faster than previous methods, increasing productivity eightfold (requiring 12.5-man-hours before, 1-hour 33 minutes after), while using less manpower.<ref name=Georgano>{{cite book
+ |last=Georgano
+ |first=G. N.
+ |title=Vintage Cars 1886 to 1930
+ |year=2000
+ |publisher=AB Nordbok
+ |location=Sweden
+ |isbn=1-85501-926-4
+ }}</ref> It was so successful, [[paint]] became a bottleneck. Only [[Japan Black|Japan black]] would dry fast enough, forcing the company to drop the variety of colors available before 1914, until fast-drying [[Duco]] [[lacquer]] was developed in 1926. This is the source of Ford's [[apocryphal]] remark, "any color as long as it's black".<ref name=Georgano/> In 1914, an assembly line worker could buy a Model T with four months' pay.<ref name=Georgano/>
+
+[[File:Henry ford 1919.jpg|thumb|upright|Portrait of [[Henry Ford]] (ca. 1919)]]
+
+Ford's complex safety procedures—especially assigning each worker to a specific location instead of allowing them to roam about—dramatically reduced the rate of injury. The combination of high wages and high efficiency is called "[[Fordism]]," and was copied by most major industries. The efficiency gains from the assembly line also coincided with the economic rise of the United States. The assembly line forced workers to work at a certain pace with very repetitive motions which led to more output per worker while other countries were using less productive methods.
+
+In the automotive industry, its success was dominating, and quickly spread worldwide seeing the founding of Ford France and Ford Britain in 1911, Ford Denmark 1923, Ford Germany 1925; in 1921, [[Citroen]] was the first native European manufacturer to adopt the production method. Soon, companies had to have assembly lines, or risk going broke; by 1930, 250 companies which did not, had disappeared.<ref name=Georgano/>
+
+Development of automotive technology was rapid, due in part to the hundreds of small manufacturers competing to gain the world's attention. Key developments included electric [[ignition system|ignition]] and the electric self-starter (both by [[Charles Kettering]], for the [[Cadillac (automobile)|Cadillac]] Motor Company in 1910–1911), independent [[Suspension (vehicle)|suspension]], and four-wheel brakes.
+
+[[File:Late model Ford Model T.jpg|left|thumb|upright|[[Ford Model T]], 1927, regarded as the first affordable American automobile]]
+
+Since the 1920s, nearly all cars have been mass-produced to meet market needs, so marketing plans often have heavily influenced automobile design. It was [[Alfred P. Sloan]] who established the idea of different makes of cars produced by one company, so buyers could "move up" as their fortunes improved.
+
+Reflecting the rapid pace of change, makes shared parts with one another so larger production volume resulted in lower costs for each price range. For example, in the 1930s, [[LaSalle (automobile)|LaSalle]]s, sold by [[Cadillac]], used cheaper mechanical parts made by [[Oldsmobile]]; in the 1950s, [[Chevrolet]] shared hood, doors, roof, and windows with [[Pontiac]]; by the 1990s, corporate [[powertrain]]s and shared [[automobile platform|platforms]] (with interchangeable [[brake]]s, suspension, and other parts) were common. Even so, only major makers could afford high costs, and even companies with decades of production, such as [[Apperson]], [[Cole Motor Car Company|Cole]], [[Dorris Motors Corporation|Dorris]], [[Haynes Automobile Company|Haynes]], or [[Premier (U.S. car)|Premier]], could not manage: of some two hundred American car makers in existence in 1920, only 43 survived in 1930, and with the [[Great Depression]], by 1940, only 17 of those were left.<ref name=Georgano/>
+
+In Europe much the same would happen. [[Morris Motors|Morris]] set up its production line at [[Cowley, Oxford|Cowley]] in 1924, and soon outsold Ford, while beginning in 1923 to follow Ford's practise of [[vertical integration]], buying [[Hotchkiss (car)|Hotchkiss]] (engines), [[EG Wrigley and Company|Wrigley]] (gearboxes), and [[Osberton]] (radiators), for instance, as well as competitors, such as [[Wolseley Motors|Wolseley]]: in 1925, Morris had 41% of total British car production. Most British small-car assemblers, from [[Abbey (1922 automobile)|Abbey]] to [[Xtra (automobile)|Xtra]] had gone under. Citroen did the same in France, coming to cars in 1919; between them and other cheap cars in reply such as [[Renault]]'s [[Renault 10CV|10CV]] and [[Peugeot]]'s [[Peugeot 5CV|5CV]], they produced 550,000 cars in 1925, and [[Mors (automobile)|Mors]], [[Hurtu]], and others could not compete.<ref name=Georgano/> Germany's first mass-manufactured car, the [[Opel]] [[Opel Laubfrosch|4PS ''Laubfrosch'']] (Tree Frog), came off the line at [[Russelsheim]] in 1924, soon making Opel the top car builder in Germany, with 37.5% of the market.<ref name=Georgano/>
+
+==Weight==
+The weight of a car influences fuel consumption and performance, with more weight resulting in increased fuel consumption and decreased performance. According to a research conducted by [[Julian Allwood]] of the [[University of Cambridge]], global energy use could be heavily reduced by using lighter cars, and an average weight of 500&nbsp;kg has been said to be well achievable.<ref>{{cite web|url=http://www.newscientist.com/article/dn20037-efficiency-could-cut-world-energy-use-over-70-per-cent.html |title=Possible global energy reducstion |work=New Scientist |accessdate=2011-07-17}}</ref>
+
+In some competitions such as the [[Eco-marathon|Shell Eco Marathon]], average car weights of 45&nbsp;kg have also been achieved.<ref>{{cite web|url=http://wn.com/Eco-Marathon |title=45 kg as average car weight in Shell Eco-Marathon |publisher=Wn.com |accessdate=2011-07-17}}</ref><ref>[http://news.nationalgeographic.com/.../110418-pictures-shell-ecomarathon-2011/ Shell Eco-Marathon car weight]{{dead link|date=July 2011}}</ref> These cars are only single-seaters (still falling within the definition of a car, although 4-seater cars are more common), but it nevertheless demonstrates the huge degree in which car weights can still be reduced, and the subsequent lower fuel use (i.e. up to a fuel use of 2560&nbsp;km/l).<ref>{{cite web|author=mindfully.org |url=http://www.mindfully.org/Energy/2006/Andy-Green-TeamGreen13may06.htm |title=Andy Green's 8000-mile/gallon car |publisher=Mindfully.org |accessdate=2011-07-17}}</ref>
+
+==Seating and body style==
+{{See also|Car body style}}
+Most cars are designed to carry multiple occupants, often with four or five seats. Larger cars can often carry six, seven or more occupants depending in the internal arrange of seats. Sports cars are often designed with only two seats, and very occasionally three seats. The differing needs for passenger capacity and their luggage has resulted in a large variety of body styles to suit personal requirements such as the [[Sedan (automobile)|sedan/saloon]], [[hatchback]], [[station wagon]]/estate and [[Multi-Purpose Vehicle]]/[[Minivan]].
+
+==Fuel and propulsion technologies==
+[[File:2011 Nissan Leaf WAS 2011 1040.JPG|thumb|The [[Nissan Leaf]] is an all-[[electric car]] launched in December 2010]]
+{{See also|Alternative fuel vehicle}}
+Most automobiles in use today are propelled by an [[internal combustion engine]], fueled by [[deflagration]] of gasoline (also known as petrol) or [[Diesel fuel|diesel]]. Both fuels are known to cause air pollution and are also blamed for contributing to [[climate change]] and [[global warming]].<ref>{{cite web
+ |url=http://www.fueleconomy.gov/feg/climate.shtml
+ |title=Global Climate Change
+ |publisher=[[U.S. Department of Energy]]
+ |accessdate=2007-03-03
+ | archiveurl= http://web.archive.org/web/20070225100611/http://www.fueleconomy.gov/feg/climate.shtml| archivedate= 25 February 2007 <!--DASHBot-->| deadurl= no}}</ref> Rapidly increasing [[2000s energy crisis|oil prices]], concerns about [[energy security|oil dependence]], tightening environmental laws and restrictions on [[greenhouse gas]] emissions are propelling work on alternative power systems for automobiles. Efforts to improve or replace existing technologies include the development of [[hybrid vehicle]]s, [[plug-in electric vehicle]]s and [[hydrogen vehicle]]s. Vehicles using [[alternative fuel]]s such as [[ethanol fuel|ethanol]] [[flexible-fuel vehicle]]s and [[natural gas vehicle]]s are also gaining popularity in some countries.
+
+[[Oil consumption]] in the twentieth and twenty-first centuries has been abundantly pushed by automobile growth; the [[1980s oil glut|1985–2003 oil glut]] even fuelled the sales of low economy vehicles in [[OECD]] countries. The [[BRIC]] countries might also kick in, as China briefly was the first automobile market in December 2009.<ref name=China-market>
+{{cite news
+  |url=http://news.bbc.co.uk/2/hi/business/7879372.stm
+  |title=China's car industry overtakes US
+  |author=Chris Hogg
+  |date=10 February 2009
+|work=BBC News
+}}</ref>
+
+==Safety==
+{{Main|Car safety|Automobile accident|Low speed vehicle}}
+[[File:Car crash 2.jpg|thumb|Result of a serious automobile accident]]
+
+While road traffic injuries represent the leading cause in worldwide injury-related deaths,<ref name=who_stats>{{cite book |url=http://who.int/violence_injury_prevention/publications/road_traffic/world_report/en/ |accessdate=2008-06-24 |author= Peden M |title= World report on road traffic injury prevention |year=2004 |publisher= World Health Organization |isbn=92-4-156260-9 |author-separator=, |author2=Scurfield R |author3=Sleet D (eds.) |display-authors=3}}</ref> their popularity undermines this statistic.
+
+[[Mary Ward (scientist)|Mary Ward]] became one of the first documented automobile fatalities in 1869 in [[Parsonstown]], Ireland<ref name="ward">{{cite web|url=http://www.universityscience.ie/pages/scientists/sci_mary_ward.php |title=Mary Ward 1827–1869 |publisher=Universityscience.ie |accessdate=2008-10-27 |archiveurl = http://web.archive.org/web/20080311122721/http://www.universityscience.ie/pages/scientists/sci_mary_ward.php |archivedate = 11 March 2008}}</ref> and [[Henry Bliss (road accident victim)|Henry Bliss]] one of the United States' first pedestrian automobile casualties in 1899 in New York City.<ref name="bliss">{{cite web
+ | url=http://www.citystreets.org/plaque.html
+ | title=CityStreets&nbsp;– Bliss plaque
+ }}</ref>
+There are now standard tests for safety in new automobiles, like the [[EuroNCAP]] and the US NCAP tests,<ref>{{cite web
+ | url=http://www.nhtsa.dot.gov/cars/testing/ncap/
+ | title=SaferCar.gov&nbsp;– NHTSA
+ }}</ref> and insurance industry-backed tests by the [[Insurance Institute for Highway Safety]] (IIHS).<ref>{{cite web
+ | url=http://www.hwysafety.org/
+ | title=Insurance Institute for Highway Safety
+ }}</ref>
+
+Worldwide, road traffic [[Automobile safety|is becoming ever safer]], in part do to efforts by the government to implement safety features in cars, and by implementing safety components ([[Vertical_deflection_traffic_calming_device]]s) on the roads themselves.
+
+==Costs and benefits==
+{{Main|Economics of automobile usage|Automobile costs|Effects of the automobile on societies}}
+
+The costs of automobile usage, which may include the cost of: acquiring the vehicle, repairs and [[auto maintenance]], fuel, [[depreciation]], driving time, [[parking fee]]s, taxes, and insurance,<ref name="racv">{{cite web
+|url=http://www.racv.com.au/wps/wcm/connect/racv/Internet/Primary/my+car/advice+_+information/vehicle+operating+costs/
+|accessdate=2009-12-22
+|title=Car Operating Costs
+|work=my car
+|publisher=RACV
+}}</ref> are weighed against the cost of the alternatives, and the value of the benefits&nbsp;– perceived and real&nbsp;– of vehicle usage. The benefits may include on-demand transportation, mobility, independence and convenience.<ref name="setright" />
+
+Similarly the costs to society of encompassing automobile use, which may include those of: [[maintaining road]]s, [[land use]], pollution, [[public health]], health care, and of disposing of the vehicle at the end of its life, can be balanced against the value of the benefits to society that automobile use generates. The societal benefits may include: economy benefits, such as job and wealth creation, of automobile production and maintenance, transportation provision, society wellbeing derived from leisure and travel opportunities, and revenue generation from the [[:Category:Vehicle taxes|tax]] opportunities. The ability for humans to move flexibly from place to place has far reaching implications for the nature of societies.<ref name="parking">{{cite book
+|title=Lots of Parking: Land Use in a Car Culture
+|author=John A. Jakle, Keith A. Sculle.
+|year=2004
+|isbn=0-8139-2266-6
+|publisher=Univ. of Virginia Press
+|location=Charlottesville
+}}</ref>
+
+==Environmental impact==
+{{See also|Automobile emissions}}
+
+While there are different types of fuel that may power cars, most rely on gasoline or diesel. The [[United States Environmental Protection Agency]] states that the average vehicle emits 8,887 grams of carbon dioxide per gallon of gasoline. The average vehicle running on diesel fuel will emit 10,180 grams of carbon dioxide.<ref name="US EPA">{{cite web|last=US EPA|title=Greenhouse Gas Emissions from a Typical Passenger Vehicle (|url=http://www.epa.gov/oms/climate/documents/420f11041.pdf|accessdate=25 April 2013}}</ref> Many governments are using fiscal policies (such as [[road tax]] or the US [[gas guzzler tax]]) to influence vehicle purchase decisions, with a low {{co2}} figure often resulting in reduced taxation.<ref>{{cite web|title=A Review and Comparative Analysis of Fiscal Policies Associated with New Passenger Vehicle CO2 Emissions|url=http://www.theicct.org/sites/default/files/publications/ICCT_fiscalpolicies_feb2011.pdf|work=International Council on Clean Transportation|accessdate=15 October 2013|date=February 2011}}</ref> [[Fuel tax]]es may act as an incentive for the production of more efficient, hence less polluting, car designs (e.g. [[hybrid vehicles]]) and the development of [[alternative fuel]]s. High fuel taxes may provide a strong incentive for consumers to purchase lighter, smaller, more fuel-efficient cars, or to not drive. On average, today's automobiles are about 75 percent recyclable, and using recycled steel helps reduce energy use and pollution.<ref>{{cite web
+|url=http://www.greenercars.com/autoenviron.html
+|archiveurl=http://web.archive.org/web/20080214145812/http://www.greenercars.com/autoenviron.html
+|archivedate=14 February 2008
+|publisher=Greenercars.com
+|title=Automobiles and the Environment
+}}</ref> In the United States Congress, federally mandated fuel efficiency standards have been debated regularly, passenger car standards have not risen above the {{convert|27.5|mpgus }} standard set in 1985. Light truck standards have changed more frequently, and were set at {{convert|22.2|mpgus }} in 2007.<ref>{{cite web
+|url=http://www.nhtsa.dot.gov/cars/rules/cafe/overview.htm
+|publisher=National Highway Traffic Safety Administration
+|title=CAFE Overview&nbsp;– Frequently Asked Questions
+}}</ref>
+
+The manufacture of vehicles is resource intensive, and many manufacturers now report on the environmental performance of their factories, including energy usage, waste and water consumption.<ref>{{cite web|title=Volvo's carbon-free car factory|url=http://www.endsreport.com/14568/volvos-carbon-free-car-factory|work=Ends Report|accessdate=15 October 2013|date=October 2005}}</ref>
+
+The growth in popularity of the car allowed cities to [[Urban sprawl|sprawl]], therefore encouraging more travel by car resulting in inactivity and [[obesity]], which in turn can lead to increased risk of a variety of diseases.<ref>{{cite web|title=Our Ailing Communities|url=http://www.metropolismag.com/cda/story.php?artid=2353|publisher=Metropolis Magazine}}</ref>{{dead link|date=October 2013}}
+
+Transportation (of all types including trucks, buses and cars) is a major contributor to air pollution in most industrialised nations. According to the American Surface Transportation Policy Project nearly half of all Americans are breathing unhealthy air. Their study showed air quality in dozens of metropolitan areas has worsened over the last decade.<ref>{{cite web
+|title=Clearing the Air
+|publisher=The Surface Transportation Policy Project
+|date=19 August 2003
+|url=http://www.transact.org/report.asp?id=227
+|accessdate=2007-04-26
+}}</ref>
+
+Animals and plants are often negatively impacted by automobiles via [[habitat destruction]] and pollution. Over the lifetime of the average automobile the "loss of habitat potential" may be over {{convert|50000|m2|sp=us}} based on [[primary production]] correlations.<ref>{{cite news |first=Jeffrey |last=Ball |title=Six Products, Six Carbon Footprints
+|url=http://online.wsj.com/article/SB122304950601802565.html
+|work=Wall Street Journal |date=9 March 2009 |accessdate=2011-01-10| archiveurl= http://web.archive.org/web/20110125072954/http://online.wsj.com/article/SB122304950601802565.html| archivedate= 25 January 2011 <!--DASHBot-->| deadurl= no}}</ref> Animals are also killed every year on roads by automobiles, referred to as [[Roadkill]]. More recent road developments are including significant environmental mitigations in their designs such as green bridges to allow [[wildlife crossing]]s, and creating [[wildlife corridor]]s.
+
+Growth in the popularity of vehicles and [[commuting]] has led to [[traffic congestion]]. Brussels was considered Europe's most congested city in 2011 according to [[TomTom]].<ref>{{cite web|title=Which is Europe's most congested city?|url=http://www.whatcar.com/car-news/which-is-europe-s-most-congested-city-/249079|work=What Car?|accessdate=18 December 2011}}</ref>
+
+==Future car technologies==
+{{Refimprove section|date=June 2010}}
+
+[[Automobile propulsion]] technology under development include [[hybrid car|gasoline/electric]] and [[plug-in hybrid]]s, [[battery electric vehicle]]s, [[hydrogen car]]s, [[biofuel]]s, and various [[alternative fuel]]s. Research into future alternative forms of power include the development of [[fuel cells]], [[HCCI|Homogeneous Charge Compression Ignition (HCCI)]], [[Stirling engine]]s,<ref>{{cite web|author= Paul Werbos|authorlink=Paul Werbos|url=http://www.werbos.com/E/WhoKilledElecPJW.htm|title=Who Killed the Electric car? My review|accessdate=2007-04-10}}</ref> and even using the stored energy of compressed air or [[Liquid nitrogen economy|liquid nitrogen]].
+
+New materials which may replace steel car bodies include [[duraluminum]], [[fiberglass]], [[carbon fiber]], and [[carbon nanotube]]s.
+
+[[Telematics]] technology is allowing more and more people to share cars, on a [[City Car Club|pay-as-you-go]] basis, through [[car share]] and  [[carpool]] schemes.
+
+Communication is also evolving due to [[connected car]] systems.
+
+===Autonomous car===
+{{Main|Autonomous car}}
+[[File:Hands-free Driving.jpg|thumb|A robotic [[Volkswagen Passat]] shown at [[Stanford University]] is a [[driverless car]]]]
+Fully autonomous vehicles, also known as driverless cars, already exist in prototype (such as the [[Google driverless car]]), and are expected to be commercially available around 2020. According to urban designer and futurist [[Michael E. Arth]], driverless electric vehicles—in conjunction with the increased use of [[virtual reality]] for work, travel, and pleasure—could reduce the world's 800 million vehicles to a fraction of that number within a few decades.<ref>{{cite news | url=http://www.cnn.com/2007/BUSINESS/09/14/allabout.hybrid/ | title = Rachel Oliver "All About: hydrid transportation" |first=Rachel | last=Oliver| publisher= CNN | date= 16 September 2007| accessdate=2009-03-05}}</ref> This would be possible if almost all private cars requiring drivers, which are not in use and parked 90% of the time, would be traded for public self-driving taxis that would be in near constant use. This would also allow for getting the appropriate vehicle for the particular need—a [[bus]] could come for a group of people, a limousine could come for a special night out, and a Segway could come for a short trip down the street for one person. Children could be chauffeured in supervised safety, [[Driving under the influence|DUIs]] would no longer exist, and 41,000 lives could be saved each year in the US alone.<ref>{{cite news | url= http://www.carbusters.org/magazine/33/feature3.html | title= New Pedestrianism: A Bridge to the Future |first= Michael | last=Arth| publisher= Carbusters Magazine | date=Spring 2008 | accessdate=2009-03-06}} {{Dead link|date=September 2010|bot=H3llBot}}</ref><ref>{{cite news | url= http://www.corrupt.org/news/most_cars_can_be_eliminated_in_20_years_says_urban_designer_michael_e_arth | title=  Most Cars Can be Eliminated in 20 Years says Urban Designer Michael E. Arth | first = Alex | last =Birch | publisher= Corrupt.org | date= 23 May 2008 | accessdate=2009-03-06}}</ref>
+
+===Open source development===
+{{main|Open source car}}
+There have been several projects aiming to develop a car on the principles of [[open design]]. The projects include [[OScar (open source car)|OScar]], [[Riversimple]] (through 40fires.org)<ref>{{cite web|url=http://40fires.org/ |title=FortyFires: Main |publisher=40fires.org |accessdate=2010-07-11| archiveurl= http://web.archive.org/web/20100701133551/http://www.40fires.org/| archivedate= 1 July 2010 <!--DASHBot-->| deadurl= no}}</ref> and c,mm,n.<ref>{{cite web|url=http://www.cmmn.org/nc/en/home.html |title=open source mobility: home |publisher=c,mm,n |accessdate=2010-07-11}}</ref> None of the projects have reached significant success in terms of developing a car as a whole both from hardware and software perspective and no mass production ready open-source based design have been introduced as of late 2009. Some car [[Hacker (programmer subculture)|hacking]] through [[on-board diagnostics]] (OBD) has been done so far.<ref>{{cite web|url=http://video.google.com/videoplay?docid=-6306814203245314335 |title=Geek My Ride presentation at linux.conf.au 2009 |publisher=Google |accessdate=2010-07-11}}</ref>
+
+==Industry==
+{{Main|Automotive industry|Automotive market}}
+The automotive industry designs, develops, manufactures, markets, and sells the world's [[motor vehicle]]s. In 2008, more than 70 million motor vehicles, including cars and [[commercial vehicle]]s were produced worldwide.<ref>{{cite web
+|title=World Motor Vehicle Production by Country: 2007–2008
+|publisher=[[Organisation Internationale des Constructeurs d'Automobiles|OICA]]
+|url=http://oica.net/category/production-statistics/}}</ref>
+
+In 2007, a total of 71.9 million new automobiles were sold worldwide: 22.9 million in Europe, 21.4 million in the Asia-Pacific Region, 19.4 million in the USA and Canada, 4.4 million in Latin America, 2.4 million in the Middle East and 1.4 million in Africa.<ref>"2008 Global Market Data Book", ''Automotive News'', p.5</ref>  The markets in North America and Japan were stagnant, while those in South America and other parts of Asia grew strongly. Of the major markets, China, Russia, Brazil and India saw the most rapid growth.
+
+About 250 million vehicles are in use in the United States. Around the world, there were about 806 million cars and light trucks on the road in 2007; they burn over {{convert|260|e9USgal|m3}} of gasoline and diesel fuel yearly. The numbers are increasing rapidly, especially in China and India.<ref name="plunkettresearch.com"/> In the opinion of some, urban transport systems based around the car have proved unsustainable, consuming excessive energy, affecting the health of populations, and delivering a declining level of service despite increasing investments. Many of these negative impacts fall disproportionately on those social groups who are also least likely to own and drive cars.<ref name="cst.uwinnipeg.ca">{{cite web |url=http://cst.uwinnipeg.ca/documents/Transport_Greenhouse.pdf|format=PDF|title=Transport Energy Use and Greenhouse Emissions in Urban Passenger Transport Systems|publisher=Institute for Sustainability and Technology Policy|accessdate=2008-07-22 |author=Kenworthy, J R |year=2004 }}</ref><ref name="health">{{cite web |url=http://www.euro.who.int/en/what-we-do/health-topics/environment-and-health/Transport-and-health |title=Health effects of transport |accessdate=2008-08-29 |author=World Health Organisation, Europe}}</ref><ref>{{cite web |url=http://www.neotrucks.com/pdf/making_the_connections_final_report_on_transport_and_social_exclusion.pdf|title=The Connections&nbsp;– final report on transport and social exclusion|accessdate=2003-02-01|author=Social Exclusion Unit, Office of the Prime Minister (UK)}}</ref> The [[sustainable transport]] movement focuses on solutions to these problems.
+
+In 2008, with rapidly rising oil prices, industries such as the automotive industry, are experiencing a combination of pricing pressures from raw material costs and changes in consumer buying habits. The industry is also facing increasing external competition from the public transport sector, as consumers re-evaluate their private vehicle usage.<ref>[http://www.ibisworld.com/newsletter/issues/us/08jun/news.htm: IBISWorld Newsletter, June 2008, GLOBAL TRENDS Oil&nbsp;– The Crude Reality of Current trends], ''IBISWorld''</ref> Roughly half of the US's fifty-one light vehicle plants are projected to permanently close in the coming years, with the loss of another 200,000 jobs in the sector, on top of the 560,000 jobs lost this decade.<ref>{{cite web |author=Jeff Rubin|title= Wrong Turn |url=http://research.cibcwm.com/economic_public/download/sfeb09.pdf |format=PDF|publisher=CIBC World Markets |date=2 March 2009}}</ref> Combined with robust growth in China, in 2009, this resulted in China becoming the largest automobile producer and market in the world.
+China 2009 sales had increased to 13.6 million, a significant increase from one million of domestic car sales in 2000.<ref>{{cite web|url=http://www.thejakartapost.com/news/2011/05/09/indonesia-towards-a-one-trillion-dollar-economy.html |title=Indonesia: Towards a one trillion dollar economy |work=The Jakarta Post |accessdate=2011-07-17}}</ref>
+
+==Alternatives to the automobile==
+{{Main|Alternatives to the automobile}}
+
+Established alternatives for some aspects of automobile use include [[public transit]] such as buses, [[trolleybus]]es, trains, [[Rapid transit|subways]], [[tram system|tramways]] light rail, cycling, and [[walking]]. [[Carsharing|Car-share]] arrangements and [[carpool]]ing are also increasingly popular–the US market leader in car-sharing has experienced double-digit growth in revenue and membership growth between 2006 and 2007, offering a service that enables urban residents to "share" a vehicle rather than own a car in already congested neighborhoods.<ref>{{cite web
+|url=http://www.greencarcongress.com/2007/04/flexcar_expands.html
+|title=Flexcar Expands to Philadelphia
+|date=2 April 2007
+|publisher=Green Car Congress
+}}</ref> [[Bicycle sharing system|Bike-share]] systems have been tried in some European cities, including [[Copenhagen]] and [[Amsterdam]]. Similar programs have been experimented with in a number of US Cities.<ref>{{cite web
+|url=http://web.mit.edu/dzshen/www/about.shtml
+|archiveurl=http://web.archive.org/web/20071220235050/http://web.mit.edu/dzshen/www/about.shtml
+|archivedate=20 December 2007
+|title=About Bike Share Programs
+|publisher=Tech Bikes MIT
+}}</ref> Additional individual modes of transport, such as [[personal rapid transit]] could serve as an alternative to automobiles if they prove to be socially accepted.<ref name="asphalt">{{cite book
+|title=Asphalt Nation: how the automobile took over America, and how we can take it back
+|author=Jane Holtz Kay
+|year=1998
+|isbn=0-520-21620-2
+|publisher=University of California Press
+|location=Berkeley, Calif.
+}}</ref>
+
+==See also==
+{{portal|Cars}}
+{{Main|Outline of automobiles}}
+{{div col|colwidth=30em}}
+* [[Automobile costs]]
+* [[Car classification]]
+* [[Carfree city]]
+* [[List of countries by automobile production]]
+* [[List of countries by vehicles per capita]]
+* [[Lists of automobiles]]
+* [[Motor vehicle theft]]
+* [[Noise pollution]]
+* [[Peak car]]
+* [[Steering]]
+* [[Traffic collision]]
+* [[Traffic congestion]]
+{{div col end}}
+
+==References==
+{{Reflist|30em}}
+
+==Further reading==
+* [[David Halberstam|Halberstam, David]], ''The Reckoning'', New York, Morrow, 1986. ISBN 0-688-04838-2
+* Kay, Jane Holtz, ''Asphalt nation : how the automobile took over America, and how we can take it back'', New York, Crown, 1997. ISBN 0-517-58702-5
+* [[Heathcote Williams]], ''Autogeddon'', New York, Arcade, 1991. ISBN 1-55970-176-5
+*[[Wolfgang Sachs]]: ''For love of the automobile: looking back into the history of our desires'', Berkeley: University of California Press, 1992, ISBN 0-520-06878-5
+
+==External links==
+{{Commons|Automobile}}
+{{Wikisource|California AB 1493}}
+{{Wiktionary}}
+*[http://www.fia.com/ Fédération Internationale de l'Automobile]
+*[http://www.autoandsociety.com/ Forum for the Automobile and Society]
+
+{{CarConfig nav}}
+{{CarDesign nav}}
+{{Automotive engine}}
+{{Powertrain nav}}
+{{Chassis control systems}}
+{{Automotive industry}}
+
+[[Category:Automobiles| ]]
+[[Category:Wheeled vehicles]]
+
+{{Link GA|eo}}

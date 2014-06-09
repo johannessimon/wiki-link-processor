@@ -1,0 +1,2 @@
+B C	B_C	This is a link from A B to <head>B C</head>.
+a b	A_B	This is another link to <head>a b</head> with a custom alternative link text.

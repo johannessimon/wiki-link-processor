@@ -1,0 +1,187 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<analysisEngineDescription xmlns="http://uima.apache.org/resourceSpecifier">
+  <frameworkImplementation>org.apache.uima.java</frameworkImplementation>
+  <primitive>false</primitive>
+  <delegateAnalysisEngineSpecifiers>
+    <!--<delegateAnalysisEngine key="SemanticRoleAnnotator">
+      <import name="com.ibm.sai.jobimtext.holing.SemanticRoleAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="FrameHolingAnnotator">
+      <import name="com.ibm.sai.jobimtext.holing.FrameHolingAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="HolingOutputIndexedFS">
+      <import name="org.jobimtext.holing.output.HolingOutputIndexedFS"/>
+    </delegateAnalysisEngine>-->
+    <delegateAnalysisEngine key="JogramHolingAnnotator">
+      <import name="org.jobimtext.holing.annotator.JogramHolingAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="JoAnnotator">
+      <import name="org.jobimtext.holing.annotator.JoAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="TrigramHolingAnnotator">
+      <import name="org.jobimtext.holing.annotator.TrigramHolingAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="DependencyParser">
+      <import name="org.jobimtext.holing.parser.MaltParser"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="POSTagger">
+      <import name="org.jobimtext.holing.postagger.POSTaggerAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="DependencyHolingAnnotator">
+      <import name="org.jobimtext.holing.annotator.DependencyHolingAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="SentenceTokenAnnotatorLucene">
+      <import name="org.jobimtext.holing.segmenter.SentenceTokenAnnotatorLucene"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="ProtoConceptAnnotator">
+      <import name="uima.ProtoConceptAnnotator"/>
+    </delegateAnalysisEngine>
+    <delegateAnalysisEngine key="SentenceFilter">
+      <import name="uima.SentenceFilter"/>
+    </delegateAnalysisEngine>
+  </delegateAnalysisEngineSpecifiers>
+  <flowController key="FixedFlowController">
+    <import name="org.apache.uima.flow.FixedFlowController"/>
+  </flowController>
+  <analysisEngineMetaData>
+    <name>MedicalMultigram</name>
+    <description>Does ingestion and runs holing system to generate Jogram
+			based holing output.</description>
+    <version>1.0</version>
+    <vendor>IBM</vendor>
+    <configurationParameters searchStrategy="language_fallback">
+      <configurationParameter>
+        <name>ExtractorConfigurationFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>ProtoConceptAnnotator/ExtractorConfigurationFile</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
+        <name>OutputFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>ProtoConceptAnnotator/OutputFile</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ClusterFile2</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>SentenceFilter/ClusterFile</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ClusterFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>ProtoConceptAnnotator/ClusterFile</parameter>
+        </overrides>
+      </configurationParameter>
+    
+      <configurationParameter>
+        <name>length</name>
+        <type>Integer</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>JoAnnotator/joTokenLength</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
+        <name>configFilePath</name>
+        <description>Configuration file path.  The configuration file specifies the types of jogram relations to process.</description>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+        <overrides>
+          <parameter>JogramHolingAnnotator/configFilePath</parameter>
+        </overrides>
+      </configurationParameter>
+     
+    </configurationParameters>
+    <configurationParameterSettings>
+      <nameValuePair>
+        <name>length</name>
+        <value>
+          <integer>1</integer>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>configFilePath</name>
+        <value>
+          <string>$cache/ngram_holing_config.xml</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ClusterFile2</name>
+        <value>
+          <string>/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ClusterFile</name>
+        <value>
+          <string>/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>OutputFile</name>
+        <value>
+          <string>$dir/PC_resource_assignments</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>ExtractorConfigurationFile</name>
+        <value>
+          <string>$cache/holing_extractor.xml</string>
+        </value>
+      </nameValuePair>
+      
+     
+    </configurationParameterSettings>
+    <flowConstraints>
+      <fixedFlow>
+        <node>SentenceTokenAnnotatorLucene</node>
+        <node>SentenceFilter</node>
+        <node>JoAnnotator</node>
+        <node>POSTagger</node>
+        <node>DependencyParser</node>
+        <!--<node>SemanticRoleAnnotator</node>
+        <node>FrameHolingAnnotator</node>-->
+        
+        <node>DependencyHolingAnnotator</node>
+        <node>JogramHolingAnnotator</node>
+        <node>TrigramHolingAnnotator</node>
+        
+        <node>ProtoConceptAnnotator</node>
+        <!-- <node>HolingOutputIndexedFS</node> -->
+      </fixedFlow>
+    </flowConstraints>
+    <typePriorities/>
+    <fsIndexCollection/>
+    <capabilities>
+      <capability>
+        <inputs/>
+        <outputs/>
+        <languagesSupported>
+          <language>en</language>
+        </languagesSupported>
+      </capability>
+    </capabilities>
+    <operationalProperties>
+      <modifiesCas>true</modifiesCas>
+      <multipleDeploymentAllowed>false</multipleDeploymentAllowed>
+      <outputsNewCASes>false</outputsNewCASes>
+    </operationalProperties>
+  </analysisEngineMetaData>
+  <resourceManagerConfiguration/>
+</analysisEngineDescription>

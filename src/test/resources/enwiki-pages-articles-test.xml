@@ -1,0 +1,45 @@
+<mediawiki xmlns="http://www.mediawiki.org/xml/export-0.8/"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+	xsi:schemaLocation="http://www.mediawiki.org/xml/export-0.8/ http://www.mediawiki.org/xml/export-0.8.xsd"
+	version="0.8" xml:lang="en">
+	<siteinfo>
+		<sitename>Wikipedia</sitename>
+		<base>http://en.wikipedia.org/wiki/Main_Page</base>
+		<generator>Johannes Simon (manually generated test file)</generator>
+		<case>first-letter</case>
+		<namespaces>
+			<namespace key="0" case="first-letter" />
+		</namespaces>
+	</siteinfo>
+	<page>
+		<title>A A B</title>
+		<ns>0</ns>
+		<id>1</id>
+		<redirect title="A B" />
+	</page>
+	<page>
+		<title>A B</title>
+		<ns>0</ns>
+		<id>2</id>
+		<revision>
+			<text xml:space="preserve">This is a link from A B to [[B C]] in the first sentence.  This is the second link in this page and it goes from A B to [[A A B]], which is a redirect.</text>
+		</revision>
+	</page>
+	<page>
+		<title>A B C</title>
+		<ns>0</ns>
+		<id>3</id>
+		<redirect title="A B" />
+		<revision>
+			<text xml:space="preserve">These page contents should be ignored. Also this link to [[B C]].</text>
+		</revision>
+	</page>
+	<page>
+		<title>C D</title>
+		<ns>0</ns>
+		<id>5</id>
+		<revision>
+			<text xml:space="preserve">This is another link to [[A B|a b]] with a custom alternative link text.</text>
+		</revision>
+	</page>
+</mediawiki>
