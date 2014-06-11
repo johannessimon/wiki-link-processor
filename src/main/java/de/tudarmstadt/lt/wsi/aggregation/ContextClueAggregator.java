@@ -9,7 +9,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
@@ -22,26 +21,11 @@ import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 public class ContextClueAggregator {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	Map<String, List<Cluster>> clusters = new HashMap<String, List<Cluster>>();
+	Map<String, String> redirects = new HashMap<String, String>();
 	BufferedWriter writer;
 	
 	public ContextClueAggregator(BufferedWriter writer) {
 		this.writer = writer;
-	}
-	
-	class ValueComparator<K, V extends Comparable<V>> implements Comparator<K> {
-	    Map<K, V> base;
-	    public ValueComparator(Map<K, V> base) {
-	        this.base = base;
-	    }
-
-	    // Note: this comparator imposes orderings that are inconsistent with equals.    
-	    public int compare(K a, K b) {
-	        if (base.get(a).compareTo(base.get(b)) > 0) {
-	            return -1;
-	        } else {
-	            return 1;
-	        } // returning 0 would merge keys
-	    }
 	}
 	
 	public void incrementCount(Map<String, Integer> map, String key) {

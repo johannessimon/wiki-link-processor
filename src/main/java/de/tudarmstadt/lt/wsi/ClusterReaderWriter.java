@@ -6,7 +6,6 @@ import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
@@ -15,27 +14,11 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
+
+import util.MapHelper;
 
 public class ClusterReaderWriter {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
-
-	private static class ValueComparator<K, V extends Comparable<V>> implements Comparator<K> {
-
-	    Map<K, V> base;
-	    public ValueComparator(Map<K, V> base) {
-	        this.base = base;
-	    }
-
-	    // Note: this comparator imposes orderings that are inconsistent with equals.    
-	    public int compare(K a, K b) {
-	        if (base.get(a).compareTo(base.get(b)) > 0) {
-	            return -1;
-	        } else {
-	            return 1;
-	        } // returning 0 would merge keys
-	    }
-	}
 
 	public static void writeClusters(Writer writer, Map<String, List<Cluster>> clusters) throws IOException {
 		for (Entry<String, List<Cluster>> clusterList : clusters.entrySet()) {
@@ -52,9 +35,7 @@ public class ClusterReaderWriter {
 		}
 		if (!cluster.featureCounts.isEmpty()) {
 			writer.write("\t");
-			ValueComparator<String, Integer> vc = new ValueComparator<String, Integer>(cluster.featureCounts);
-			Map<String, Integer> sortedFeatureCountes = new TreeMap<String, Integer>(vc);
-			sortedFeatureCountes.putAll(cluster.featureCounts);
+			Map<String, Integer> sortedFeatureCountes = MapHelper.sortMapByValue(cluster.featureCounts);
 			for (Entry<String, Integer> featureCount : sortedFeatureCountes.entrySet()) {
 				writer.write(featureCount.getKey() + ":" + featureCount.getValue() + "  ");
 			}

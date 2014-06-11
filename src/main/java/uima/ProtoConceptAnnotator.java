@@ -8,14 +8,12 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.Collection;
-import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -29,6 +27,7 @@ import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
 import uima.type.WikiLink;
+import util.MapHelper;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 
@@ -108,7 +107,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 			for (Entry<String, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
 				String[] keySplits = mappings.getKey().split("\\.");
 				mappingWriter.write(keySplits[0] + "\t" + keySplits[1] + "\t");
-				Map<String, Integer> sortedMappingCounts = sortMapByValue(mappings.getValue());
+				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 					mappingWriter.write(mapping.getKey() + ":" + mapping.getValue() + "  ");
 				}
@@ -122,30 +121,6 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 		} finally {
 			super.batchProcessComplete();
 		}
-	}
-
-	private static class ValueComparator<K, V extends Comparable<V>> implements Comparator<K> {
-
-	    Map<K, V> base;
-	    public ValueComparator(Map<K, V> base) {
-	        this.base = base;
-	    }
-
-	    // Note: this comparator imposes orderings that are inconsistent with equals.    
-	    public int compare(K a, K b) {
-	        if (base.get(a).compareTo(base.get(b)) > 0) {
-	            return -1;
-	        } else {
-	            return 1;
-	        } // returning 0 would merge keys
-	    }
-	}
-	
-	private Map<String, Integer> sortMapByValue(Map<String, Integer> map) {
-		ValueComparator<String, Integer> vc = new ValueComparator<String, Integer>(map);
-		Map<String, Integer> sortedMap = new TreeMap<String, Integer>(vc);
-		sortedMap.putAll(map);
-		return sortedMap;
 	}
 	
 	private void evaluateConceptMapping() {
@@ -201,7 +176,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 					String[] keySplits = mappings.getKey().split("\\.");
 					System.out.print(keySplits[0] + "\t" + keySplits[1] + "\t");
 					Map<String, Integer> mappingCounts = mappings.getValue();
-					Map<String, Integer> sortedMappingCounts = sortMapByValue(mappingCounts);
+					Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappingCounts);
 					for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 						System.out.print(mapping.getKey() + ":" + mapping.getValue() + "  ");
 					}
