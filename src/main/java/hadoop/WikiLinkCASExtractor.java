@@ -27,7 +27,7 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 		for (String line : lines) {
 			String cols[] = line.split("\t");
 			if (cols.length != 2) {
-				System.err.println("Malformatted sentence-links line: " + line);
+//				System.err.println("Malformatted sentence-links line: " + line);
 				continue;
 			}
 			String sentence = cols[0];
@@ -51,7 +51,7 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 					link.setEnd(end + offset);
 					link.addToIndexes();
 				} catch (InputMismatchException e) {
-					System.err.println("Malformatted link column: " + links);
+//					System.err.println("Malformatted link column: " + links);
 					break;
 				}
 			}
@@ -66,7 +66,7 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 		for (String line : lines) {
 			String[] cols = line.split("\t");
 			if (cols.length != 2) {
-				System.err.println("Malformatted sentence-links line: " + line);
+//				System.err.println("Malformatted sentence-links line: " + line);
 				continue;
 			}
 			documentText.append(cols[0]);

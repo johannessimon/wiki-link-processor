@@ -7,12 +7,15 @@ import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -45,13 +48,14 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 	int numMappingFails = 0;
 	int numMappingSuccesses = 0;
 	int numMissingSenseClusters = 0;
+	Map<String, Map<String, Integer>> baselineConceptMappings = new HashMap<String, Map<String, Integer>>();
 	Map<String, Map<String, Integer>> conceptMappings = new HashMap<String, Map<String, Integer>>();
 	
-	private void registerMapping(String concept, String resource) {
-		Map<String, Integer> conceptMapping = conceptMappings.get(concept);
+	private void registerMapping(Map<String, Map<String, Integer>> map, String concept, String resource) {
+		Map<String, Integer> conceptMapping = map.get(concept);
 		if (conceptMapping == null) {
 			conceptMapping = new HashMap<String, Integer>();
-			conceptMappings.put(concept, conceptMapping);
+			map.put(concept, conceptMapping);
 		}
 		Integer mappingCount = conceptMapping.get(resource);
 		if (mappingCount == null) {
@@ -92,6 +96,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 		System.out.println("# Failed mappings:\t" + numMappingFails);
 		System.out.println("# Successful mappings:\t" + numMappingSuccesses);
 		System.out.println("# Missing sense clusters:\t" + numMissingSenseClusters);
+		evaluateConceptMapping();
 		super.collectionProcessComplete();
 	}
 
@@ -103,7 +108,8 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 			for (Entry<String, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
 				String[] keySplits = mappings.getKey().split("\\.");
 				mappingWriter.write(keySplits[0] + "\t" + keySplits[1] + "\t");
-				for (Entry<String, Integer> mapping : mappings.getValue().entrySet()) {
+				Map<String, Integer> sortedMappingCounts = sortMapByValue(mappings.getValue());
+				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 					mappingWriter.write(mapping.getKey() + ":" + mapping.getValue() + "  ");
 				}
 				mappingWriter.write("\n");
@@ -118,12 +124,94 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 		}
 	}
 
+	private static class ValueComparator<K, V extends Comparable<V>> implements Comparator<K> {
+
+	    Map<K, V> base;
+	    public ValueComparator(Map<K, V> base) {
+	        this.base = base;
+	    }
+
+	    // Note: this comparator imposes orderings that are inconsistent with equals.    
+	    public int compare(K a, K b) {
+	        if (base.get(a).compareTo(base.get(b)) > 0) {
+	            return -1;
+	        } else {
+	            return 1;
+	        } // returning 0 would merge keys
+	    }
+	}
+	
+	private Map<String, Integer> sortMapByValue(Map<String, Integer> map) {
+		ValueComparator<String, Integer> vc = new ValueComparator<String, Integer>(map);
+		Map<String, Integer> sortedMap = new TreeMap<String, Integer>(vc);
+		sortedMap.putAll(map);
+		return sortedMap;
+	}
+	
+	private void evaluateConceptMapping() {
+		System.out.println("=== Evaluating baseline word mappings ===");
+		evaluateMapping(baselineConceptMappings.values());
+		System.out.println("=== Evaluating proto concept mappings ===");
+		evaluateMapping(conceptMappings.values());
+	}
+	
+	private void evaluateMapping(Collection<Map<String, Integer>> mappings) {
+		int totalMappings = 0;
+		int failMappings = 0;
+		int numTrivialCases = 0;
+		int numCases = 0;
+		for (Map<String, Integer> mapping : mappings) {
+			numCases++;
+			int total = 0;
+			int max = -1;
+			if (mapping.size() == 1) {
+				numTrivialCases++;
+			}
+			for (Integer count : mapping.values()) {
+				if (count > max) {
+					max = count;
+				}
+				total += count;
+			}
+			totalMappings += total;
+			failMappings += total - max;
+		}
+		System.out.println("# total mapping instances: " + totalMappings);
+		System.out.println("# failed mapping instances: " + failMappings);
+		System.out.println("# map entries: " + numCases);
+		System.out.println("# trivial mappings (subset of map entries): " + numTrivialCases);
+	}
+
 	@Override
 	public void process(JCas aJCas) throws AnalysisEngineProcessException {
 		for (Sentence s : select(aJCas, Sentence.class)) {
 			numProcessesSentences++;
-			if (numProcessesSentences % 100 == 0) {
-				System.out.println("Processed sentences: " + numProcessesSentences);
+			if (numProcessesSentences % 1000 == 0) {
+				System.out.println("=== Statistics ===");
+				System.out.println("# processed sentences:\t" + numProcessesSentences);
+				System.out.println("# single-token words:\t" + numSingleWords);
+				System.out.println("# single-token words covered entirely by JoBim annotation:\t" + numSingleWordsMatched);
+				System.out.println("# Failed mappings:\t" + numMappingFails);
+				System.out.println("# Successful mappings:\t" + numMappingSuccesses);
+				System.out.println("# Missing sense clusters:\t" + numMissingSenseClusters);
+				System.out.println("# cluster mappings:\t" + conceptMappings.size());
+				
+				try {
+				for (Entry<String, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
+					String[] keySplits = mappings.getKey().split("\\.");
+					System.out.print(keySplits[0] + "\t" + keySplits[1] + "\t");
+					Map<String, Integer> mappingCounts = mappings.getValue();
+					Map<String, Integer> sortedMappingCounts = sortMapByValue(mappingCounts);
+					for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
+						System.out.print(mapping.getKey() + ":" + mapping.getValue() + "  ");
+					}
+					System.out.print("\n");
+				}
+				evaluateConceptMapping();
+				
+				} catch (Exception e) {
+					e.printStackTrace();
+				}
 			}
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
 				List<JoBim> jobims = JCasUtil.selectCovered(JoBim.class, link);
@@ -184,7 +272,8 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 							numMappingFails++;
 						} else {
 							numMappingSuccesses++;
-							registerMapping(jo + "." + highestRankedSense, resource);
+							registerMapping(baselineConceptMappings, jo, resource);
+							registerMapping(conceptMappings, jo + "." + highestRankedSense, resource);
 						}
 						
 						try {

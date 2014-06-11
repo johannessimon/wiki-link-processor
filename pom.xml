@@ -47,6 +47,13 @@
 			<version>0.8-cdh5.0.0</version>
 		</dependency>
 		<dependency>
+			<groupId>org.jobimtext</groupId>
+			<artifactId>org.jobimtext</artifactId>
+			<version>0.0.7</version>
+			<scope>system</scope>
+			<systemPath>${project.basedir}/libs/org.jobimtext-0.0.7.jar</systemPath>
+		</dependency>
+		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.bigdata</groupId>
 			<artifactId>
 				de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop

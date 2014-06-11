@@ -2,10 +2,13 @@ package uima;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
+import java.io.BufferedReader;
 import java.io.FileInputStream;
+import java.io.InputStreamReader;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Map;
+import java.util.Set;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -16,13 +19,11 @@ import org.apache.uima.resource.ResourceInitializationException;
 import org.jobimtext.holing.type.Sentence;
 
 import uima.type.WikiLink;
-import de.tudarmstadt.lt.wsi.Cluster;
-import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 
 public class SentenceFilter extends JCasAnnotator_ImplBase {
-	public static final String PARAM_CLUSTER_FILE = "ClusterFile";
+	public static final String PARAM_WORD_FILE = "WordFile";
 	
-	Map<String, List<Cluster>> clusters;
+	Set<String> words;
 	int keptSentences = 0;
 	int removedSentences = 0;
 	
@@ -31,9 +32,15 @@ public class SentenceFilter extends JCasAnnotator_ImplBase {
 			throws ResourceInitializationException {
 		super.initialize(context);
 		String clusterFileName = (String) context
-				.getConfigParameterValue(PARAM_CLUSTER_FILE);
+				.getConfigParameterValue(PARAM_WORD_FILE);
 		try {
-			clusters = ClusterReaderWriter.readClusters(new FileInputStream(clusterFileName));
+			BufferedReader reader = new BufferedReader(new InputStreamReader(new FileInputStream(clusterFileName)));
+			words = new HashSet<String>();
+			String line;
+			while ((line = reader.readLine()) != null) {
+				words.add(line);
+			}
+			reader.close();
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
@@ -46,9 +53,14 @@ public class SentenceFilter extends JCasAnnotator_ImplBase {
 			boolean keepSentence = false;
 			List<WikiLink> linksToRemove = new LinkedList<WikiLink>();
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
-				if (clusters.containsKey(link.getCoveredText())) {
-					keepSentence = true;
-				} else {
+				try {
+					if (words.contains(link.getCoveredText())) {
+						keepSentence = true;
+					} else {
+						linksToRemove.add(link);
+					}
+				} catch (Exception e) {
+					System.err.println("Error in link annotaiton.");
 					linksToRemove.add(link);
 				}
 			}

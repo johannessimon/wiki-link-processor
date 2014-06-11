@@ -69,12 +69,12 @@
         </overrides>
       </configurationParameter>
       <configurationParameter>
-        <name>ClusterFile2</name>
+        <name>WordFile</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>SentenceFilter/ClusterFile</parameter>
+          <parameter>SentenceFilter/WordFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -122,9 +122,9 @@
         </value>
       </nameValuePair>
       <nameValuePair>
-        <name>ClusterFile2</name>
+        <name>WordFile</name>
         <value>
-          <string>/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2</string>
+          <string>/Users/jsimon/No-Backup/wiki-holing-all/wordlist</string>
         </value>
       </nameValuePair>
       <nameValuePair>

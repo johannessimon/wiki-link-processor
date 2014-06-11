@@ -42,4 +42,17 @@
 			<text xml:space="preserve">This is another link to [[A B|a b]] with a custom alternative link text.</text>
 		</revision>
 	</page>
+	<page>
+		<title>C D E</title>
+		<ns>0</ns>
+		<id>6</id>
+		<revision>
+			<text xml:space="preserve">This is a link-less
+			page with a table:
+{|
+| cell 1
+| cell 2
+|}</text>
+		</revision>
+	</page>
 </mediawiki>
