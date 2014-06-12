@@ -21,6 +21,8 @@ public class HadoopWikiXmlProcessor extends Configured implements Tool {
 //		conf.set("mapred.job.shuffle.input.buffer.percent","0.2");
 		conf.set("xmlinput.start", "<page>");
 		conf.set("xmlinput.end", "</page>");
+		conf.setBoolean("mapred.output.compress", true);
+		conf.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 		Job job = Job.getInstance(conf);
 		job.setJarByClass(HadoopWikiXmlProcessor.class);
 		FileInputFormat.addInputPath(job, new Path(inDir));
