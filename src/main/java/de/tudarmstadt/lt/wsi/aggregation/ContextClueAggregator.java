@@ -7,6 +7,7 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.nio.charset.Charset;
 import java.util.HashMap;
@@ -21,11 +22,10 @@ import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 public class ContextClueAggregator {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	Map<String, List<Cluster>> clusters = new HashMap<String, List<Cluster>>();
-	Map<String, String> redirects = new HashMap<String, String>();
 	BufferedWriter writer;
 	
-	public ContextClueAggregator(BufferedWriter writer) {
-		this.writer = writer;
+	public ContextClueAggregator(OutputStream os) {
+		this.writer = new BufferedWriter(new OutputStreamWriter(os));
 	}
 	
 	public void incrementCount(Map<String, Integer> map, String key) {
@@ -73,15 +73,19 @@ public class ContextClueAggregator {
 		}
 	}
 	
+	public void writeClusters() throws IOException {
+		ClusterReaderWriter.writeClusters(writer, clusters);
+	}
+	
 	public static void main(String[] args) throws IOException {
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2")));
-		ContextClueAggregator ccg = new ContextClueAggregator(writer);
+		OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2");
+		ContextClueAggregator ccg = new ContextClueAggregator(os);
 		InputStream is = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_senses-2");
 //		System.out.println("Reading clusters...");
 		ccg.clusters = ClusterReaderWriter.readClusters(is);
 		InputStream is2 = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_features");
 		System.out.println("Processing context features...");
 		ccg.readContextFeatures(is2);
-		ClusterReaderWriter.writeClusters(writer, ccg.clusters);
+		ccg.writeClusters();
 	}
 }
