@@ -13,7 +13,6 @@ import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
-import org.apache.mahout.text.wikipedia.XmlInputFormat;
 
 public class HadoopWikiXmlProcessor extends Configured implements Tool {
 
