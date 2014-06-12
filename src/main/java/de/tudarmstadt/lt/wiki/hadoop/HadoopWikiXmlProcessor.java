@@ -1,4 +1,4 @@
-package hadoop;
+package de.tudarmstadt.lt.wiki.hadoop;
 import java.util.Arrays;
 
 import org.apache.hadoop.conf.Configuration;

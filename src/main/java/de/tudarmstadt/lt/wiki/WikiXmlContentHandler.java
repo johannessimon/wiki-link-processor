@@ -1,11 +1,11 @@
-package wiki;
+package de.tudarmstadt.lt.wiki;
 import java.io.IOException;
 
 import org.xml.sax.Attributes;
 import org.xml.sax.SAXException;
 import org.xml.sax.helpers.DefaultHandler;
 
-import util.WikiHelper;
+import de.tudarmstadt.lt.util.WikiHelper;
 
 
 public class WikiXmlContentHandler extends DefaultHandler {

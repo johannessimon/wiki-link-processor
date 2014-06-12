@@ -1,7 +1,7 @@
 
 
 /* First created by JCasGen Thu Jun 05 14:36:14 CEST 2014 */
-package uima.type;
+package de.tudarmstadt.lt.wiki.uima.type;
 
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.jcas.JCasRegistry;

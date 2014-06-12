@@ -1,4 +1,4 @@
-package hadoop;
+package de.tudarmstadt.lt.wiki.hadoop;
 
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapred.lib.MultipleTextOutputFormat;

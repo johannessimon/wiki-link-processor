@@ -1,4 +1,4 @@
-package wiki;
+package de.tudarmstadt.lt.wiki;
 
 import java.io.BufferedReader;
 import java.io.IOException;

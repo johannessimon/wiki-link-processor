@@ -1,4 +1,4 @@
-package util;
+package de.tudarmstadt.lt.util;
 
 import java.util.Map;
 

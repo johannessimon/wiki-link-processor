@@ -15,7 +15,7 @@
  * limitations under the License.
  */
 
-package hadoop;
+package de.tudarmstadt.lt.wiki.hadoop;
 
 import java.io.IOException;
 

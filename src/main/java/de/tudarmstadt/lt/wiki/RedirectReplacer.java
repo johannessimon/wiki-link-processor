@@ -1,12 +1,12 @@
-package wiki;
+package de.tudarmstadt.lt.wiki;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import util.FileHelper;
-import util.MapHelper;
-import util.MonitoredFileReader;
+import de.tudarmstadt.lt.util.FileHelper;
+import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 
 public class RedirectReplacer {

@@ -1,4 +1,4 @@
-package uima;
+package de.tudarmstadt.lt.wiki.uima;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
@@ -26,8 +26,8 @@ import org.jobimtext.holing.extractor.JobimExtractorConfiguration;
 import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
-import uima.type.WikiLink;
-import util.MapHelper;
+import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 

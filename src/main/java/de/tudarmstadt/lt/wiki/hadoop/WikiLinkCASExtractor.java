@@ -1,4 +1,4 @@
-package hadoop;
+package de.tudarmstadt.lt.wiki.hadoop;
 
 import java.util.InputMismatchException;
 import java.util.Scanner;
@@ -8,7 +8,7 @@ import org.apache.uima.cas.CAS;
 import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 
-import uima.type.WikiLink;
+import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.Text2CASInputFormat.AnnotationExtractor;
 import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.Text2CASInputFormat.DocumentTextExtractor;
 

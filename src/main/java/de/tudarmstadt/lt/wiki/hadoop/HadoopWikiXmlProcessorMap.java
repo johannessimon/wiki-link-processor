@@ -1,4 +1,4 @@
-package hadoop;
+package de.tudarmstadt.lt.wiki.hadoop;
 
 import java.io.IOException;
 import java.io.InputStream;

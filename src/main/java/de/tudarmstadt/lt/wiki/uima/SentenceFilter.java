@@ -1,4 +1,4 @@
-package uima;
+package de.tudarmstadt.lt.wiki.uima;
 
 import static org.apache.uima.fit.util.JCasUtil.select;
 
@@ -18,7 +18,7 @@ import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.jobimtext.holing.type.Sentence;
 
-import uima.type.WikiLink;
+import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 
 public class SentenceFilter extends JCasAnnotator_ImplBase {
 	public static final String PARAM_WORD_FILE = "WordFile";

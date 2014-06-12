@@ -15,7 +15,7 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
-import util.MapHelper;
+import de.tudarmstadt.lt.util.MapHelper;
 
 public class ClusterReaderWriter {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
