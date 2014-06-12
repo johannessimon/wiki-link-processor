@@ -86,10 +86,12 @@ public class Graph<N, E> {
 		ug.nodes = nodes;
 		for (N from : nodes) {
 			Set<Edge<N, E>> outEdges = edges.get(from);
-			for (Edge<N, E> outEdge : outEdges) {
-				N to = outEdge.getTarget();
-				ug.addEdge(from, to, outEdge.getWeight());
-				ug.addEdge(to, from, outEdge.getWeight());
+			if (outEdges != null) {
+				for (Edge<N, E> outEdge : outEdges) {
+					N to = outEdge.getTarget();
+					ug.addEdge(from, to, outEdge.getWeight());
+					ug.addEdge(to, from, outEdge.getWeight());
+				}
 			}
 		}
 		return ug;
