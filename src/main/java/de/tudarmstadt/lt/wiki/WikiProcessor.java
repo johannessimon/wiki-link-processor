@@ -140,7 +140,10 @@ public class WikiProcessor {
 	}
 	
 	private String preprocessXml(String xml) {
-		String[] tagsToRemove = new String[] { "ref", "math" };
+		// List taken from http://en.wikipedia.org/wiki/Help:HTML_in_wikitext#Parser_and_extension_tags
+		String[] tagsToRemove = new String[] { "gallery", "nowiki", "pre", "categorytree", "charinsert",
+				"hiero", "imagemap", "inputbox", "math", "poem", "ref", "references", "score",
+				"syntaxhighlight", "source", "timeline" };
 		for (String tag : tagsToRemove) {
 			xml = removeAllTags(xml, tag);
 		}
