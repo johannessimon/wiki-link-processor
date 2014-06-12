@@ -60,6 +60,15 @@
         </overrides>
       </configurationParameter>
       <configurationParameter>
+        <name>RedirectsFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>true</mandatory>
+        <overrides>
+          <parameter>ProtoConceptAnnotator/RedirectsFile</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
         <name>OutputFile</name>
         <type>String</type>
         <multiValued>false</multiValued>
@@ -131,6 +140,12 @@
         <name>ClusterFile</name>
         <value>
           <string>/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2</string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
+        <name>RedirectsFile</name>
+        <value>
+          <string>/Users/jsimon/No-Backup/jobimtext/wiki-redirects</string>
         </value>
       </nameValuePair>
       <nameValuePair>
