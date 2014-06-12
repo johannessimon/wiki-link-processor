@@ -92,8 +92,8 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		content = refRemovePattern.matcher(content).replaceAll("");
 		refRemovePattern = Pattern.compile("<ref(.*?)>(.*?)</ref>", Pattern.DOTALL);
 		content = refRemovePattern.matcher(content).replaceAll("");
-		// Pattern refTemplatePattern = Pattern.compile("\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
-		// content = refTemplatePattern.matcher(content).replaceAll("");
+		Pattern refTemplatePattern = Pattern.compile("\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
+		content = refTemplatePattern.matcher(content).replaceAll("");
 		ParsedPage pp = parser.parse(content);
 		
 		if (pp == null || pp.getParagraphs() == null) {
