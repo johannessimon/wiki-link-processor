@@ -13,10 +13,24 @@ import org.junit.Test;
 public class WikiProcessorTest {
 
 	@Test
-	public void test() throws IOException {
+	public void test1() throws IOException {
 		File in = new File("src/test/resources/pages/Auguste_Magdalene_of_Hessen-Darmstadt.txt");
 		File outExpected = new File("src/test/resources/pages/Auguste_Magdalene_of_Hessen-Darmstadt-sentences.txt");
 		File outActual = new File("src/test/resources/tmp/Auguste_Magdalene_of_Hessen-Darmstadt-sentences.txt");
+		outActual.getParentFile().mkdirs();
+		WikiProcessor p = new WikiProcessor();
+		String page = FileUtils.readFileToString(in, "UTF-8");
+		List<String> sentences = new LinkedList<String>();
+		p.parse(page, sentences, null);
+		FileUtils.writeLines(outActual, "UTF-8", sentences);
+		assertEquals(outExpected, outActual);
+	}
+
+	@Test
+	public void test2() throws IOException {
+		File in = new File("src/test/resources/pages/Bose_Einstein_condensate.txt");
+		File outExpected = new File("src/test/resources/pages/Bose_Einstein_condensate-sentences.txt");
+		File outActual = new File("src/test/resources/tmp/Bose_Einstein_condensate-sentences.txt");
 		outActual.getParentFile().mkdirs();
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");

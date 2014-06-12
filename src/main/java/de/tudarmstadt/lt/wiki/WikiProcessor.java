@@ -131,20 +131,33 @@ public class WikiProcessor {
 		return res;
 	}
 	
-	public void parse(String content, List<String> sentences, Map<Integer, List<String>> sentenceLinks) {
-		Pattern refRemovePattern = Pattern.compile("<ref([^<]*?)/>", Pattern.DOTALL);
-		content = refRemovePattern.matcher(content).replaceAll("");
-		refRemovePattern = Pattern.compile("<ref(.*?)>(.*?)</ref>", Pattern.DOTALL);
-		content = refRemovePattern.matcher(content).replaceAll("");
+	private String removeAllTags(String xml, String tagName) {
+		Pattern refRemovePattern = Pattern.compile("<" + tagName + "([^<]*?)/>", Pattern.DOTALL);
+		xml = refRemovePattern.matcher(xml).replaceAll("");
+		refRemovePattern = Pattern.compile("<" + tagName + "[^<]*?>([^<]*?)</" + tagName + ">", Pattern.DOTALL);
+		xml = refRemovePattern.matcher(xml).replaceAll("");
+		return xml;
+	}
+	
+	private String preprocessXml(String xml) {
+		String[] tagsToRemove = new String[] { "ref", "math" };
+		for (String tag : tagsToRemove) {
+			xml = removeAllTags(xml, tag);
+		}
 		// in the following regex, "[^\\{]" matches all charactars but '{' to ensure a minimum
 		// match spanning only one pattern at a time (and not nested ones)
 		Pattern refTemplatePattern = Pattern.compile("\\{\\{([^\\{]*?)\\}\\}", Pattern.DOTALL);
 		String newContent;
 		// Loop due to possible nested constructs like "{{ a {{ b }} c }}"
-		while (!(newContent = refTemplatePattern.matcher(content).replaceAll("")).equals(content)) {
-			content = newContent;
+		while (!(newContent = refTemplatePattern.matcher(xml).replaceAll("")).equals(xml)) {
+			xml = newContent;
 		}
-		ParsedPage pp = parser.parse(content);
+		return xml;
+	}
+	
+	public void parse(String xml, List<String> sentences, Map<Integer, List<String>> sentenceLinks) {
+		xml = preprocessXml(xml);
+		ParsedPage pp = parser.parse(xml);
 		
 		if (pp == null || pp.getParagraphs() == null) {
 			return;
