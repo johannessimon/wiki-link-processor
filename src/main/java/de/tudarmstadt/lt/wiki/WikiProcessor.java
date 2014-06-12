@@ -69,7 +69,7 @@ public class WikiProcessor {
 		}
 	}
 	
-	public static String getLinkedResource(String target, Map<String, String> redirects) {
+	public String getLinkedResource(String target, Map<String, String> redirects) {
 		int startIndex = target.indexOf('#');
 		String subsection = "";
 		if (startIndex >= 0) {
@@ -171,7 +171,7 @@ public class WikiProcessor {
 						int lEnd = lSpan.getEnd();
 						int spanLength = lEnd - lStart;
 						if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
-							String target = WikiProcessor.formatResourceName(link.getTarget());
+							String target = formatResourceName(link.getTarget());
 							String linkRef = target + "@" + (lStart - sStart) + ":" + (lEnd - sStart);
 							links.add(linkRef);
 						}
@@ -184,7 +184,7 @@ public class WikiProcessor {
 		}
 	}
 	
-	public static String formatResourceName(String resource) {
+	public String formatResourceName(String resource) {
 		if (resource.length() == 0) {
 			System.err.println("WARNING: RESOURCE OF LENGTH 0!");
 			Thread.dumpStack();

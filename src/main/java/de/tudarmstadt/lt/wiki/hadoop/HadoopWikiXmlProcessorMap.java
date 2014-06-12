@@ -42,13 +42,16 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		String xml = value.toString();
 		
 		WikiXmlRecord record = p.parseXml(xml);
+		if (record == null) {
+			return;
+		}
 			
-		String pageTitle = WikiProcessor.formatResourceName(record.title);
+		String pageTitle = p.formatResourceName(record.title);
 		Text pageTitleText = new Text(pageTitle);
 		mos.write("pages", pageTitleText, NullWritable.get());
 
 		if (record.redirect != null) {
-			mos.write("redirects", pageTitleText, new Text(WikiProcessor.formatResourceName(record.redirect)));
+			mos.write("redirects", pageTitleText, new Text(p.formatResourceName(record.redirect)));
 		}
 		
 		if (record.text != null) {
@@ -57,11 +60,14 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 			p.parse(record.text, sentences, sentenceLinks);
 			int sIndex = 0;
 			for (String sentence : sentences) {
-				List<String> links = sentenceLinks.get(sIndex);
 				Text sentenceText = new Text(sentence);
 				mos.write("sentences", sentenceText, NullWritable.get());
-				for (String link : links) {
-					mos.write("links", sentenceText, new Text(link));
+				
+				List<String> links = sentenceLinks.get(sIndex);
+				if (links != null) {
+					for (String link : links) {
+						mos.write("links", sentenceText, new Text(link));
+					}
 				}
 				sIndex++;
 			}
