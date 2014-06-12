@@ -1,22 +1,28 @@
 package de.tudarmstadt.lt.cw.io;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.IOException;
 
+import org.apache.commons.io.FileUtils;
 import org.junit.Test;
+import static junitx.framework.FileAssert.assertEquals;
 
 import de.tudarmstadt.lt.cw.graph.Graph;
-import de.tudarmstadt.lt.cw.io.GraphReader;
 
 
 public class GraphReaderTest {
 
 	@Test
 	public void test() throws IOException {
-		String input = "a	b	1.0\n"
-					 + "b	c	2.5\n"
-					 + "a	c	1.7\n";
+		File in = new File("src/test/resources/graph/test.txt");
+		File outActual = new File("src/test/resources/tmp/test.graph");
+		File outExpected = new File("src/test/resources/graph/test.graph");
+		outActual.getParentFile().mkdirs();
+		String input = FileUtils.readFileToString(in, "UTF-8");
 		Graph<String, Double> graph = GraphReader.readABC(new ByteArrayInputStream(input.getBytes("UTF-8")), true);
-		System.out.println(graph);
+		String output = graph.toString();
+		FileUtils.writeStringToFile(outActual, output, "UTF-8");
+		assertEquals(outExpected, outActual);
 	}
 
 }

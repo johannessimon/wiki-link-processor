@@ -68,8 +68,6 @@ public class Graph<N, E> {
 					outEdgesFiltered.add(e);
 				}
 			}
-		} else {
-			System.err.println("Error: node " + getNodeName(node) + " has no outgoing edges!");
 		}
 		return outEdgesFiltered;
 	}
