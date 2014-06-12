@@ -1,0 +1,33 @@
+{{Infobox royalty
+| name = Auguste Magdalene of Hesse-Darmstadt
+| father = [[Louis VI, Landgrave of Hesse-Darmstadt|Louis VI of Hesse-Darmstadt]]
+| mother = [[Maria Elisabeth of Holstein-Gottorp]] 
+| birth_date = {{birth date|1657|3|6|df=yes}}
+| birth_place = [[Darmstadt]]
+| death_date = {{death date and age|1674|9|1|1657|3|6|df=yes}} 
+| death_place= [[Darmstadt]]
+}}
+'''Auguste Magdalene of Hesse-Darmstadt''' (6 March 1657, [[Darmstadt]] &ndash; 1 September 1674, ibid.) was a German noblewoman and poet.
+
+== Life ==
+Auguste Magdalene was a daughter of Count [[Louis VI, Landgrave of Hesse-Darmstadt|Louis VI of Hesse-Darmstadt]] (1630–1678) from his marriage to [[Maria Elisabeth of Holstein-Gottorp]] (1634–1665), a daughter of Duke [[Frederick III, Duke of Holstein-Gottorp|Frederick III of Holstein-Gottorp]].
+
+Like her father and her sister [[Magdalena Sibylla of Hesse-Darmstadt|Magdalene Sibylle]], she was active as a writer.  She translated the Psalms of David into German verse and wrote a poetry collection entitled ''The door to German poetry''. She died only 17 years old and was buried in the City Church in [[Darmstadt]].
+
+== References ==
+* [http://books.google.com/books?id=qgUYAAAAYAAJ&pg=PA281&dq=auguste+magdalene+hessen-darmstadt&lr=&hl=de Gustav Friedrich Klemm: ''The Women''], p.&nbsp;281 (in German)
+* [http://books.google.com/books?id=O7cTAAAAQAAJ&pg=RA3-PA280&dq=auguste+magdalene+hessen-darmstadt&lr=&hl=de Georg Gottfried Gervinus: ''poetical history of the German national literature''], p.&nbsp;280 (in German)
+
+{{Persondata <!-- Metadata: see [[Wikipedia:Persondata]]. -->
+| NAME              = Auguste Magdalene Of Hessen-Darmstadt
+| ALTERNATIVE NAMES =
+| SHORT DESCRIPTION =
+| DATE OF BIRTH     = 6 March 1657
+| PLACE OF BIRTH    = [[Darmstadt]]
+| DATE OF DEATH     = 1 September 1674
+| PLACE OF DEATH    = [[Darmstadt]]
+}}
+{{DEFAULTSORT:Auguste Magdalene Of Hessen-Darmstadt}}
+[[Category:House of Hesse]]
+[[Category:1657 births]]
+[[Category:1674 deaths]]

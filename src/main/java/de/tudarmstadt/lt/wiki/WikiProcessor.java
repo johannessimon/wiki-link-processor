@@ -136,8 +136,14 @@ public class WikiProcessor {
 		content = refRemovePattern.matcher(content).replaceAll("");
 		refRemovePattern = Pattern.compile("<ref(.*?)>(.*?)</ref>", Pattern.DOTALL);
 		content = refRemovePattern.matcher(content).replaceAll("");
-		Pattern refTemplatePattern = Pattern.compile("\\{\\{(.*?)\\}\\}", Pattern.DOTALL);
-		content = refTemplatePattern.matcher(content).replaceAll("");
+		// in the following regex, "[^\\{]" matches all charactars but '{' to ensure a minimum
+		// match spanning only one pattern at a time (and not nested ones)
+		Pattern refTemplatePattern = Pattern.compile("\\{\\{([^\\{]*?)\\}\\}", Pattern.DOTALL);
+		String newContent;
+		// Loop due to possible nested constructs like "{{ a {{ b }} c }}"
+		while (!(newContent = refTemplatePattern.matcher(content).replaceAll("")).equals(content)) {
+			content = newContent;
+		}
 		ParsedPage pp = parser.parse(content);
 		
 		if (pp == null || pp.getParagraphs() == null) {
@@ -157,20 +163,22 @@ public class WikiProcessor {
 				String sentence = pText.substring(sStart, sEnd);
 				sentences.add(sentence);
 				
-				List<String> links = new LinkedList<String>();
-				for (Link link : p.getLinks(Link.type.INTERNAL)) {
-					de.tudarmstadt.ukp.wikipedia.parser.Span lSpan = link.getPos();
-					int lStart = lSpan.getStart();
-					int lEnd = lSpan.getEnd();
-					int spanLength = lEnd - lStart;
-					if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
-						String target = WikiProcessor.formatResourceName(link.getTarget());
-						String linkRef = target + "@" + (lStart - sStart) + ":" + (lEnd - sStart);
-						links.add(linkRef);
+				if (sentenceLinks != null) {
+					List<String> links = new LinkedList<String>();
+					for (Link link : p.getLinks(Link.type.INTERNAL)) {
+						de.tudarmstadt.ukp.wikipedia.parser.Span lSpan = link.getPos();
+						int lStart = lSpan.getStart();
+						int lEnd = lSpan.getEnd();
+						int spanLength = lEnd - lStart;
+						if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
+							String target = WikiProcessor.formatResourceName(link.getTarget());
+							String linkRef = target + "@" + (lStart - sStart) + ":" + (lEnd - sStart);
+							links.add(linkRef);
+						}
 					}
-				}
-				if (!links.isEmpty()) {
-					sentenceLinks.put(sentences.size() - 1, links);
+					if (!links.isEmpty()) {
+						sentenceLinks.put(sentences.size() - 1, links);
+					}
 				}
 			}
 		}
