@@ -3,3 +3,4 @@
 .settings
 nb*
 target
+/dependency-reduced-pom.xml
