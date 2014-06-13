@@ -164,6 +164,9 @@ public class WikiProcessor {
 			xml = newContent;
 		}
 		
+		// Remove code blocks
+		xml = xml.replaceAll("\\n .*", "");
+		
 		return xml;
 	}
 	

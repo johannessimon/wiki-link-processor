@@ -1,0 +1,43 @@
+OASIS (Open Artwork System Interchange Standard) is a language used by computers to represent and express an electronic pattern for an integrated circuit during its design and manufacture.
+The language defines the code required for geometric shapes such as polygons, rectangles and trapezoids.
+It defines the type of properties each can have, how they can be organized into cells containing patterns made by these shapes and defines how each can be placed relative to each other.
+OASIS is the successor to the integrated circuit design and manufacturing electronic pattern layout language, GDSII.
+GDSII had been created in the 1970s when integrated circuit designs had a few hundred thousand geometric shapes, properties and placements to manage.
+Today, there can be billions of shapes, properties and placements to manage.
+OASIS addressed the constraints that were preventing its effective use during the design and manufacture of today's leading edge integrated circuits.
+The effort to create the competing format OASIS started in June 2001.
+The release of version 1.0 took place in March 2004.
+Its use required the development of new OASIS readers and writers that could be coupled to design and manufacturing equipment already equipped with GDSII readers and writers.
+Its industry wide adoption was born out of a concerted effort by integrated circuit design, equipment, photomask, fabless, 3rd party Intellectual Property (IP) and manufacturing companies from the United States, Japan, Taiwan, Korea and Europe.
+OASIS is now used for most leading edge integrated circuit designs.
+A constrained version of OASIS, called OASIS.MASK, addresses the unique needs of semiconductor photomask manufacturing equipment such as pattern generators and inspection systems.
+Both OASIS and OASIS.MASK are industry standards.
+Below is a human-readable text representation of the OASIS binary file that allowed the expression of the above "top" cell view called "Placed_shapes_and_cells_within_an_IC_cell".
+The top cell is defined by a file-level standard PROPERTY record named S_TOP_CELL.
+The PROPERTY record below references a PROPNAME record (refNum=0) that has a propname-string called S_TOP_CELL.
+The top cell contains the placement of three cells called "bottom cells".
+Bottom cells contain geometric shapes only.
+Each line of the OASIS representation below contains (from the left) a record number and a record type followed by a set of values that define that record type.
+For instance, the first RECTANGLE record below defines the following type of rectangle shape, its size and its absolute location:
+Absent in this RECTANGLE record is an option to describe the locations of repeated instances of the rectangle.
+Also, this record type allows the description of a square by defining the value for the width only.
+To enable these descriptions, one must set what is referred to as the bit pattern for the RECTANGLE record.
+For a RECTANGLE record, the bit pattern (either a 1 (enabled) or a 0 (disabled)) is:
+For this RECTANGLE record, the bit pattern is set to 0WHXY0DL (Not a square,Width,Height,X-coordinate,Y-coordinate,Not repetitive,Datatype,Layer-number).
+The first and second RECTANGLE records in cell "Cell_Placed_Shapes_2" (CELL refNum=1)" define repeated instances of a rectangle.
+The first RECTANGLE record (SW0XYRDL) uses a type 10 repetition (rep=rep10).
+The second RECTANGLE record (0WHXYR0L) uses a type 11 repetition (rep=Rep11).
+There are a total of eleven repetition types (Rep1-Rep11).
+In the second RECTANGLE record bit pattern, the datatype(D) was set to '0' because the same datatype used in the first RECTANGLE record applies to the second RECTANGLE record.
+Other OASIS-supported geometric shapes having the record types POLYGON, TRAPEZOID, CTRAPEZOID, CIRCLE and PATH are defined by different bit patterns.
+According to the CELLNAME records below, the bottom cells have the following cellname-strings "Cell_Placed_Shapes_1, . . .
+_2 and . . .
+_3".
+Each layer-number that had been assigned to a geometric shape has an association with a LAYERNAME record that defines a layer-interval and a layername-string.
+In this view, the layername-string, "Layer_Color_Mapping", defines the layer intervals used in a layer color table "layercolormap.data".
+The example below was not meant to be an exhaustive description of the OASIS language.
+The objective was to give the interested reader a general understanding of the scope of the OASIS language and how it applies to the representation and the expression of the electronic layout patterns that define an integrated circuit.
+OASIS and OASIS.MASK are now formal industry standards.
+Both are owned and maintained by the trade and standards organization SEMI.
+SEMI serves the semiconductor materials and equipment industries worldwide.
+The fee-based specifications for SEMI P39 OASIS and SEMI P44 OASIS.MASK can be downloaded from SEMI's web-site.
