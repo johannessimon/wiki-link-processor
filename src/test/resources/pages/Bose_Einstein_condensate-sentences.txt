@@ -30,7 +30,7 @@ Suppose now that the energy of state  is slightly greater than the energy of sta
 In the distinguishable case, the particle distribution will be biased slightly towards state , and the distribution will be slightly different from half-and-half.
 But in the indistinguishable case, since there is no statistical pressure toward equal numbers, the most-likely outcome is that most of the particles will collapse into state .
 In the distinguishable case, for large N, the fraction in state  can be computed.
-It is the same as flipping a coin with probability proportional to p&nbsp;=&nbsp;exp(−E/T) to land tails.
+It is the same as flipping a coin with probability proportional to p = exp(−E/T) to land tails.
 The probability to land heads is , which is a smooth function of p, and thus of the energy.
 In the indistinguishable case, each value of K is a single state, which has its own separate Boltzmann probability.
 So the probability distribution is exponential:
@@ -50,7 +50,7 @@ To calculate the transition temperature at any density, integrate, over all mome
 When the integral is evaluated with the factors of kB and  restored by dimensional analysis, it gives the critical temperature formula of the preceding section.
 Therefore, this integral defines the critical temperature and particle number corresponding to the conditions of negligible chemical potential.
 In Bose–Einstein statistics distribution, μ is actually still nonzero for BEC's; however, μ is less than the ground state energy.
-Except when specifically talking about the ground state, μ can consequently be approximated for most energy or momentum states as&nbsp;μ&nbsp;≈&nbsp;0.
+Except when specifically talking about the ground state, μ can consequently be approximated for most energy or momentum states as μ ≈ 0.
 In some simplest cases, the state of condensed particles can be described with a nonlinear Schrödinger equation, also known as Gross-Pitaevskii or Ginzburg-Landau equation.
 The validity of this approach is actually limited to the case of ultracold temperatures, which fits well for the most alkali atoms experiments.
 This approach originates from the assumption that the state of the BEC can be described by the unique wavefunction of the condensate .
@@ -167,9 +167,9 @@ Hau and her associates at Harvard University have since successfully made a grou
 Researchers in the new field of atomtronics use the properties of Bose–Einstein condensates when manipulating groups of identical cold atoms using lasers.
 Further, Bose–Einstein condensates have been proposed by Emmanuel David Tannenbaum to be used in anti-stealth technology.
 The effect has mainly been observed on alkaline atoms which have nuclear properties particularly suitable for working with traps.
-As of 2012, using ultra-low temperatures of  or below, Bose–Einstein condensates had been obtained for a multitude of isotopes, mainly of alkaline, alkaline earth, and lanthanoid atoms (7Li, 23Na, 39K, 41K, 85Rb, 87Rb, 133Cs, 52Cr, 40Ca, 84Sr, 86Sr, 88Sr,  174Yb, 164Dy, and 168Er ).
+As of 2012, using ultra-low temperatures of 10−7 K or below, Bose–Einstein condensates had been obtained for a multitude of isotopes, mainly of alkaline, alkaline earth, and lanthanoid atoms (7Li, 23Na, 39K, 41K, 85Rb, 87Rb, 133Cs, 52Cr, 40Ca, 84Sr, 86Sr, 88Sr,  174Yb, 164Dy, and 168Er ).
 Condensation research was finally successful even with hydrogen with the aid of special methods.
-In contrast, the superfluid state of the bosonic 4He at temperatures below  is not a good example of Bose–Einstein condensation, because the interaction between the 4He bosons is too strong.
+In contrast, the superfluid state of the bosonic 4He at temperatures below 2.17 K is not a good example of Bose–Einstein condensation, because the interaction between the 4He bosons is too strong.
 Only 8% of the atoms are in the single-particle ground state near zero temperature, rather than the 100% expected of a true Bose–Einstein condensate.
 The spin-statistics theorem of Wolfgang Pauli states that half-integer spins (in units of ) lead to fermionic behavior, e.g., the Pauli exclusion principle forbidding that more than two electrons possess the same energy, whereas integer spins lead to bosonic behavior, e.g., condensation of identical bosonic particles in a common ground state.
 The bosonic, rather than fermionic, behavior of some of these alkaline gases appears odd at first sight, because their nuclei have half-integer total spin.

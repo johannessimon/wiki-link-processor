@@ -140,6 +140,14 @@ public class WikiProcessor {
 	}
 	
 	private String preprocessXml(String xml) {
+		// Replace non-line-breaking characters etc. as described in
+		// http://en.wikipedia.org/wiki/Wikipedia:Line-break_handling#Preventing_and_controlling_word_wraps
+		xml = xml.replaceAll("&nbsp;", " "); // non-breaking space (nbsp)
+		xml = xml.replaceAll("&#8209;", "-"); // hyphen
+		// {{nowrap|<text>}} -> <text>
+		Pattern nowrapTemplatePattern = Pattern.compile("\\{\\{nowrap\\|([^\\{]*?)\\}\\}", Pattern.DOTALL);
+		xml = nowrapTemplatePattern.matcher(xml).replaceAll("$1");
+		
 		// List taken from http://en.wikipedia.org/wiki/Help:HTML_in_wikitext#Parser_and_extension_tags
 		String[] tagsToRemove = new String[] { "gallery", "nowiki", "pre", "categorytree", "charinsert",
 				"hiero", "imagemap", "inputbox", "math", "poem", "ref", "references", "score",
@@ -149,12 +157,13 @@ public class WikiProcessor {
 		}
 		// in the following regex, "[^\\{]" matches all charactars but '{' to ensure a minimum
 		// match spanning only one pattern at a time (and not nested ones)
-		Pattern refTemplatePattern = Pattern.compile("\\{\\{([^\\{]*?)\\}\\}", Pattern.DOTALL);
+		Pattern templatePattern = Pattern.compile("\\{\\{([^\\{]*?)\\}\\}", Pattern.DOTALL);
 		String newContent;
 		// Loop due to possible nested constructs like "{{ a {{ b }} c }}"
-		while (!(newContent = refTemplatePattern.matcher(xml).replaceAll("")).equals(xml)) {
+		while (!(newContent = templatePattern.matcher(xml).replaceAll("")).equals(xml)) {
 			xml = newContent;
 		}
+		
 		return xml;
 	}
 	
