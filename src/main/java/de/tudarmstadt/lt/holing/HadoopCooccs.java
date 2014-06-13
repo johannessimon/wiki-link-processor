@@ -13,7 +13,6 @@ import org.apache.hadoop.mapred.FileInputFormat;
 import org.apache.hadoop.mapred.FileOutputFormat;
 import org.apache.hadoop.mapred.JobClient;
 import org.apache.hadoop.mapred.JobConf;
-import org.apache.hadoop.mapred.JobStatus;
 import org.apache.hadoop.mapred.MapReduceBase;
 import org.apache.hadoop.mapred.Mapper;
 import org.apache.hadoop.mapred.OutputCollector;
@@ -83,6 +82,9 @@ public class HadoopCooccs implements Tool {
 		job.setOutputFormat(TextOutputFormat.class);
 		
 		job.setNumReduceTasks(0);
+
+		job.setBoolean("mapred.output.compress", true);
+		job.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 
 		FileInputFormat.setInputPaths(job, new Path(args[0]));
 		FileOutputFormat.setOutputPath(job, new Path(args[1]));
