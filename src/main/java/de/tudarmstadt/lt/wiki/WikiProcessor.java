@@ -134,12 +134,22 @@ public class WikiProcessor {
 	private String removeAllTags(String xml, String tagName) {
 		Pattern refRemovePattern = Pattern.compile("<" + tagName + "([^<]*?)/>", Pattern.DOTALL);
 		xml = refRemovePattern.matcher(xml).replaceAll("");
-		refRemovePattern = Pattern.compile("<" + tagName + "[^<]*?>([^<]*?)</" + tagName + ">", Pattern.DOTALL);
-		xml = refRemovePattern.matcher(xml).replaceAll("");
+		
+		refRemovePattern = Pattern.compile("<" + tagName + "([^<]*?)>([^<]*?)</" + tagName + ">", Pattern.DOTALL);
+		String newContent;
+		// Loop due to possible nested constructs like "{{ a {{ b }} c }}"
+		while (!(newContent = refRemovePattern.matcher(xml).replaceAll("")).equals(xml)) {
+			xml = newContent;
+		}
 		return xml;
 	}
 	
 	private String preprocessXml(String xml) {
+		// remove HTML comments:
+		// the (-{2,3}) is there to match "-->" as well as "--->" (coldfusion comment)
+		Pattern commentPattern = Pattern.compile("<!--.*?(-{2,3})>", Pattern.DOTALL);
+		xml = commentPattern.matcher(xml).replaceAll("");
+		
 		// Replace non-line-breaking characters etc. as described in
 		// http://en.wikipedia.org/wiki/Wikipedia:Line-break_handling#Preventing_and_controlling_word_wraps
 		xml = xml.replaceAll("&nbsp;", " "); // non-breaking space (nbsp)
@@ -172,6 +182,7 @@ public class WikiProcessor {
 	
 	public void parse(String xml, List<String> sentences, Map<Integer, List<String>> sentenceLinks) {
 		xml = preprocessXml(xml);
+		
 		ParsedPage pp = parser.parse(xml);
 		
 		if (pp == null || pp.getParagraphs() == null) {

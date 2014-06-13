@@ -1,0 +1,5 @@
+a <ref foo="abc"/>
+b <ref> 
+c <ref bar=abc> d
+</ref> e </ref>
+f

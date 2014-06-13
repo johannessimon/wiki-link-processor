@@ -53,4 +53,32 @@ public class WikiProcessorTest {
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}
+
+	@Test
+	public void test4() throws IOException {
+		File in = new File("src/test/resources/pages/East_Prospect_Pennsylvania.txt");
+		File outExpected = new File("src/test/resources/pages/East_Prospect_Pennsylvania-sentences.txt");
+		File outActual = new File("src/test/resources/tmp/East_Prospect_Pennsylvania-sentences.txt");
+		outActual.getParentFile().mkdirs();
+		WikiProcessor p = new WikiProcessor();
+		String page = FileUtils.readFileToString(in, "UTF-8");
+		List<String> sentences = new LinkedList<String>();
+		p.parse(page, sentences, null);
+		FileUtils.writeLines(outActual, "UTF-8", sentences);
+		assertEquals(outExpected, outActual);
+	}
+
+	@Test
+	public void testHtmlCleaning() throws IOException {
+		File in = new File("src/test/resources/pages/HTML_Cleaning_Test.txt");
+		File outExpected = new File("src/test/resources/pages/HTML_Cleaning_Test-sentences.txt");
+		File outActual = new File("src/test/resources/tmp/HTML_Cleaning_Test-sentences.txt");
+		outActual.getParentFile().mkdirs();
+		WikiProcessor p = new WikiProcessor();
+		String page = FileUtils.readFileToString(in, "UTF-8");
+		List<String> sentences = new LinkedList<String>();
+		p.parse(page, sentences, null);
+		FileUtils.writeLines(outActual, "UTF-8", sentences);
+		assertEquals(outExpected, outActual);
+	}
 }
