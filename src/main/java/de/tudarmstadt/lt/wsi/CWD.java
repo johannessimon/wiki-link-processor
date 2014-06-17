@@ -9,30 +9,46 @@ import java.io.OutputStream;
 import java.io.OutputStreamWriter;
 import java.io.Writer;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.LinkedHashSet;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 import de.tudarmstadt.lt.cw.CW;
-import de.tudarmstadt.lt.cw.graph.Graph;
+import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
+import de.tudarmstadt.lt.cw.graph.ArrayBackedGraphCW;
+import de.tudarmstadt.lt.cw.graph.IGraph;
+import de.tudarmstadt.lt.cw.graph.IndexedGraph;
 import de.tudarmstadt.lt.cw.io.GraphReader;
 
 public class CWD<N> {
-	protected Graph<N, Double> graph;
+	protected IGraph<N, Float> graph;
 	protected CW<N> cw;
 	
-	public CWD(Graph<N, Double> graph) {
+	@SuppressWarnings("unchecked")
+	public CWD(IGraph<N, Float> graph) {
 		this.graph = graph;
-		cw = new CW<N>();
+		if (graph instanceof ArrayBackedGraph) {
+			// ArrayBackedGraph --> N == Integer
+			ArrayBackedGraph<Float> abg = (ArrayBackedGraph<Float>)graph;
+			cw = (CW<N>)new ArrayBackedGraphCW(abg.getArraySize());
+		} else {
+			cw = new CW<N>();
+		}
 	}
 	
-	public Set<N> getTransitiveNeighbors(N node, int numHops) {
-		Set<N> neighbors = new HashSet<N>();
+	public List<N> getTransitiveNeighbors(N node, int numHops) {
+		List<N> neighbors = new LinkedList<N>();
 		neighbors.add(node);
 		for (int i = 0; i < numHops; i++) {
 			Set<N> _neighbors = new HashSet<N>();
 			for (N neighbor : neighbors) {
-				_neighbors.addAll(graph.getNeighbors(neighbor));
+				Iterator<N> neighborIt = graph.getNeighbors(neighbor);
+				while (neighborIt.hasNext()) {
+					_neighbors.add(neighborIt.next());
+				}
 			}
 			
 			neighbors.addAll(_neighbors);
@@ -44,8 +60,8 @@ public class CWD<N> {
 	}
 	
 	public Map<N, Set<N>> findSenseClusters(N node) {
-		Set<N> neighbors = getTransitiveNeighbors(node, 1);
-		Graph<N, Double> subgraph = graph.subgraph(neighbors).undirected();
+		List<N> neighbors = getTransitiveNeighbors(node, 1);
+		IGraph<N, Float> subgraph = graph.undirectedSubgraph(neighbors);
 		/*try {
 			OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/graph.dot");
 			subgraph.writeDot(os);
@@ -75,28 +91,32 @@ public class CWD<N> {
 	}
 	
 	public void findSenseClusters(Writer writer) throws IOException {
-		for (N node : graph.getNodes()) {
+		Iterator<N> nodeIt = graph.iterator();
+		while (nodeIt.hasNext()) {
+			N node = nodeIt.next();
 			findSenseClusters(writer, node);
 		}
 	}
 	
 	public static void main(String args[]) throws IOException {
-		if (args.length < 2) {
-			System.out.println("Usage: CWD input output [node]");
+		if (args.length < 3) {
+			System.out.println("Usage: CWD input output min-edge-weight [node]");
 			return;
 		}
 		String node = null;
-		if (args.length > 2) {
-			node = args[2];
+		if (args.length > 3) {
+			node = args[3];
 		}
 		InputStream is = new FileInputStream(args[0]);
 		OutputStream os = new FileOutputStream(args[1]);
-		Graph<String, Double> graph = GraphReader.readABC(is, false);
-		CWD<String> cwd = new CWD<String>(graph);
+		float minEdgeWeight = Float.parseFloat(args[2]);
+		IndexedGraph<String, Float> graph = GraphReader.readABCIndexed(is, false, false, 1100000, 100, minEdgeWeight);
+		CWD<Integer> cwd = new CWD<Integer>(graph);
 		System.out.println("Running CW sense clustering...");
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 		if (node != null) {
-			cwd.findSenseClusters(writer, node);
+			Integer nodeIndex = graph.getIndex(node);
+			cwd.findSenseClusters(writer, nodeIndex);
 		} else {
 			cwd.findSenseClusters(writer);
 		}

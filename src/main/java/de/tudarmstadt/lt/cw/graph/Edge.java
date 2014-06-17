@@ -4,6 +4,11 @@ public class Edge<N, E> {
 	N target;
 	E weight;
 	
+	public Edge() {
+		target = null;
+		weight = null;
+	}
+	
 	public Edge(N t, E w) {
 		target = t;
 		weight = w;
@@ -22,6 +27,7 @@ public class Edge<N, E> {
 		return "Edge(target=" + target.toString() + ", weight=" + weight.toString() + ")";
 	}
 	
+	@SuppressWarnings("rawtypes")
 	@Override
 	public boolean equals(Object obj) {
 		if (this == obj)

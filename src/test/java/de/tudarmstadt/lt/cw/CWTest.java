@@ -10,13 +10,14 @@ import org.junit.Test;
 
 import de.tudarmstadt.lt.cw.CW;
 import de.tudarmstadt.lt.cw.graph.Graph;
+import de.tudarmstadt.lt.cw.graph.IGraph;
 
 
 public class CWTest {
 
 	@Test
 	public void test() {
-		Graph<String, Double> g = new Graph<String, Double>();
+		IGraph<String, Float> g = new Graph<String, Float>();
 		g.addNode("VW");
 		g.addNode("Lion");
 		g.addNode("scary_@");
@@ -24,10 +25,10 @@ public class CWTest {
 		g.addNode("drive_a_@");
 		g.addNode("my_@");
 		
-		g.addEdgeUndirected("Lion", "scary_@", 1.0);
-		g.addEdgeUndirected("Lion", "hunt_a_@", 1.0);
-		g.addEdgeUndirected("VW", "drive_a_@", 1.0);
-		g.addEdgeUndirected("VW", "my_@", 1.0);
+		g.addEdgeUndirected("Lion", "scary_@", 1.0f);
+		g.addEdgeUndirected("Lion", "hunt_a_@", 1.0f);
+		g.addEdgeUndirected("VW", "drive_a_@", 1.0f);
+		g.addEdgeUndirected("VW", "my_@", 1.0f);
 		
 		Set<String> cluster1 = new HashSet<String>();
 		cluster1.add("Lion");

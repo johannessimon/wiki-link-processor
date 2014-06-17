@@ -1,19 +1,16 @@
 package de.tudarmstadt.lt.cw.graph;
-import java.io.BufferedWriter;
-import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
-import java.nio.charset.Charset;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
 
 
-public class Graph<N, E> {
-	final static Charset UTF_8 = Charset.forName("UTF-8");
-	
+public class Graph<N, E> extends GraphBase<N, E> {
 	protected Set<N> nodes;
 	protected Map<N, Set<Edge<N, E>>> edges;
 		
@@ -22,23 +19,38 @@ public class Graph<N, E> {
 		edges = new HashMap<N, Set<Edge<N, E>>>();
 	}
 	
-	public Set<N> getNodes() {
-		return nodes;
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#getNodes()
+	 */
+	public Iterator<N> iterator() {
+		return nodes.iterator();
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#addNode(N)
+	 */
 	public void addNode(N node) {
 		nodes.add(node);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#getNodeName(N)
+	 */
 	public String getNodeName(N node) {
 		return node.toString();
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#addEdgeUndirected(N, N, E)
+	 */
 	public void addEdgeUndirected(N from, N to, E weight) {
 		addEdge(from, to, weight);
 		addEdge(to, from, weight);
 	}
 	
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#addEdge(N, N, E)
+	 */
 	public void addEdge(N from, N to, E weight) {
 		Edge<N, E> e = new Edge<N, E>(to, weight);
 		
@@ -50,79 +62,73 @@ public class Graph<N, E> {
 		outEdges.add(e);
 	}
 	
-	public Set<N> getNeighbors(N node) {
-		Set<Edge<N, E>> outEdges = getEdges(node);
-		Set<N> neighbors = new HashSet<N>();
-		for (Edge<N, E> edge : outEdges) {
-			neighbors.add(edge.getTarget());
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#getNeighbors(N)
+	 */
+	public Iterator<N> getNeighbors(N node) {
+		Iterator<Edge<N, E>> outEdges = getEdges(node);
+		List<N> neighbors = new LinkedList<N>();
+		while (outEdges.hasNext()) {
+			neighbors.add(outEdges.next().getTarget());
 		}
-		return neighbors;
+		return neighbors.iterator();
 	}
 	
-	public Set<Edge<N, E>> getEdges(N node) {
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#getEdges(N)
+	 */
+	public Iterator<Edge<N, E>> getEdges(N node) {
 		Set<Edge<N, E>> outEdges = edges.get(node);
-		Set<Edge<N, E>> outEdgesFiltered = new HashSet<Edge<N, E>>();
 		if (outEdges != null) {
-			for (Edge<N, E> e : outEdges) {
-				if (nodes.contains(e.getTarget())) {
-					outEdgesFiltered.add(e);
-				}
-			}
+			return outEdges.iterator();
+		} else {
+			return Collections.emptyListIterator();
 		}
-		return outEdgesFiltered;
 	}
 	
-	public Graph<N, E> subgraph(Set<N> subgraphNodes) {
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#undirectedSubgraph(java.util.Set)
+	 */
+	/*
+	public IGraph<N, E> undirectedSubgraph(Set<N> subgraphNodes) {
 		Graph<N, E> sg = new Graph<N, E>();
 		sg.nodes = subgraphNodes;
-		sg.edges = edges;
-		return sg;
-	}
-	
-	public Graph<N, E> undirected() {
-		Graph<N, E> ug = new Graph<N, E>();
-		ug.nodes = nodes;
-		for (N from : nodes) {
-			Set<Edge<N, E>> outEdges = edges.get(from);
-			if (outEdges != null) {
-				for (Edge<N, E> outEdge : outEdges) {
-					N to = outEdge.getTarget();
-					ug.addEdge(from, to, outEdge.getWeight());
-					ug.addEdge(to, from, outEdge.getWeight());
+		for (N node : subgraphNodes) {
+			Set<Edge<N, E>> nodeEdges = edges.get(node);
+			if (nodeEdges != null) {
+				for (Edge<N, E> edge : nodeEdges) {
+					if (subgraphNodes.contains(edge.getTarget())) {
+						sg.addEdge(node, edge.getTarget(), edge.getWeight());
+						sg.addEdge(edge.getTarget(), node, edge.getWeight());
+					}
 				}
 			}
 		}
-		return ug;
+		return sg;
 	}
+	*/
 	
-	public void writeDot(OutputStream os) throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(os, UTF_8));
-		writer.write("digraph g {\n");
-		for (N node : nodes) {
-			writer.write("\t" + node + " [label=\"" + getNodeName(node) + "\"];\n");
-		}
-		for (N node : nodes) {
-			for (N neighbor : getNeighbors(node)) {
-				writer.write("\t" + node + " -> " + neighbor + ";\n");
+	/* (non-Javadoc)
+	 * @see de.tudarmstadt.lt.cw.graph.IGraph#subgraph(java.util.Set)
+	 */
+	public IGraph<N, E> subgraph(Collection<N> subgraphNodes) {
+		Graph<N, E> sg = new Graph<N, E>();
+		sg.nodes.addAll(subgraphNodes);
+		for (N node : subgraphNodes) {
+			Set<Edge<N, E>> nodeEdges = edges.get(node);
+			Set<Edge<N, E>> nodeEdgesFiltered = new HashSet<Edge<N, E>>();
+			for (Edge<N, E> edge : nodeEdges) {
+				if (subgraphNodes.contains(edge.getTarget())) {
+					nodeEdgesFiltered.add(edge);
+				}
 			}
+			sg.edges.put(node, nodeEdgesFiltered);
 		}
-		writer.write("}\n");
-		writer.flush();
-		return;
+		return sg;
 	}
-	
-	@Override
-	public String toString() {
-		StringBuilder sb = new StringBuilder();
-		sb.append("Graph {\n");
-		for (N node : nodes) {
-			sb.append("\t" + getNodeName(node) + ": ");
-			for (N neighbor : getNeighbors(node)) {
-				sb.append(getNodeName(neighbor) + ",");
-			}
-			sb.append("\n");
-		}
-		sb.append("}\n");
-		return sb.toString();
+
+	public IGraph<N, E> undirectedSubgraph(Collection<N> subgraphNodes) {
+		// TODO Auto-generated method stub
+		return null;
 	}
 }

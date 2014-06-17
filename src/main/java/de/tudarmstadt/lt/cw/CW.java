@@ -3,28 +3,33 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
 import de.tudarmstadt.lt.cw.graph.Edge;
-import de.tudarmstadt.lt.cw.graph.Graph;
+import de.tudarmstadt.lt.cw.graph.IGraph;
 
 
 public class CW<N> {
 	// Copy of node list is used shuffling order of nodes
 	protected List<N> nodes;
-	protected Graph<N, Double> graph;
+	protected IGraph<N, Float> graph;
 	protected Map<N, N> nodeLabels;
 	protected boolean changeInPrevStep;
-	private Map<N, Double> labelScores = new HashMap<N, Double>();
+	protected Map<N, Float> labelScores = new HashMap<N, Float>();
 	
-	protected void init(Graph<N, Double> graph) {
+	protected void init(IGraph<N, Float> graph) {
 		this.graph = graph;
 		// ArrayList provides linear time random access (used for shuffle in step())
 		this.nodes = new ArrayList<N>();
-		this.nodes.addAll(graph.getNodes());
+
+		Iterator<N> nodeIt = graph.iterator();
+		while (nodeIt.hasNext()) {
+			this.nodes.add(nodeIt.next());
+		}
 		
 		nodeLabels = new HashMap<N, N>();
 		for (N node : nodes) {
@@ -35,33 +40,41 @@ public class CW<N> {
 	protected void relabelNode(N node) {
 		labelScores.clear();
 		N oldLabel = nodeLabels.get(node);
-		Set<Edge<N, Double>> edges = graph.getEdges(node);
+		Iterator<Edge<N, Float>> edgeIt = graph.getEdges(node);
 		
 		// There's nothing to do if there's no neighbors
-		if (edges.isEmpty()) {
+		if (!edgeIt.hasNext()) {
 			return;
 		}
 		
-		for (Edge<N, Double> edge : edges) {
+		while (edgeIt.hasNext()) {
+			Edge<N, Float> edge = edgeIt.next();
+			if (edge == null) {
+				break;
+			}
 			N label = nodeLabels.get(edge.getTarget());
-			Double score = labelScores.get(label);
+			Float score = labelScores.get(label);
 			if (score == null) {
-				score = 0.0;
+				score = 0.0f;
 			}
 			score += edge.getWeight();
 			labelScores.put(label, score);
 		}
-		N newLabel = getKeyWithMaxValue(labelScores);
-		if (!oldLabel.equals(newLabel)) {
-			nodeLabels.put(node, newLabel);
-			changeInPrevStep = true;
+		// isEmpty() check in case e.g. node has no neighbors at all
+		// (it will simply keep its own label then)
+		if (!labelScores.isEmpty()) {
+			N newLabel = getKeyWithMaxValue(labelScores);
+			if (!oldLabel.equals(newLabel)) {
+				nodeLabels.put(node, newLabel);
+				changeInPrevStep = true;
+			}
 		}
 	}
 	
-	private N getKeyWithMaxValue(Map<N, Double> map) {
+	protected N getKeyWithMaxValue(Map<N, Float> map) {
 		N maxKey = null;
-		Double maxVal = -Double.MAX_VALUE;
-		for (Entry<N, Double> entry : map.entrySet()) {
+		Float maxVal = -Float.MAX_VALUE;
+		for (Entry<N, Float> entry : map.entrySet()) {
 			if (entry.getValue() > maxVal) {
 				maxKey = entry.getKey();
 				maxVal = entry.getValue();
@@ -77,11 +90,14 @@ public class CW<N> {
 		}
 	}
 	
+	protected N getNodeLabel(N node) {
+		return nodeLabels.get(node);
+	}
+	
 	Map<N, Set<N>> getClusters() {
 		Map<N, Set<N>> clusters = new HashMap<N, Set<N>>();
-		for (Entry<N, N> nodeLabel : nodeLabels.entrySet()) {
-			N label = nodeLabel.getValue();
-			N node = nodeLabel.getKey();
+		for (N node : nodes) {
+			N label = getNodeLabel(node);
 			Set<N> cluster = clusters.get(label);
 			if (cluster == null) {
 				cluster = new HashSet<N>();
@@ -92,7 +108,7 @@ public class CW<N> {
 		return clusters;
 	}
 	
-	public Map<N, Set<N>> findClusters(Graph<N, Double> graph) {		
+	public Map<N, Set<N>> findClusters(IGraph<N, Float> graph) {		
 		init(graph);
 		do {
 			changeInPrevStep = false;
