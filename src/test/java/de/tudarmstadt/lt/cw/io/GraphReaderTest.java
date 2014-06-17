@@ -9,47 +9,32 @@ import org.apache.commons.io.FileUtils;
 import org.junit.Before;
 import org.junit.Test;
 
+import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
 import de.tudarmstadt.lt.cw.graph.Graph;
-import de.tudarmstadt.lt.cw.graph.IGraph;
-import de.tudarmstadt.lt.cw.graph.IndexedGraph;
+import de.tudarmstadt.lt.cw.graph.String2IntegerGraphWrapper;
 
 
 public class GraphReaderTest {
-	IGraph<String, Float> testGraph;
-	IndexedGraph<String, Float> testGraphIndexed;
+	Graph<Integer, Float> testGraph;
+	String2IntegerGraphWrapper<Float> testGraphIndexed;
 	@Before
 	public void setup() {
-		testGraph = new Graph<String, Float>();
-		testGraph.addNode("a");
-		testGraph.addNode("b");
-		testGraph.addNode("c");
-		testGraph.addEdge("a", "b", 1.0f);
-		testGraph.addEdge("b", "c", 2.5f);
-		testGraph.addEdge("a", "c", 1.7f);
-		
-		testGraphIndexed = new IndexedGraph<String, Float>(3, 2);
-		testGraphIndexed.addNodeIndexed("a");
-		testGraphIndexed.addNodeIndexed("b");
-		testGraphIndexed.addNodeIndexed("c");
-		testGraphIndexed.addEdgeIndexed("a", "b", 1.0f);
-		testGraphIndexed.addEdgeIndexed("b", "c", 2.5f);
-		testGraphIndexed.addEdgeIndexed("a", "c", 1.7f);
-	}
-
-	@Test
-	public void test() throws IOException {
-		File in = new File("src/test/resources/graph/test.txt");
-		String input = FileUtils.readFileToString(in, "UTF-8");
-		IGraph<String, Float> graph = GraphReader.readABC(new ByteArrayInputStream(input.getBytes("UTF-8")), true, false);
-		assertEquals(testGraph, graph);
+		testGraph = new ArrayBackedGraph<Float>(3, 2);
+		testGraphIndexed = new String2IntegerGraphWrapper<Float>(testGraph);
+		testGraphIndexed.addNode("a");
+		testGraphIndexed.addNode("b");
+		testGraphIndexed.addNode("c");
+		testGraphIndexed.addEdge("a", "b", 1.0f);
+		testGraphIndexed.addEdge("b", "c", 2.5f);
+		testGraphIndexed.addEdge("a", "c", 1.7f);
 	}
 
 	@Test
 	public void testIndexed() throws IOException {
 		File in = new File("src/test/resources/graph/test.txt");
 		String input = FileUtils.readFileToString(in, "UTF-8");
-		IGraph<Integer, Float> graph = GraphReader.readABCIndexed(new ByteArrayInputStream(input.getBytes("UTF-8")), true, true, 3, 2, 0.0f);
-		assertEquals(testGraphIndexed, graph);
+		String2IntegerGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new ByteArrayInputStream(input.getBytes("UTF-8")), true, true, 3, 2, 0.0f);
+		assertEquals(graphWrapper.getGraph(), testGraph);
 	}
 
 }

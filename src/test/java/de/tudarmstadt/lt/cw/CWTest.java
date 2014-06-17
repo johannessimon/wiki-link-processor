@@ -8,40 +8,45 @@ import java.util.Set;
 
 import org.junit.Test;
 
-import de.tudarmstadt.lt.cw.CW;
+import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
 import de.tudarmstadt.lt.cw.graph.Graph;
-import de.tudarmstadt.lt.cw.graph.IGraph;
 
 
 public class CWTest {
 
 	@Test
 	public void test() {
-		IGraph<String, Float> g = new Graph<String, Float>();
-		g.addNode("VW");
-		g.addNode("Lion");
-		g.addNode("scary_@");
-		g.addNode("hunt_a_@");
-		g.addNode("drive_a_@");
-		g.addNode("my_@");
+		Graph<Integer, Float> g = new ArrayBackedGraph<Float>(6, 6);
+		int vw = 0;
+		int lion = 1;
+		int scary = 2;
+		int hunt_a = 3;
+		int drive_a = 4;
+		int my = 5;
+		g.addNode(vw);
+		g.addNode(lion);
+		g.addNode(scary);
+		g.addNode(hunt_a);
+		g.addNode(drive_a);
+		g.addNode(my);
 		
-		g.addEdgeUndirected("Lion", "scary_@", 1.0f);
-		g.addEdgeUndirected("Lion", "hunt_a_@", 1.0f);
-		g.addEdgeUndirected("VW", "drive_a_@", 1.0f);
-		g.addEdgeUndirected("VW", "my_@", 1.0f);
+		g.addEdgeUndirected(lion, scary, 1.0f);
+		g.addEdgeUndirected(lion, hunt_a, 1.0f);
+		g.addEdgeUndirected(vw, drive_a, 1.0f);
+		g.addEdgeUndirected(vw, my, 1.0f);
 		
-		Set<String> cluster1 = new HashSet<String>();
-		cluster1.add("Lion");
-		cluster1.add("scary_@");
-		cluster1.add("hunt_a_@");
+		Set<Integer> cluster1 = new HashSet<Integer>();
+		cluster1.add(lion);
+		cluster1.add(scary);
+		cluster1.add(hunt_a);
 		
-		Set<String> cluster2 = new HashSet<String>();
-		cluster2.add("VW");
-		cluster2.add("drive_a_@");
-		cluster2.add("my_@");
+		Set<Integer> cluster2 = new HashSet<Integer>();
+		cluster2.add(vw);
+		cluster2.add(drive_a);
+		cluster2.add(my);
 		
-		CW<String> cw = new CW<String>();
-		Map<String, Set<String>> clusters = cw.findClusters(g);
+		CW<Integer> cw = new CW<Integer>();
+		Map<Integer, Set<Integer>> clusters = cw.findClusters(g);
 		assertEquals(2, clusters.size());
 		assertTrue(clusters.containsValue(cluster1));
 		assertTrue(clusters.containsValue(cluster2));

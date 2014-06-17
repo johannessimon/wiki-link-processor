@@ -19,16 +19,16 @@ import java.util.Set;
 import de.tudarmstadt.lt.cw.CW;
 import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
 import de.tudarmstadt.lt.cw.graph.ArrayBackedGraphCW;
-import de.tudarmstadt.lt.cw.graph.IGraph;
-import de.tudarmstadt.lt.cw.graph.IndexedGraph;
+import de.tudarmstadt.lt.cw.graph.Graph;
+import de.tudarmstadt.lt.cw.graph.String2IntegerGraphWrapper;
 import de.tudarmstadt.lt.cw.io.GraphReader;
 
 public class CWD<N> {
-	protected IGraph<N, Float> graph;
+	protected Graph<N, Float> graph;
 	protected CW<N> cw;
 	
 	@SuppressWarnings("unchecked")
-	public CWD(IGraph<N, Float> graph) {
+	public CWD(Graph<N, Float> graph) {
 		this.graph = graph;
 		if (graph instanceof ArrayBackedGraph) {
 			// ArrayBackedGraph --> N == Integer
@@ -61,7 +61,7 @@ public class CWD<N> {
 	
 	public Map<N, Set<N>> findSenseClusters(N node) {
 		List<N> neighbors = getTransitiveNeighbors(node, 1);
-		IGraph<N, Float> subgraph = graph.undirectedSubgraph(neighbors);
+		Graph<N, Float> subgraph = graph.undirectedSubgraph(neighbors);
 		/*try {
 			OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/graph.dot");
 			subgraph.writeDot(os);
@@ -110,12 +110,12 @@ public class CWD<N> {
 		InputStream is = new FileInputStream(args[0]);
 		OutputStream os = new FileOutputStream(args[1]);
 		float minEdgeWeight = Float.parseFloat(args[2]);
-		IndexedGraph<String, Float> graph = GraphReader.readABCIndexed(is, false, false, 1100000, 100, minEdgeWeight);
-		CWD<Integer> cwd = new CWD<Integer>(graph);
+		String2IntegerGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(is, false, false, 1100000, 100, minEdgeWeight);
+		CWD<Integer> cwd = new CWD<Integer>(graphWrapper.getGraph());
 		System.out.println("Running CW sense clustering...");
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 		if (node != null) {
-			Integer nodeIndex = graph.getIndex(node);
+			Integer nodeIndex = graphWrapper.getIndex(node);
 			cwd.findSenseClusters(writer, nodeIndex);
 		} else {
 			cwd.findSenseClusters(writer);

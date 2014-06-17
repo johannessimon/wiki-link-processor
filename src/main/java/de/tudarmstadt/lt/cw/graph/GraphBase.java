@@ -11,7 +11,7 @@ import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
 
-public abstract class GraphBase<N, E> implements IGraph<N, E> {
+public abstract class GraphBase<N, E> implements Graph<N, E> {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 
 	public GraphBase() {
@@ -64,10 +64,10 @@ public abstract class GraphBase<N, E> implements IGraph<N, E> {
 
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object other) {
-		if (!(other instanceof IGraph<?, ?>)) {
+		if (!(other instanceof Graph<?, ?>)) {
 			return false;
 		}
-		IGraph<?, ?> otherGraph = (IGraph<?, ?>)other;
+		Graph<?, ?> otherGraph = (Graph<?, ?>)other;
 		List<N> nodes = IteratorUtils.toList(iterator());
 		List<N> nodesOther = IteratorUtils.toList(otherGraph.iterator());
 		if (!nodes.containsAll(nodesOther)) {

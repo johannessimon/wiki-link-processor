@@ -10,18 +10,18 @@ import java.util.Map.Entry;
 import java.util.Set;
 
 import de.tudarmstadt.lt.cw.graph.Edge;
-import de.tudarmstadt.lt.cw.graph.IGraph;
+import de.tudarmstadt.lt.cw.graph.Graph;
 
 
 public class CW<N> {
 	// Copy of node list is used shuffling order of nodes
 	protected List<N> nodes;
-	protected IGraph<N, Float> graph;
+	protected Graph<N, Float> graph;
 	protected Map<N, N> nodeLabels;
 	protected boolean changeInPrevStep;
 	protected Map<N, Float> labelScores = new HashMap<N, Float>();
 	
-	protected void init(IGraph<N, Float> graph) {
+	protected void init(Graph<N, Float> graph) {
 		this.graph = graph;
 		// ArrayList provides linear time random access (used for shuffle in step())
 		this.nodes = new ArrayList<N>();
@@ -108,7 +108,7 @@ public class CW<N> {
 		return clusters;
 	}
 	
-	public Map<N, Set<N>> findClusters(IGraph<N, Float> graph) {		
+	public Map<N, Set<N>> findClusters(Graph<N, Float> graph) {		
 		init(graph);
 		do {
 			changeInPrevStep = false;

@@ -11,7 +11,7 @@ public class ArrayBackedGraphTest {
 
 	@Test
 	public void test() {
-		int numNodes = 2000;
+		int numNodes = 100;
 		int numEdges = 100;
 		long start = System.nanoTime();
 		System.out.println("Instantiating graph with " + numNodes + " nodes...");

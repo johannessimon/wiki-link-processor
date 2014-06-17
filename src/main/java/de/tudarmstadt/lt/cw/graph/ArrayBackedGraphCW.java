@@ -20,9 +20,8 @@ public class ArrayBackedGraphCW extends CW<Integer> {
 		labelScores = new Int2FloatOpenHashMap();
 	}
 	
-//	long foo = 0;
 	@Override
-	protected void init(IGraph<Integer, Float> graph) {
+	protected void init(Graph<Integer, Float> graph) {
 		this.graph = (ArrayBackedGraph<Float>)graph;
 		int numNodes = this.graph.nodes.cardinality();
 		nodes = new ArrayList<Integer>(numNodes);
@@ -32,15 +31,6 @@ public class ArrayBackedGraphCW extends CW<Integer> {
 			nodes.add(node);
 			nodeLabels[node] = node;
 		}
-		/*if (foo % 100 == 0) {
-			System.out.println("Time spent in a: " + a / 1000000000.0);
-			System.out.println("Time spent in b: " + b / 1000000000.0);
-			System.out.println("Time spent in c: " + c / 1000000000.0);
-			System.out.println("Time spent in d: " + d / 1000000000.0);
-			System.out.println("Time spent in e: " + e / 1000000000.0);
-			System.out.println("Time spent in f: " + f / 1000000000.0);
-		}
-		foo++;*/
 	}
 	
 	@Override
@@ -48,7 +38,6 @@ public class ArrayBackedGraphCW extends CW<Integer> {
 		return nodeLabels[node];
 	}
 	
-//	long a = 0, b = 0, c = 0, d = 0, e = 0, f = 0;
 	@Override
 	protected void relabelNode(Integer node) {
 //		System.out.println("+++ relabel " + node);

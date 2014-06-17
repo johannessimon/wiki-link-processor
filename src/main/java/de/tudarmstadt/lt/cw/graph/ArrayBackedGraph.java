@@ -143,7 +143,7 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	private static ArrayBackedGraph _sg = null;
 	private static BitSet _sgNodes = null;
 	@SuppressWarnings("unchecked")
-	public IGraph<Integer, E> undirectedSubgraph(Collection<Integer> subgraphNodes) {
+	public Graph<Integer, E> undirectedSubgraph(Collection<Integer> subgraphNodes) {
 		if (_sg == null) {
 			_sg = new ArrayBackedGraph<E>(size, initialNumEdgesPerNode);
 			_sg.nodes = new BitSet(size);
@@ -182,7 +182,7 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	}
 
 	@SuppressWarnings("unchecked")
-	public IGraph<Integer, E> subgraph(Collection<Integer> subgraphNodes) {
+	public Graph<Integer, E> subgraph(Collection<Integer> subgraphNodes) {
 		if (_sg == null) {
 			_sg = new ArrayBackedGraph<E>(size, initialNumEdgesPerNode);
 			_sg.nodes = new BitSet(size);

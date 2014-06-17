@@ -7,50 +7,16 @@ import java.io.InputStreamReader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
-import de.tudarmstadt.lt.cw.graph.Graph;
-import de.tudarmstadt.lt.cw.graph.IGraph;
-import de.tudarmstadt.lt.cw.graph.IndexedGraph;
+import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
+import de.tudarmstadt.lt.cw.graph.String2IntegerGraphWrapper;
 
 public class GraphReader {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	
-	public static IGraph<String, Float> readABC(InputStream is, boolean includeSelfEdges, boolean undirected) throws IOException {
+	public static String2IntegerGraphWrapper<Float> readABCIndexed(InputStream is, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
 		System.out.println("Reading input graph...");
-		IGraph<String, Float> graph = new Graph<String, Float>();
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
-		String line;
-		int lineCount = 0;
-		while ((line = reader.readLine()) != null) {
-			if (lineCount % 1000000 == 0) {
-				System.out.print(".");
-			}
-			lineCount++;
-			String[] lineSplits = line.split("\t");
-			if (lineSplits.length != 3) {
-				System.err.println("Warning: Found " + lineSplits.length + " columns instead of 3!");
-				continue;
-			}
-			String from = lineSplits[0];
-			String to = lineSplits[1];
-			float weight = Float.parseFloat(lineSplits[2]);
-			// Include self-edges only if requested
-			if (!from.equals(to) || includeSelfEdges) {
-				graph.addNode(from);
-				graph.addNode(to);
-				graph.addEdge(from, to, weight);
-				if (undirected) {
-					graph.addEdge(from, to, weight);
-				}
-			}
-		}
-
-		System.out.println();
-		return graph;
-	}
-	
-	public static IndexedGraph<String, Float> readABCIndexed(InputStream is, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
-		System.out.println("Reading input graph...");
-		IndexedGraph<String, Float> graph = new IndexedGraph<String, Float>(numNodes, numEdgesPerNode);
+		ArrayBackedGraph<Float> g = new ArrayBackedGraph<Float>(numNodes, numEdgesPerNode);
+		String2IntegerGraphWrapper<Float> gWrapper = new String2IntegerGraphWrapper<Float>(g);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
 		String line;
 		int lineCount = 0;
@@ -71,7 +37,7 @@ public class GraphReader {
 			String to = lineSplits[1];
 
 			if (lastNode != null && !from.equals(lastNode)) {
-				graph.addNodeIndexed(lastNode, targets, weights, undirected);
+				gWrapper.addNode(lastNode, targets, weights, undirected);
 				targets.clear();
 				weights.clear();
 			}
@@ -87,11 +53,11 @@ public class GraphReader {
 			lastNode = from;
 		}
 		
-		graph.addNodeIndexed(lastNode, targets, weights, undirected);
+		gWrapper.addNode(lastNode, targets, weights, undirected);
 		targets.clear();
 		weights.clear();
 
 		System.out.println();
-		return graph;
+		return gWrapper;
 	}
 }
