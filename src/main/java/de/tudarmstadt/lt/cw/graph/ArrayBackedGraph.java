@@ -2,22 +2,26 @@ package de.tudarmstadt.lt.cw.graph;
 
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
-import java.io.IOException;
-import java.io.OutputStream;
 import java.util.ArrayList;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Iterator;
 
+/**
+ * A fast, index-based graph implementation that requires nodes
+ * to be of type Integer.<br/>
+ * <br/>
+ * Specifically, it allows fast subgraph operations as one subgraph
+ * instance is kept and re-used each time, and edge lookups are
+ * array-based (subgraph allocates same amount of memory as graph itself),
+ * allowing constant-time lookups where possible.
+ */
 public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	
 	protected int size;
 	BitSet nodes;
-	// edgeTargets[node] == null iff. node is not part of graph
-//	protected RoaringBitmap[] edgeTargets;
 	IntOpenHashSet[] edgeTargetSet;
-	// edgeWeights[node] == null iff. node is not part of graph
 	ArrayList<Integer>[] edgeTargets;
 	ArrayList<E>[] edgeWeights;
 	protected int initialNumEdgesPerNode;
@@ -26,7 +30,6 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	public ArrayBackedGraph(int size, int initialNumEdgesPerNode) {
 		this.size = size;
 		nodes = new BitSet(size);
-//		edgeTargets = new RoaringBitmap[size];
 		edgeTargetSet = new IntOpenHashSet[size];
 		edgeWeights = new ArrayList[size];
 		edgeTargets = new ArrayList[size];
@@ -45,7 +48,7 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 				return res;
 			}
 			public void remove() {
-				// unimplements
+				throw new UnsupportedOperationException();
 			}
 		};
 	}
@@ -54,20 +57,10 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 		if (!nodes.get(node)) {
 			nodes.set(node);
 			edgeTargetSet[node] = new IntOpenHashSet(initialNumEdgesPerNode);
-//			edgeTargets[node] = new RoaringBitmap();
 			edgeTargets[node] = new ArrayList<Integer>(initialNumEdgesPerNode);
 			edgeWeights[node] = new ArrayList<E>(initialNumEdgesPerNode);
 		}
 	}
-/*
-	public void addNode(Integer node, List<Integer> targets, List<E> weights) {
-		nodes.set(node);
-		for (Integer target : targets) {
-			nodes.set(target);
-		}
-		edgeTargets[node] = targets;
-		edgeWeights[node] = weights;
-	}*/
 
 	public String getNodeName(Integer node) {
 		return Integer.toString(node);
@@ -102,7 +95,6 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 			return edgeTargets[node].iterator();
 		}
 	}
-	
 
 	private class EdgeIterator implements Iterator<Edge<Integer, E>> {
 		private ArrayList<Integer> targets;
@@ -127,7 +119,7 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 		}
 
 		public void remove() {
-			// unsupported
+			throw new UnsupportedOperationException();
 		}
 	}
 
@@ -211,11 +203,6 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	
 	private void clear() {
 		nodes.clear();
-	}
-
-	public void writeDot(OutputStream os) throws IOException {
-		// TODO Auto-generated method stub
-		
 	}
 
 	public int getArraySize() {
