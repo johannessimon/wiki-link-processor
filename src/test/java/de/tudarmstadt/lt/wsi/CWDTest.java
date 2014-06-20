@@ -50,7 +50,7 @@ public class CWDTest {
 		lionCluster0.add(jaguar);
 		lionCluster.put(jaguar, lionCluster0);
 		
-		CWD<Integer> cwd = new CWD<Integer>(graph);
+		CWD cwd = new CWD(graphWrapper);
 		assertClusterEquals(vwCluster, cwd.findSenseClusters(vw));
 		assertClusterEquals(jaguarCluster, cwd.findSenseClusters(jaguar));
 		assertClusterEquals(lionCluster, cwd.findSenseClusters(lion));

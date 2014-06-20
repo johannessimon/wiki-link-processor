@@ -36,7 +36,7 @@ public class GraphReader {
 			String from = lineSplits[0];
 			String to = lineSplits[1];
 
-			if (lastNode != null && !from.equals(lastNode)) {
+			if (lastNode != null && !from.equals(lastNode) && !targets.isEmpty()) {
 				gWrapper.addNode(lastNode, targets, weights, undirected);
 				targets.clear();
 				weights.clear();

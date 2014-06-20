@@ -9,8 +9,6 @@ public interface Graph<N, E> extends Iterable<N>{
 
 	public abstract void addNode(N node);
 
-	public abstract String getNodeName(N node);
-
 	public abstract void addEdgeUndirected(N from, N to, E weight);
 
 	public abstract void addEdge(N from, N to, E weight);

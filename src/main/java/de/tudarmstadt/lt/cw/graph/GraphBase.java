@@ -11,6 +11,10 @@ import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
 
+/**
+ * Abstract Graph class implementing a few of the Graph interface
+ * methods
+ */
 public abstract class GraphBase<N, E> implements Graph<N, E> {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 
@@ -24,7 +28,7 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 		Iterator<N> it = iterator();
 		while (it.hasNext()) {
 			N node = it.next();
-			writer.write("\t" + node + " [label=\"" + getNodeName(node) + "\"];\n");
+			writer.write("\t" + node + " [label=\"" + node + "\"];\n");
 		}
 		it = iterator();
 		while (it.hasNext()) {
@@ -47,14 +51,14 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 		Iterator<N> it = iterator();
 		while (it.hasNext()) {
 			N node = it.next();
-			sb.append("\t" + getNodeName(node) + ": ");
+			sb.append("\t" + node + ": ");
 			Iterator<N> neighborIt = getNeighbors(node);
 			while (neighborIt.hasNext()) {
 				N neighbor = neighborIt.next();
 				if (neighbor == null) {
 					break;
 				}
-				sb.append(getNodeName(neighbor) + ",");
+				sb.append(neighbor + ",");
 			}
 			sb.append("\n");
 		}

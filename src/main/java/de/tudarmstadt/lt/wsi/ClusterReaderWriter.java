@@ -7,7 +7,6 @@ import java.io.InputStreamReader;
 import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
-import java.util.LinkedHashMap;
 import java.util.LinkedHashSet;
 import java.util.LinkedList;
 import java.util.List;
@@ -61,7 +60,7 @@ public class ClusterReaderWriter {
 					clusterNodeSet.add(clusterNode);
 				}
 			}
-			Map<String, Integer> clusterFeatureCounts = new LinkedHashMap<String, Integer>();
+			Map<String, Integer> clusterFeatureCounts = new HashMap<String, Integer>();
 			if (lineSplits.length >= 5) {
 				String[] clusterFeatures = lineSplits[4].split("  ");
 				for (String feature : clusterFeatures) {
