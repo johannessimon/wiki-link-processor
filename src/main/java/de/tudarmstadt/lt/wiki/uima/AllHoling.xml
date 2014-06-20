@@ -34,10 +34,10 @@
       <import name="org.jobimtext.holing.segmenter.SentenceTokenAnnotatorLucene"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="ProtoConceptAnnotator">
-      <import name="uima.ProtoConceptAnnotator"/>
+      <import name="de.tudarmstadt.lt.wiki.uima.ProtoConceptAnnotator"/>
     </delegateAnalysisEngine>
     <delegateAnalysisEngine key="SentenceFilter">
-      <import name="uima.SentenceFilter"/>
+      <import name="de.tudarmstadt.lt.wiki.uima.SentenceFilter"/>
     </delegateAnalysisEngine>
   </delegateAnalysisEngineSpecifiers>
   <flowController key="FixedFlowController">
@@ -139,7 +139,7 @@
       <nameValuePair>
         <name>ClusterFile</name>
         <value>
-          <string>/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2</string>
+          <string>/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-cluster-withfeatures</string>
         </value>
       </nameValuePair>
       <nameValuePair>

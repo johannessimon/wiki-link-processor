@@ -5,8 +5,6 @@ import java.util.List;
 
 import org.junit.Test;
 
-import de.tudarmstadt.lt.wsi.CWD;
-
 public class ArrayBackedGraphTest {
 
 	@Test
@@ -28,12 +26,6 @@ public class ArrayBackedGraphTest {
 				weights.add(weight);
 				g.addEdgeUndirected(i, to, weight);
 			}
-		}
-		System.out.println("Elapsed time in seconds: " + (System.nanoTime() - start) / 1000000000.0);
-		System.out.println("Clustering all nodes...");
-		CWD<Integer> cwd = new CWD<Integer>(g);
-		for (int i = 0; i < numNodes; i++) {
-			cwd.findSenseClusters(i);
 		}
 		System.out.println("Elapsed time in seconds: " + (System.nanoTime() - start) / 1000000000.0);
 	}

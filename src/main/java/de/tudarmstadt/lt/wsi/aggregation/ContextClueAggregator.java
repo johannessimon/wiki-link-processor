@@ -40,6 +40,7 @@ public class ContextClueAggregator {
 	public void readContextFeatures(InputStream is) throws IOException {
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
 		String line;
+		List<Cluster> finishedClusters = new LinkedList<Cluster>();
 		while ((line = reader.readLine()) != null) {
 			StringTokenizer columns = new StringTokenizer(line, "\t");
 			String clusterName = columns.nextToken();
@@ -47,7 +48,7 @@ public class ContextClueAggregator {
 			columns.nextToken(); // Skip cluster label
 			StringTokenizer features = new StringTokenizer(columns.nextToken(), "  ");
 			List<Cluster> clusterList = clusters.get(clusterName);
-			List<Cluster> finishedClusters = new LinkedList<Cluster>();
+			finishedClusters.clear();
 			if (clusterList != null) {
 				for (Cluster c : clusterList) {
 					if (c.nodes.contains(node)) {
@@ -78,12 +79,12 @@ public class ContextClueAggregator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_senses_features-2");
+		OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-cluster-withfeatures");
 		ContextClueAggregator ccg = new ContextClueAggregator(os);
-		InputStream is = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_senses-2");
+		InputStream is = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-simcounts-simsort-cluster");
 //		System.out.println("Reading clusters...");
 		ccg.clusters = ClusterReaderWriter.readClusters(is);
-		InputStream is2 = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/DT_features");
+		InputStream is2 = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-simcounts-withfeatures");
 		System.out.println("Processing context features...");
 		ccg.readContextFeatures(is2);
 		ccg.writeClusters();
