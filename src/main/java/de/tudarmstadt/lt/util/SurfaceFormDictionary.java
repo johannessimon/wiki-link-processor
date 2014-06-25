@@ -48,25 +48,22 @@ public class SurfaceFormDictionary {
 		while ((line = reader.readLine()) != null) {
 			String cols[] = line.split("\t");
 			if (cols.length != 2) {
-//				System.err.println("Malformatted sentence-links line: " + line);
+				System.err.println("Malformatted sentence-links line: " + line);
 				continue;
 			}
 			String sentence = cols[0];
 			String links = cols[1];
 			Scanner s = new Scanner(links);
-			s.useDelimiter(",|:|@");
+			s.useDelimiter("  ");
 			while (s.hasNext()) {
 				try {
-					String resource = getLinkedResource(redirects, s.next());
-					if (!s.hasNext()) {
-						break;
-					}
-					int from = Integer.parseInt(s.next());
-					if (!s.hasNext()) {
-						break;
-					}
-					int end = Integer.parseInt(s.next());
-					String surfaceForm = sentence.substring(from, end);
+					String link = s.next();
+					int atPos = link.lastIndexOf('@');
+					String resource = getLinkedResource(redirects, link.substring(0, atPos));
+					String beginEnd[] = link.substring(atPos + 1).split(":");
+					int begin = Integer.parseInt(beginEnd[0]);
+					int end = Integer.parseInt(beginEnd[1]);
+					String surfaceForm = sentence.substring(begin, end);
 					Set<String> resources = surfaceForm2Resources.get(surfaceForm);
 					if (resources == null) {
 						resources = new HashSet<String>();
@@ -74,7 +71,7 @@ public class SurfaceFormDictionary {
 					}
 					resources.add(resource);
 				} catch (Exception e) {
-//					System.err.println("Malformatted link column: " + links);
+					System.err.println("Malformatted link column: " + links);
 					break;
 				}
 			}

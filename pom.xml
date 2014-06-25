@@ -42,7 +42,6 @@
 			<artifactId>fest-assert</artifactId>
 			<version>1.4</version>
 		</dependency>
-		<!-- 
 		<dependency>
 			<groupId>org.jobimtext</groupId>
 			<artifactId>org.jobimtext</artifactId>
@@ -50,7 +49,6 @@
 			<systemPath>${project.basedir}/libs/org.jobimtext-0.0.7.jar</systemPath>
 			<scope>system</scope>
 		</dependency>
-		 -->
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.bigdata</groupId>
 			<artifactId>
