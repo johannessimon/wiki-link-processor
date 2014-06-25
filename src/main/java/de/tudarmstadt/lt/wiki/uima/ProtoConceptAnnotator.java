@@ -113,8 +113,13 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 				Integer sense = c.clusterId;
 				mappingWriter.write(strIndex.get(concept) + "\t" + strIndex.get(sense) + "\t");
 				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
+				boolean first = true;
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
-					mappingWriter.write(mapping.getKey() + ":" + mapping.getValue() + "  ");
+					if (!first) {
+						mappingWriter.write("  ");
+					}
+					mappingWriter.write(mapping.getKey() + ":" + mapping.getValue());
+					first = false;
 				}
 				mappingWriter.write("\n");
 			}

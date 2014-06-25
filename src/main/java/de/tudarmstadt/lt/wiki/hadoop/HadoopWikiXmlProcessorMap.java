@@ -6,6 +6,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -65,9 +66,7 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 				
 				List<String> links = sentenceLinks.get(sIndex);
 				if (links != null) {
-					for (String link : links) {
-						mos.write("links", sentenceText, new Text(link));
-					}
+					mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
 				}
 				sIndex++;
 			}

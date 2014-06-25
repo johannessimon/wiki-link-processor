@@ -39,14 +39,24 @@ public class ClusterReaderWriter {
 
 	public static <N> void writeCluster(Writer writer, Cluster<N> cluster, Index<String, N> index) throws IOException {
 		writer.write(cluster.name + "\t" + cluster.clusterId + "\t" + cluster.label + "\t");
+		boolean first = true;
 		for (N node : cluster.nodes) {
-			writer.write(index.get(node) + "  ");
+			if (!first) {
+				writer.write("  ");
+			}
+			writer.write(index.get(node));
+			first = false;
 		}
 		if (!cluster.featureCounts.isEmpty()) {
 			writer.write("\t");
 			Map<N, Integer> sortedFeatureCountes = MapHelper.sortMapByValue(cluster.featureCounts);
+			first = true;
 			for (Entry<N, Integer> featureCount : sortedFeatureCountes.entrySet()) {
-				writer.write(index.get(featureCount.getKey()) + ":" + featureCount.getValue() + "  ");
+				if (!first) {
+					writer.write("  ");
+				}
+				writer.write(index.get(featureCount.getKey()) + ":" + featureCount.getValue());
+				first = false;
 			}
 		}
 		writer.write("\n");

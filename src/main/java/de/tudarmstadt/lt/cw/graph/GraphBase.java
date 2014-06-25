@@ -10,6 +10,7 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
+import org.apache.commons.lang.StringUtils;
 
 import de.tudarmstadt.lt.util.IndexUtil;
 import de.tudarmstadt.lt.util.IndexUtil.Index;
@@ -59,14 +60,7 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 		while (it.hasNext()) {
 			N node = it.next();
 			sb.append("\t" + node + ": ");
-			Iterator<N> neighborIt = getNeighbors(node);
-			while (neighborIt.hasNext()) {
-				N neighbor = neighborIt.next();
-				if (neighbor == null) {
-					break;
-				}
-				sb.append(neighbor + ",");
-			}
+			sb.append(StringUtils.join(getNeighbors(node), ','));
 			sb.append("\n");
 		}
 		sb.append("}\n");

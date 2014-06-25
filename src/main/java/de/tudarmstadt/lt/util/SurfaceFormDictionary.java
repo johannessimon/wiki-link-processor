@@ -7,11 +7,12 @@ import java.io.IOException;
 import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
-import java.util.InputMismatchException;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Scanner;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
 
 public class SurfaceFormDictionary {
 	
@@ -85,9 +86,7 @@ public class SurfaceFormDictionary {
 		
 		for (Entry<String, Set<String>> surfaceForm : surfaceForm2Resources.entrySet()) {
 			writer.write(surfaceForm.getKey() + "\t");
-			for (String resources : surfaceForm.getValue()) {
-				writer.write(resources + ",");
-			}
+			writer.write(StringUtils.join(surfaceForm.getValue(), ","));
 			writer.write("\n");
 		}
 		writer.close();
