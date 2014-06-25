@@ -1,5 +1,4 @@
 package de.tudarmstadt.lt.util;
-import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;
 import java.io.IOException;
@@ -10,7 +9,7 @@ import org.apache.commons.io.input.CountingInputStream;
 
 public class MonitoredFileReader extends Reader {
 	private CountingInputStream countingIn;
-	private BufferedReader inReader;
+	private Reader inReader;
 	private long fileSize;
 	private File file;
 	private double reportProgressAfter;
@@ -19,7 +18,7 @@ public class MonitoredFileReader extends Reader {
 	
 	public MonitoredFileReader(String fileName, double reportProgressAfter) throws IOException {
 		countingIn = new CountingInputStream(new FileInputStream(fileName));
-		inReader = new BufferedReader(new InputStreamReader(countingIn, "UTF-8"));
+		inReader = new InputStreamReader(countingIn, "UTF-8");
 		file = new File(fileName);
 		fileSize = file.length();
 		this.reportProgressAfter = reportProgressAfter;
@@ -30,9 +29,9 @@ public class MonitoredFileReader extends Reader {
 		this(fileName, 0.01);
 	}
 
-	private String _currLine;
-	public String readLine() throws IOException {
-		_currLine = inReader.readLine();
+	@Override
+	public int read(char[] cbuf, int off, int len) throws IOException {
+		int res = inReader.read(cbuf, off, len);
 		
 		double progress = (double)countingIn.getByteCount() / (double)fileSize;
 		if (progress - lastProgress >= reportProgressAfter) {
@@ -40,12 +39,7 @@ public class MonitoredFileReader extends Reader {
 			lastProgress = progress;
 		}
 		
-		return _currLine;
-	}
-
-	@Override
-	public int read(char[] cbuf, int off, int len) throws IOException {
-		return inReader.read(cbuf, off, len);
+		return res;
 	}
 
 	@Override

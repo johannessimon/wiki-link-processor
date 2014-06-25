@@ -6,7 +6,7 @@
     <vendor/>
   <types>
     <typeDescription>
-      <name>uima.type.WikiLink</name>
+      <name>de.tudarmstadt.lt.wiki.uima.type.WikiLink</name>
       <description/>
       <supertypeName>uima.tcas.Annotation</supertypeName>
       <features>

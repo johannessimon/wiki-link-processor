@@ -42,13 +42,15 @@
 			<artifactId>fest-assert</artifactId>
 			<version>1.4</version>
 		</dependency>
+		<!-- 
 		<dependency>
 			<groupId>org.jobimtext</groupId>
 			<artifactId>org.jobimtext</artifactId>
 			<version>0.0.7</version>
-			<scope>system</scope>
 			<systemPath>${project.basedir}/libs/org.jobimtext-0.0.7.jar</systemPath>
+			<scope>system</scope>
 		</dependency>
+		 -->
 		<dependency>
 			<groupId>de.tudarmstadt.ukp.dkpro.bigdata</groupId>
 			<artifactId>
@@ -70,6 +72,13 @@
 			<groupId>junit-addons</groupId>
 			<artifactId>junit-addons</artifactId>
 			<version>1.4</version>
+			<exclusions>
+				<exclusion>
+				<!-- Breaks use of org.w3c.dom.Node.getTextContent(); (method doesn't exist in this jar) -->
+					<artifactId>xmlParserAPIs</artifactId>
+					<groupId>xerces</groupId>
+				</exclusion>
+			</exclusions>
 		</dependency>
 		<dependency>
 			<groupId>junit</groupId>
@@ -105,6 +114,15 @@
 
 	<build>
 		<plugins>
+			<plugin>
+				<version>3.1</version>
+				<groupId>org.apache.maven.plugins</groupId>
+				<artifactId>maven-compiler-plugin</artifactId>
+				<configuration>
+					<source>1.7</source>
+					<target>1.7</target>
+				</configuration>
+			</plugin>
 			<plugin>
 				<groupId>org.apache.maven.plugins</groupId>
 				<artifactId>maven-shade-plugin</artifactId>

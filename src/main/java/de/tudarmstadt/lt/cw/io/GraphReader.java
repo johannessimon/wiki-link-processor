@@ -8,15 +8,15 @@ import java.nio.charset.Charset;
 import java.util.ArrayList;
 
 import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
-import de.tudarmstadt.lt.cw.graph.String2IntegerGraphWrapper;
+import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 
 public class GraphReader {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	
-	public static String2IntegerGraphWrapper<Float> readABCIndexed(InputStream is, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
+	public static StringIndexGraphWrapper<Float> readABCIndexed(InputStream is, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
 		System.out.println("Reading input graph...");
 		ArrayBackedGraph<Float> g = new ArrayBackedGraph<Float>(numNodes, numEdgesPerNode);
-		String2IntegerGraphWrapper<Float> gWrapper = new String2IntegerGraphWrapper<Float>(g);
+		StringIndexGraphWrapper<Float> gWrapper = new StringIndexGraphWrapper<Float>(g);
 		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
 		String line;
 		int lineCount = 0;

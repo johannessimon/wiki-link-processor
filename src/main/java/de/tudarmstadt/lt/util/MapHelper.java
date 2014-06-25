@@ -1,5 +1,6 @@
 package de.tudarmstadt.lt.util;
 
+import java.io.BufferedReader;
 import java.io.IOException;
 import java.util.Comparator;
 import java.util.HashMap;
@@ -11,7 +12,7 @@ import java.util.TreeMap;
 public class MapHelper {
 	public static Map<String, String> readMapFromFile(String fileName, String delimiter) throws IOException {
 		Map<String, String> map = new HashMap<String, String>();
-		MonitoredFileReader reader = new MonitoredFileReader(fileName);
+		BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName));
 		
 		String line;
 		while ((line = reader.readLine()) != null) {
@@ -29,7 +30,7 @@ public class MapHelper {
 
 	public static Set<String> readSetFromFile(String fileName) throws IOException {
 		Set<String> set = new HashSet<String>();
-		MonitoredFileReader reader = new MonitoredFileReader(fileName);
+		BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName));
 		
 		String line;
 		while ((line = reader.readLine()) != null) {

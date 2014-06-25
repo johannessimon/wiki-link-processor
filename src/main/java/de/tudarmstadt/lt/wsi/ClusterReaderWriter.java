@@ -2,93 +2,107 @@ package de.tudarmstadt.lt.wsi;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.io.Writer;
 import java.nio.charset.Charset;
+import java.util.ArrayList;
 import java.util.HashMap;
-import java.util.LinkedHashSet;
-import java.util.LinkedList;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import de.tudarmstadt.lt.util.IndexUtil;
+import de.tudarmstadt.lt.util.IndexUtil.Index;
 import de.tudarmstadt.lt.util.MapHelper;
 
 public class ClusterReaderWriter {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 
-	public static void writeClusters(Writer writer, Map<String, List<Cluster>> clusters) throws IOException {
-		for (Entry<String, List<Cluster>> clusterList : clusters.entrySet()) {
-			for (Cluster c : clusterList.getValue()) {
-				writeCluster(writer, c);
+
+	public static void writeClusters(Writer writer, Map<String, List<Cluster<String>>> clusters) throws IOException {
+		writeClusters(writer, clusters, IndexUtil.<String>getIdentityIndex());
+	}
+	
+	public static <N> void writeClusters(Writer writer, Map<String, List<Cluster<N>>> clusters, Index<String, N> index) throws IOException {
+		for (Entry<String, List<Cluster<N>>> clusterList : clusters.entrySet()) {
+			for (Cluster<N> c : clusterList.getValue()) {
+				writeCluster(writer, c, index);
 			}
 		}
 	}
 
-	public static void writeCluster(Writer writer, Cluster cluster) throws IOException {
+	public static void writeCluster(Writer writer, Cluster<String> cluster) throws IOException {
+		writeCluster(writer, cluster, IndexUtil.<String>getIdentityIndex());
+	}
+
+	public static <N> void writeCluster(Writer writer, Cluster<N> cluster, Index<String, N> index) throws IOException {
 		writer.write(cluster.name + "\t" + cluster.clusterId + "\t" + cluster.label + "\t");
-		for (String node : cluster.nodes) {
-			writer.write(node + "  ");
+		for (N node : cluster.nodes) {
+			writer.write(index.get(node) + "  ");
 		}
 		if (!cluster.featureCounts.isEmpty()) {
 			writer.write("\t");
-			Map<String, Integer> sortedFeatureCountes = MapHelper.sortMapByValue(cluster.featureCounts);
-			for (Entry<String, Integer> featureCount : sortedFeatureCountes.entrySet()) {
-				writer.write(featureCount.getKey() + ":" + featureCount.getValue() + "  ");
+			Map<N, Integer> sortedFeatureCountes = MapHelper.sortMapByValue(cluster.featureCounts);
+			for (Entry<N, Integer> featureCount : sortedFeatureCountes.entrySet()) {
+				writer.write(index.get(featureCount.getKey()) + ":" + featureCount.getValue() + "  ");
 			}
 		}
 		writer.write("\n");
 	}
+
+	public static Map<String, List<Cluster<String>>> readClusters(Reader in) throws IOException {
+		return readClusters(in, IndexUtil.<String>getIdentityIndex());
+	}
 	
-	public static Map<String, List<Cluster>> readClusters(InputStream is) throws IOException {
+	public static <N> Map<N, List<Cluster<N>>> readClusters(Reader in, Index<String, N> index) throws IOException {
 		System.out.println("Reading clusters...");
-		Map<String, List<Cluster>> clusters = new HashMap<String, List<Cluster>>();
+		Map<N, List<Cluster<N>>> clusters = new HashMap<N, List<Cluster<N>>>();
 		
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
+		BufferedReader reader = new BufferedReader(in);
 		String line;
 		while ((line = reader.readLine()) != null) {
 			String[] lineSplits = line.split("\t");
-			String clusterName = lineSplits[0];
+			N clusterName = index.getIndex(lineSplits[0]);
 			int clusterId = Integer.parseInt(lineSplits[1]);
-			String clusterLabel = lineSplits[2];
+			N clusterLabel = index.getIndex(lineSplits[2]);
 			String[] clusterNodes = lineSplits[3].split("  ");
-			Set<String> clusterNodeSet = new LinkedHashSet<String>();
+			Set<N> clusterNodeSet = new HashSet<N>(5);
 			for (String clusterNode : clusterNodes) {
 				if (!clusterNode.isEmpty()) {
-					clusterNodeSet.add(clusterNode);
+					clusterNodeSet.add(index.getIndex(clusterNode));
 				}
 			}
-			Map<String, Integer> clusterFeatureCounts = new HashMap<String, Integer>();
+			Map<N, Integer> clusterFeatureCounts = new HashMap<N, Integer>();
 			if (lineSplits.length >= 5) {
 				String[] clusterFeatures = lineSplits[4].split("  ");
-				for (String feature : clusterFeatures) {
-					if (!feature.isEmpty()) {
-						int sepIndex = feature.lastIndexOf(':');
+				for (String featureCountPair : clusterFeatures) {
+					if (!featureCountPair.isEmpty()) {
+						int sepIndex = featureCountPair.lastIndexOf(':');
 						if (sepIndex >= 0) {
 							try {
-								String featureName = feature.substring(0, sepIndex);
-								String featureCount = feature.substring(sepIndex + 1);
-								clusterFeatureCounts.put(featureName, Integer.parseInt(featureCount));
+								N feature = index.getIndex(featureCountPair.substring(0, sepIndex));
+								Integer featureCount = Integer.parseInt(featureCountPair.substring(sepIndex + 1));
+								clusterFeatureCounts.put(feature, featureCount);
 							} catch (NumberFormatException e) {
-								System.err.println("Error (1): malformatted feature-count pair: " + feature);
+								System.err.println("Error (1): malformatted feature-count pair: " + featureCountPair);
 							}
 						} else {
-							System.err.println("Error (2): malformatted feature-count pair: " + feature);
+							System.err.println("Error (2): malformatted feature-count pair: " + featureCountPair);
 						}
 					}
 				}
 			}
-			addCluster(clusters, clusterName, new Cluster(clusterName, clusterId, clusterLabel, clusterNodeSet, clusterFeatureCounts));
+			addCluster(clusters, clusterName, new Cluster<N>(clusterName, clusterId, clusterLabel, clusterNodeSet, clusterFeatureCounts));
 		}
 		return clusters;
 	}
 	
-	public static void addCluster(Map<String, List<Cluster>> clusters, String name, Cluster cluster) {
-		List<Cluster> clusterSet = clusters.get(name);
+	public static <N> void addCluster(Map<N, List<Cluster<N>>> clusters, N name, Cluster<N> cluster) {
+		List<Cluster<N>> clusterSet = clusters.get(name);
 		if (clusterSet == null) {
-			clusterSet = new LinkedList<Cluster>();
+			clusterSet = new ArrayList<Cluster<N>>();
 			clusters.put(name, clusterSet);
 		}
 		clusterSet.add(cluster);

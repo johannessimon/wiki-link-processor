@@ -1,4 +1,5 @@
 package de.tudarmstadt.lt.wiki;
+import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
 import java.util.Map;
@@ -28,7 +29,7 @@ public class RedirectReplacer {
 	public void run(String inFile, String redirectFile, String pagesFile, String outFile) throws IOException {
 		redirects = MapHelper.readMapFromFile(redirectFile, "\t");
 		pages = MapHelper.readSetFromFile(pagesFile);
-		MonitoredFileReader inReader = new MonitoredFileReader(inFile);
+		BufferedReader inReader = new BufferedReader(new MonitoredFileReader(inFile));
 		BufferedWriter outWriter = FileHelper.createBufferedWriter(outFile);
 		
 		String line;

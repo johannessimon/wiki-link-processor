@@ -3,7 +3,6 @@ package de.tudarmstadt.lt.wiki.uima;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.BufferedWriter;
-import java.io.FileInputStream;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStreamWriter;
@@ -26,7 +25,9 @@ import org.jobimtext.holing.extractor.JobimExtractorConfiguration;
 import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
+import de.tudarmstadt.lt.util.IndexUtil.StringIndex;
 import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
@@ -38,7 +39,8 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 	public static final String PARAM_OUTPUT_FILE = "OutputFile";
 	
 	JobimAnnotationExtractor extractor;
-	Map<String, List<Cluster>> clusters;
+	StringIndex strIndex = new StringIndex();
+	Map<Integer, List<Cluster<Integer>>> clusters;
 	Map<String, String> redirects;
 	BufferedWriter writer;
 	String outputFileName;
@@ -50,14 +52,17 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 	int numMappingFails = 0;
 	int numMappingSuccesses = 0;
 	int numMissingSenseClusters = 0;
-	Map<String, Map<String, Integer>> baselineConceptMappings = new HashMap<String, Map<String, Integer>>();
-	Map<String, Map<String, Integer>> conceptMappings = new HashMap<String, Map<String, Integer>>();
 	
-	private void registerMapping(Map<String, Map<String, Integer>> map, String concept, String resource) {
-		Map<String, Integer> conceptMapping = map.get(concept);
+	// (jo, sense) -> resource -> count
+	Map<Cluster<Integer>, Map<String, Integer>> conceptMappings = new HashMap<Cluster<Integer>, Map<String, Integer>>();
+	// jo -> resource -> count
+	Map<Integer, Map<String, Integer>> baselineConceptMappings = new HashMap<Integer, Map<String, Integer>>();
+	
+	private <T> void registerMapping(Map<T, Map<String, Integer>> map, T key, String resource) {
+		Map<String, Integer> conceptMapping = map.get(key);
 		if (conceptMapping == null) {
 			conceptMapping = new HashMap<String, Integer>();
-			map.put(concept, conceptMapping);
+			map.put(key, conceptMapping);
 		}
 		Integer mappingCount = conceptMapping.get(resource);
 		if (mappingCount == null) {
@@ -82,7 +87,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 		try {
 			extractor = JobimExtractorConfiguration
 					.getExtractorFromXmlFile(extractorConfFileName);
-			clusters = ClusterReaderWriter.readClusters(new FileInputStream(clusterFileName));
+			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex);
 			System.out.println("Writing ProtoConceptAnnotator results to " + outputFileName);
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));
 			redirects = MapHelper.readMapFromFile(redirectsFileName, "\t");
@@ -102,9 +107,11 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 		BufferedWriter mappingWriter;
 		try {
 			mappingWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName + ".mappings")));
-			for (Entry<String, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
-				String[] keySplits = mappings.getKey().split("\\.");
-				mappingWriter.write(keySplits[0] + "\t" + keySplits[1] + "\t");
+			for (Entry<Cluster<Integer>, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
+				Cluster<Integer> c = mappings.getKey();
+				Integer concept = c.name;
+				Integer sense = c.clusterId;
+				mappingWriter.write(strIndex.get(concept) + "\t" + strIndex.get(sense) + "\t");
 				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 					mappingWriter.write(mapping.getKey() + ":" + mapping.getValue() + "  ");
@@ -192,16 +199,16 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
 				List<JoBim> jobims = JCasUtil.selectCovered(JoBim.class, link);
 				
-				String jo = null;
-				Set<String> bims = new HashSet<String>();
+				Integer jo = null;
+				Set<Integer> bims = new HashSet<Integer>();
 				for (JoBim jobim : jobims) {
 					// Ignore multi-words (we can't handle them right now)
 					if (link.getBegin() == jobim.getBegin() &&
 						link.getEnd() == jobim.getEnd()) {
 						if (jo == null) {
-							jo = extractor.extractKey(jobim);
+							jo = strIndex.getIndex(extractor.extractKey(jobim));
 						}
-						bims.add(extractor.extractValues(jobim));
+						bims.add(strIndex.getIndex(extractor.extractValues(jobim)));
 					}
 				}
 				
@@ -211,21 +218,21 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 				
 				if (jo != null) {
 					numSingleWordsMatched++;
-					Map<Integer, Integer> senseScores = new HashMap<Integer, Integer>();
-					List<Cluster> senseClusters = clusters.get(jo);
+					Map<Cluster<Integer>, Integer> senseScores = new HashMap<Cluster<Integer>, Integer>();
+					List<Cluster<Integer>> senseClusters = clusters.get(jo);
 					if (senseClusters == null) {
 						numMissingSenseClusters++;
 //						System.err.println("No sense cluster found for jo: " + jo);
 					} else {
-						for (Cluster cluster : senseClusters) {
+						for (Cluster<Integer> cluster : senseClusters) {
 							int score = 0;
-							for (Entry<String, Integer> feature : cluster.featureCounts.entrySet()) {
+							for (Entry<Integer, Integer> feature : cluster.featureCounts.entrySet()) {
 								if (bims.contains(feature.getKey())) {
 									score += feature.getValue();
 								}
 							}
 							if (score > 0) {
-								senseScores.put(cluster.clusterId, score);
+								senseScores.put(cluster, score);
 							}
 						}
 						
@@ -233,9 +240,9 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 	//						System.out.println("Multi-cluster word!");
 	//					}
 						
-						int highestRankedSense = -1;
+						Cluster<Integer> highestRankedSense = null;
 						int highestScore = -1;
-						for (int sense : senseScores.keySet()) {
+						for (Cluster<Integer> sense : senseScores.keySet()) {
 							int score = senseScores.get(sense);
 							if (score > highestScore) {
 								highestRankedSense = sense;
@@ -249,12 +256,12 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 							resource = redirectedResource;
 							numRedirectsReplaced++;
 						}
-						if (highestRankedSense == -1) {
+						if (highestRankedSense == null) {
 							numMappingFails++;
 						} else {
 							numMappingSuccesses++;
 							registerMapping(baselineConceptMappings, jo, resource);
-							registerMapping(conceptMappings, jo + "." + highestRankedSense, resource);
+							registerMapping(conceptMappings, highestRankedSense, resource);
 						}
 						
 						try {

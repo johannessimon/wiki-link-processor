@@ -4,19 +4,19 @@ import java.util.HashMap;
 import java.util.Map;
 import java.util.Set;
 
-public class Cluster {
-	public String name;
+public class Cluster<N> {
+	public N name;
 	public int clusterId;
-	public String label;
-	public Set<String> nodes;
-	public Map<String, Integer> featureCounts;
+	public N label;
+	public Set<N> nodes;
+	public Map<N, Integer> featureCounts;
 	public int processedNodes;
 	
-	public Cluster(String name, int clusterId, String label, Set<String> nodes) {
-		this(name, clusterId, label, nodes, new HashMap<String, Integer>());
+	public Cluster(N name, int clusterId, N label, Set<N> nodes) {
+		this(name, clusterId, label, nodes, new HashMap<N, Integer>());
 	}
 	
-	public Cluster(String name, int clusterId, String label, Set<String> nodes, Map<String, Integer> featureCounts) {
+	public Cluster(N name, int clusterId, N label, Set<N> nodes, Map<N, Integer> featureCounts) {
 		this.name = name;
 		this.clusterId = clusterId;
 		this.label = label;

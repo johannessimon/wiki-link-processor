@@ -5,6 +5,8 @@ import java.io.OutputStream;
 import java.util.Collection;
 import java.util.Iterator;
 
+import de.tudarmstadt.lt.util.IndexUtil.Index;
+
 public interface Graph<N, E> extends Iterable<N>{
 
 	public abstract void addNode(N node);
@@ -32,6 +34,8 @@ public interface Graph<N, E> extends Iterable<N>{
 	public abstract Graph<N, E> subgraph(Collection<N> subgraphNodes);
 
 	public abstract void writeDot(OutputStream os) throws IOException;
+
+	public abstract void writeDot(OutputStream os, Index<?, N> index) throws IOException;
 
 	public abstract String toString();
 }

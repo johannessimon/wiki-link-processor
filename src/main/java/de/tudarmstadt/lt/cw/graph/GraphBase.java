@@ -11,6 +11,9 @@ import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
 
+import de.tudarmstadt.lt.util.IndexUtil;
+import de.tudarmstadt.lt.util.IndexUtil.Index;
+
 /**
  * Abstract Graph class implementing a few of the Graph interface
  * methods
@@ -23,12 +26,16 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 	}
 
 	public void writeDot(OutputStream os) throws IOException {
+		writeDot(os, IndexUtil.<N>getIdentityIndex());
+	}
+
+	public void writeDot(OutputStream os, Index<?, N> index) throws IOException {
 		Writer writer = new BufferedWriter(new OutputStreamWriter(os, UTF_8));
 		writer.write("digraph g {\n");
 		Iterator<N> it = iterator();
 		while (it.hasNext()) {
 			N node = it.next();
-			writer.write("\t" + node + " [label=\"" + node + "\"];\n");
+			writer.write("\t" + node + " [label=\"" + index.get(node) + "\"];\n");
 		}
 		it = iterator();
 		while (it.hasNext()) {
@@ -36,7 +43,7 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 			Iterator<N> neighborIt = getNeighbors(node);
 			while (neighborIt.hasNext()) {
 				N neighbor = neighborIt.next();
-				writer.write("\t" + node + " -> " + neighbor + ";\n");
+				writer.write("\t" + node + " -> " + neighbor + " [penwidth=0.1];\n");
 			}
 		}
 		writer.write("}\n");

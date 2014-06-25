@@ -166,7 +166,7 @@
     <flowConstraints>
       <fixedFlow>
         <node>SentenceTokenAnnotatorLucene</node>
-        <node>SentenceFilter</node>
+        <!-- <node>SentenceFilter</node>-->
         <node>JoAnnotator</node>
         <node>POSTagger</node>
         <node>DependencyParser</node>

@@ -13,7 +13,7 @@ import org.junit.Test;
 
 import de.tudarmstadt.lt.cw.graph.ArrayBackedGraph;
 import de.tudarmstadt.lt.cw.graph.Graph;
-import de.tudarmstadt.lt.cw.graph.String2IntegerGraphWrapper;
+import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 
 
 public class CWDTest {
@@ -21,7 +21,7 @@ public class CWDTest {
 	@Test
 	public void testIndexed() throws IOException {
 		Graph<Integer, Float> graph = new ArrayBackedGraph<Float>(3, 2);
-		String2IntegerGraphWrapper<Float> graphWrapper = new String2IntegerGraphWrapper<Float>(graph);
+		StringIndexGraphWrapper<Float> graphWrapper = new StringIndexGraphWrapper<Float>(graph);
 		graphWrapper.addNode("VW");
 		graphWrapper.addNode("Jaguar");
 		graphWrapper.addNode("Lion");

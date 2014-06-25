@@ -1,16 +1,14 @@
 package de.tudarmstadt.lt.cw.graph;
 
-import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.Map;
 
-public class String2IntegerGraphWrapper<E> {
-	protected Map<String, Integer> nodeIndices = new HashMap<String, Integer>();
-	protected Map<Integer, String> nodeReverseIndices = new HashMap<Integer, String>();
+import de.tudarmstadt.lt.util.IndexUtil.StringIndex;
+
+public class StringIndexGraphWrapper<E> extends StringIndex {
 	protected Graph<Integer, E> base;
 	
-	public String2IntegerGraphWrapper(Graph<Integer, E> base) {
+	public StringIndexGraphWrapper(Graph<Integer, E> base) {
 		this.base = base;
 	}
 	
@@ -44,23 +42,5 @@ public class String2IntegerGraphWrapper<E> {
 		Integer fromIndex = getIndex(from);
 		Integer toIndex = getIndex(to);
 		base.addEdge(fromIndex, toIndex, weight);
-	}
-	
-	public Integer getIndex(String node) {
-		Integer index = nodeIndices.get(node);
-		if (index == null) {
-			index = nodeIndices.size();
-			nodeIndices.put(node, index);
-			nodeReverseIndices.put(index, node);
-		}
-		return index;
-	}
-
-	public String getNode(Integer index) {
-		return nodeReverseIndices.get(index);
-	}
-	
-	public String getNodeName(Integer node) {
-		return getNode(node).toString();
 	}
 }
