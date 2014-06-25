@@ -19,21 +19,18 @@ public class SurfaceFormDictionary {
 	// TODO: move to helper class
 	private static String getLinkedResource(Map<String, String> redirects, String target) {
 		int startIndex = target.indexOf('#');
-		String subsection = "";
 		if (startIndex >= 0) {
-			subsection = target.substring(startIndex);
 			target = target.substring(0, startIndex);
 		}
 		String redirectedTarget = redirects.get(target);
 		if (redirectedTarget != null)
 			return target = redirectedTarget;
-		target += subsection;
 		return target;
 	}
 	
 	public static void main(String[] args) throws IOException {
 		if (args.length != 3) {
-			System.out.println("Usage: SurfaceFormDictionary <in> <out>");
+			System.out.println("Usage: SurfaceFormDictionary <wiki-link-file> <redirect-file> <out>");
 			return;
 		}
 		String in = args[0];
@@ -83,7 +80,7 @@ public class SurfaceFormDictionary {
 		
 		for (Entry<String, Set<String>> surfaceForm : surfaceForm2Resources.entrySet()) {
 			writer.write(surfaceForm.getKey() + "\t");
-			writer.write(StringUtils.join(surfaceForm.getValue(), ","));
+			writer.write(StringUtils.join(surfaceForm.getValue(), "  "));
 			writer.write("\n");
 		}
 		writer.close();

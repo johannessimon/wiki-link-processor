@@ -36,9 +36,11 @@
     <delegateAnalysisEngine key="ProtoConceptAnnotator">
       <import name="de.tudarmstadt.lt.wiki.uima.ProtoConceptAnnotator"/>
     </delegateAnalysisEngine>
+    <!--
     <delegateAnalysisEngine key="SentenceFilter">
       <import name="de.tudarmstadt.lt.wiki.uima.SentenceFilter"/>
     </delegateAnalysisEngine>
+    -->
   </delegateAnalysisEngineSpecifiers>
   <flowController key="FixedFlowController">
     <import name="org.apache.uima.flow.FixedFlowController"/>
@@ -83,7 +85,7 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>SentenceFilter/WordFile</parameter>
+          <parameter>ProtoConceptAnnotator/WordFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -133,19 +135,19 @@
       <nameValuePair>
         <name>WordFile</name>
         <value>
-          <string>/Users/jsimon/No-Backup/wiki-holing-all/wordlist</string>
+          <string>/Users/jsimon/No-Backup/jobimtext/surface-form-shuf1000</string>
         </value>
       </nameValuePair>
       <nameValuePair>
         <name>ClusterFile</name>
         <value>
-          <string>/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-cluster-withfeatures</string>
+          <string>/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-cluster-withfeatures.gz</string>
         </value>
       </nameValuePair>
       <nameValuePair>
         <name>RedirectsFile</name>
         <value>
-          <string>/Users/jsimon/No-Backup/jobimtext/wiki-redirects</string>
+          <string>/Users/jsimon/No-Backup/jobimtext/wiki-redirects.gz</string>
         </value>
       </nameValuePair>
       <nameValuePair>

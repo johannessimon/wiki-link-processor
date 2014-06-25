@@ -36,6 +36,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 	public static final String PARAM_EXTRACTOR_CONFIGURATION_FILE = "ExtractorConfigurationFile";
 	public static final String PARAM_CLUSTER_FILE = "ClusterFile";
 	public static final String PARAM_REDIRECTS_FILE = "RedirectsFile";
+	public static final String PARAM_WORD_FILE = "WordFile";
 	public static final String PARAM_OUTPUT_FILE = "OutputFile";
 	
 	JobimAnnotationExtractor extractor;
@@ -84,10 +85,13 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 				.getConfigParameterValue(PARAM_OUTPUT_FILE);
 		String redirectsFileName = (String) context
 				.getConfigParameterValue(PARAM_REDIRECTS_FILE);
+		String wordFile = (String) context
+				.getConfigParameterValue(PARAM_WORD_FILE);
 		try {
+			Set<String> words = MapHelper.readSetFromFile(wordFile);
 			extractor = JobimExtractorConfiguration
 					.getExtractorFromXmlFile(extractorConfFileName);
-			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex);
+			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 			System.out.println("Writing ProtoConceptAnnotator results to " + outputFileName);
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));
 			redirects = MapHelper.readMapFromFile(redirectsFileName, "\t");

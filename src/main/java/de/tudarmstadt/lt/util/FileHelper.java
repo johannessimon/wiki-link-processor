@@ -7,8 +7,13 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
+import java.util.zip.GZIPOutputStream;
 
 public class FileHelper {
+	public static BufferedWriter createBufferedGzipWriter(String fileName) throws IOException {
+		return new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName)), "UTF-8"));
+	}
+	
 	public static BufferedWriter createBufferedWriter(String fileName) throws IOException {
 		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
 	}

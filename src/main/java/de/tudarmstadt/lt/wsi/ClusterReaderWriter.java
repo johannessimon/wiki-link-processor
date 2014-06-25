@@ -63,10 +63,10 @@ public class ClusterReaderWriter {
 	}
 
 	public static Map<String, List<Cluster<String>>> readClusters(Reader in) throws IOException {
-		return readClusters(in, IndexUtil.<String>getIdentityIndex());
+		return readClusters(in, IndexUtil.<String>getIdentityIndex(), null);
 	}
 	
-	public static <N> Map<N, List<Cluster<N>>> readClusters(Reader in, Index<String, N> index) throws IOException {
+	public static <N> Map<N, List<Cluster<N>>> readClusters(Reader in, Index<String, N> index, Set<String> whitelist) throws IOException {
 		System.out.println("Reading clusters...");
 		Map<N, List<Cluster<N>>> clusters = new HashMap<N, List<Cluster<N>>>();
 		
@@ -74,6 +74,9 @@ public class ClusterReaderWriter {
 		String line;
 		while ((line = reader.readLine()) != null) {
 			String[] lineSplits = line.split("\t");
+			if (whitelist != null && !whitelist.contains(lineSplits[0])) {
+				continue;
+			}
 			N clusterName = index.getIndex(lineSplits[0]);
 			int clusterId = Integer.parseInt(lineSplits[1]);
 			N clusterLabel = index.getIndex(lineSplits[2]);
