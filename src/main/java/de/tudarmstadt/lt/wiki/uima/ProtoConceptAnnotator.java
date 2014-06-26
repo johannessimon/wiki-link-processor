@@ -115,7 +115,7 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 				Cluster<Integer> c = mappings.getKey();
 				Integer concept = c.name;
 				Integer sense = c.clusterId;
-				mappingWriter.write(strIndex.get(concept) + "\t" + strIndex.get(sense) + "\t");
+				mappingWriter.write(strIndex.get(concept) + "\t" + sense + "\t");
 				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
 				boolean first = true;
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
@@ -274,7 +274,8 @@ public class ProtoConceptAnnotator extends JCasAnnotator_ImplBase {
 						}
 						
 						try {
-							writer.write(jo + "." + highestRankedSense + " -> " + resource + "\t" + s.getCoveredText() + "\n");
+							String sense = highestRankedSense != null ? Integer.toString(highestRankedSense.clusterId) : "NULL";
+							writer.write(strIndex.get(jo) + "." + sense + " -> " + resource + "\t" + s.getCoveredText() + "\n");
 						} catch (IOException e) {
 							throw new AnalysisEngineProcessException(e);
 						}

@@ -1,8 +1,14 @@
 package de.tudarmstadt.lt.wsi;
 
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.Set;
+
+import org.apache.commons.lang.StringUtils;
+
+import de.tudarmstadt.lt.util.IndexUtil.Index;
 
 public class Cluster<N> {
 	public N name;
@@ -28,5 +34,20 @@ public class Cluster<N> {
 	@Override
 	public String toString() {
 		return name + "." + clusterId + " = " + nodes;
+	}
+	
+	public String toString(Index<String, N> index) {
+		StringBuilder res = new StringBuilder();
+		res.append("= ");
+		res.append(index.get(name));
+		res.append(".");
+		res.append(clusterId);
+		res.append(" = ");
+		List<String> strNodes = new ArrayList<String>(nodes.size());
+		for (N node : nodes) {
+			strNodes.add(index.get(node));
+		}
+		res.append(StringUtils.join(strNodes, "  "));
+		return res.toString();
 	}
 }
