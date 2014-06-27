@@ -11,6 +11,7 @@ import java.util.Set;
 
 import de.tudarmstadt.lt.cw.graph.Edge;
 import de.tudarmstadt.lt.cw.graph.Graph;
+import de.tudarmstadt.lt.util.MapUtil;
 
 
 public class CW<N> {
@@ -54,12 +55,7 @@ public class CW<N> {
 				break;
 			}
 			N label = nodeLabels.get(edge.getTarget());
-			Float score = labelScores.get(label);
-			if (score == null) {
-				score = 0.0f;
-			}
-			score += edge.getWeight();
-			labelScores.put(label, score);
+			MapUtil.addFloatTo(labelScores, label, edge.getWeight());
 		}
 		// isEmpty() check in case e.g. node has no neighbors at all
 		// (it will simply keep its own label then)
@@ -99,11 +95,7 @@ public class CW<N> {
 		Map<N, Set<N>> clusters = new HashMap<N, Set<N>>();
 		for (N node : nodes) {
 			N label = getNodeLabel(node);
-			Set<N> cluster = clusters.get(label);
-			if (cluster == null) {
-				cluster = new HashSet<N>();
-				clusters.put(label, cluster);
-			}
+			Set<N> cluster = MapUtil.getOrCreate(clusters, label, HashSet.class);
 			cluster.add(node);
 		}
 		return clusters;

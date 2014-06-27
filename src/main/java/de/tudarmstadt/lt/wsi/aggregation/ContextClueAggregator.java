@@ -17,6 +17,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
@@ -28,15 +29,6 @@ public class ContextClueAggregator {
 	
 	public ContextClueAggregator(OutputStream os) {
 		this.writer = new BufferedWriter(new OutputStreamWriter(os));
-	}
-	
-	public void incrementCount(Map<String, Integer> map, String key) {
-		Integer count = map.get(key);
-		if (count == null) {
-			count = 0;
-		}
-		count++;
-		map.put(key, count);
 	}
 	
 	public void readContextFeatures(InputStream is) throws IOException {
@@ -57,7 +49,7 @@ public class ContextClueAggregator {
 						while (features.hasMoreTokens()) {
 							String feature = features.nextToken();
 //							feature = feature.trim();
-							incrementCount(c.featureCounts, feature);
+							MapUtil.addIntTo(c.featureCounts, feature, 1);
 						}
 						c.processedNodes++;
 						if (c.processedNodes == c.nodes.size()) {

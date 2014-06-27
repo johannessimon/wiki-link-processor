@@ -72,10 +72,7 @@ public class WikiLinkStatistics {
 			}
 			// Ignore non-existing pages
 			if (pageTitles.contains(to)) {
-				if (!resourceInRedirectCounts.containsKey(to)) {
-					resourceInRedirectCounts.put(to, 0);
-				}
-				resourceInRedirectCounts.put(to, resourceInRedirectCounts.get(to) + 1);
+				MapUtil.addIntTo(resourceInRedirectCounts, to, 1);
 			}
 		}
 		int nonRedirectPageCount = pageTitles.size() - redirects.size();
@@ -121,7 +118,7 @@ public class WikiLinkStatistics {
 			String key = entry.getKey();
 			int resourceEndIndex = key.indexOf('\t');
 			String resource = key.substring(0, resourceEndIndex);
-			increaseCount(counts, resource, entry.getValue());
+			MapUtil.addIntTo(counts, resource, entry.getValue());
 		}
 		return counts;
 	}
@@ -148,18 +145,10 @@ public class WikiLinkStatistics {
 			String resource = WikiUtil.getLinkedResource(redirects, linkTarget);
 			// Ignore non-existing pages
 			if (pageTitles.contains(resource)) {
-				increaseCount(resourceSurfaceFormCounts, resource + "\t" + linkText, 1);
-				increaseCount(resourceInlinkCounts, resource, 1);
+				MapUtil.addIntTo(resourceSurfaceFormCounts, resource + "\t" + linkText, 1);
+				MapUtil.addIntTo(resourceInlinkCounts, resource, 1);
 			}
 		}
-	}
-	
-	private static <T> void increaseCount(Map<T, Integer> map, T key, int increaseBy) {
-		Integer count = map.get(key);
-		if (count == null) {
-			count = 0;
-		}
-		map.put(key, count + increaseBy);
 	}
 
 
@@ -184,10 +173,7 @@ public class WikiLinkStatistics {
 		for (Entry<String, Integer> entry : map.entrySet()) {
 			linkedPageCount++;
 			int count = entry.getValue();
-			if (!countMap.containsKey(count)) {
-				countMap.put(count, 0);
-			}
-			countMap.put(count, countMap.get(count) + 1);
+			MapUtil.addIntTo(countMap, count, 1);
 		}
 
 		countMap.put(0, nonRedirectPageCount - linkedPageCount);

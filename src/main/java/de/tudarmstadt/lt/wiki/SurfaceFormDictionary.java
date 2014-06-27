@@ -52,12 +52,7 @@ public class SurfaceFormDictionary {
 					int begin = Integer.parseInt(beginEnd[0]);
 					int end = Integer.parseInt(beginEnd[1]);
 					String surfaceForm = sentence.substring(begin, end);
-					Set<String> resources = surfaceForm2Resources.get(surfaceForm);
-					if (resources == null) {
-						resources = new HashSet<String>();
-						surfaceForm2Resources.put(surfaceForm, resources);
-					}
-					resources.add(resource);
+					MapUtil.addTo(surfaceForm2Resources, surfaceForm, resource, HashSet.class);
 				} catch (Exception e) {
 					System.err.println("Malformatted link column: " + links);
 					break;

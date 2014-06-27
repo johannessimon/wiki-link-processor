@@ -13,6 +13,7 @@ import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
 
+import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.lt.wiki.WikiProcessor;
 import de.tudarmstadt.lt.wiki.WikiProcessor.WikiXmlRecord;
 
@@ -47,12 +48,12 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 			return;
 		}
 			
-		String pageTitle = p.formatResourceName(record.title);
+		String pageTitle = WikiUtil.formatResourceName(record.title);
 		Text pageTitleText = new Text(pageTitle);
 		mos.write("pages", pageTitleText, NullWritable.get());
 
 		if (record.redirect != null) {
-			mos.write("redirects", pageTitleText, new Text(p.formatResourceName(record.redirect)));
+			mos.write("redirects", pageTitleText, new Text(WikiUtil.formatResourceName(record.redirect)));
 		}
 		
 		if (record.text != null) {

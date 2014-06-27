@@ -13,6 +13,8 @@ import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
 
+import org.apache.commons.lang.StringUtils;
+
 import de.tudarmstadt.lt.util.IndexUtil;
 import de.tudarmstadt.lt.util.IndexUtil.Index;
 import de.tudarmstadt.lt.util.MapUtil;
@@ -39,25 +41,11 @@ public class ClusterReaderWriter {
 
 	public static <N> void writeCluster(Writer writer, Cluster<N> cluster, Index<String, N> index) throws IOException {
 		writer.write(cluster.name + "\t" + cluster.clusterId + "\t" + cluster.label + "\t");
-		boolean first = true;
-		for (N node : cluster.nodes) {
-			if (!first) {
-				writer.write("  ");
-			}
-			writer.write(index.get(node));
-			first = false;
-		}
+		writer.write(StringUtils.join(IndexUtil.map(cluster.nodes, index), "  "));
 		if (!cluster.featureCounts.isEmpty()) {
 			writer.write("\t");
-			Map<N, Integer> sortedFeatureCountes = MapUtil.sortMapByValue(cluster.featureCounts);
-			first = true;
-			for (Entry<N, Integer> featureCount : sortedFeatureCountes.entrySet()) {
-				if (!first) {
-					writer.write("  ");
-				}
-				writer.write(index.get(featureCount.getKey()) + ":" + featureCount.getValue());
-				first = false;
-			}
+			Map<N, Integer> sortedFeatureCounts = MapUtil.sortMapByValue(cluster.featureCounts);
+			MapUtil.writeMap(IndexUtil.mapKeys(sortedFeatureCounts, index), writer, ":", "  ");
 		}
 		writer.write("\n");
 	}
@@ -107,7 +95,8 @@ public class ClusterReaderWriter {
 					}
 				}
 			}
-			addCluster(clusters, clusterName, new Cluster<N>(clusterName, clusterId, clusterLabel, clusterNodeSet, clusterFeatureCounts));
+			Cluster<N> c = new Cluster<N>(clusterName, clusterId, clusterLabel, clusterNodeSet, clusterFeatureCounts);
+			MapUtil.addTo(clusters, clusterName, c, ArrayList.class);
 		}
 		return clusters;
 	}
@@ -160,14 +149,5 @@ public class ClusterReaderWriter {
 		}
 		
 		return mapping;
-	}
-	
-	private static <N> void addCluster(Map<N, List<Cluster<N>>> clusters, N name, Cluster<N> cluster) {
-		List<Cluster<N>> clusterSet = clusters.get(name);
-		if (clusterSet == null) {
-			clusterSet = new ArrayList<Cluster<N>>();
-			clusters.put(name, clusterSet);
-		}
-		clusterSet.add(cluster);
 	}
 }

@@ -16,14 +16,16 @@ import javax.xml.xpath.XPathConstants;
 import javax.xml.xpath.XPathExpressionException;
 import javax.xml.xpath.XPathFactory;
 
+import opennlp.tools.sentdetect.SentenceDetectorME;
+import opennlp.tools.sentdetect.SentenceModel;
+import opennlp.tools.util.Span;
+
 import org.w3c.dom.Document;
 import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
-import opennlp.tools.sentdetect.SentenceDetectorME;
-import opennlp.tools.sentdetect.SentenceModel;
-import opennlp.tools.util.Span;
+import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.ukp.wikipedia.api.WikiConstants.Language;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
 import de.tudarmstadt.ukp.wikipedia.parser.Paragraph;
@@ -196,7 +198,7 @@ public class WikiProcessor {
 						int lEnd = lSpan.getEnd();
 						int spanLength = lEnd - lStart;
 						if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
-							String target = formatResourceName(link.getTarget());
+							String target = WikiUtil.formatResourceName(link.getTarget());
 							String linkRef = target + "@" + (lStart - sStart) + ":" + (lEnd - sStart);
 							links.add(linkRef);
 						}
@@ -207,17 +209,5 @@ public class WikiProcessor {
 				}
 			}
 		}
-	}
-	
-	public String formatResourceName(String resource) {
-		if (resource.length() == 0) {
-			System.err.println("WARNING: RESOURCE OF LENGTH 0!");
-			Thread.dumpStack();
-			return resource;
-		}
-		// Uppercase first letter
-		resource = Character.toUpperCase(resource.charAt(0)) + resource.substring(1);
-		resource = resource.replace(' ', '_');
-		return resource;
 	}
 }

@@ -44,8 +44,10 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	StringIndex strIndex = new StringIndex();
 	Map<Integer, List<Cluster<Integer>>> clusters;
 	Map<String, String> redirects;
-	// (jo, sense) -> resource
+	// (jo, sense) -> resource (MFS)
 	Map<Cluster<Integer>, String> clusterMapping;
+	// jo -> resource (MFS)
+	Map<Integer, String> baselineMapping;
 	BufferedWriter writer;
 	String outputFileName;
 	
@@ -63,17 +65,8 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	Map<Integer, Map<String, Integer>> baselineConceptMappings = new HashMap<Integer, Map<String, Integer>>();
 	
 	private <T> void registerMapping(Map<T, Map<String, Integer>> map, T key, String resource) {
-		Map<String, Integer> conceptMapping = map.get(key);
-		if (conceptMapping == null) {
-			conceptMapping = new HashMap<String, Integer>();
-			map.put(key, conceptMapping);
-		}
-		Integer mappingCount = conceptMapping.get(resource);
-		if (mappingCount == null) {
-			mappingCount = 0;
-		}
-		mappingCount++;
-		conceptMapping.put(resource, mappingCount);
+		Map<String, Integer> conceptMapping = MapUtil.getOrCreate(map, key, HashMap.class);
+		MapUtil.addIntTo(conceptMapping, resource, 1);
 	}
 
 	@Override
@@ -99,6 +92,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 			if (clusterMappingFileName != null && !clusterMappingFileName.isEmpty()) {
 				clusterMapping = ClusterReaderWriter.readClusterMapping(new MonitoredFileReader(clusterMappingFileName), strIndex, words, clusters);
+				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(clusterMappingFileName), strIndex, words, clusters);
 			}
 			System.out.println("Writing ProtoConceptMapper results to " + outputFileName);
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));

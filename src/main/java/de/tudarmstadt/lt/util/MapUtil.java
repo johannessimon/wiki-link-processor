@@ -1,15 +1,15 @@
 package de.tudarmstadt.lt.util;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
+import java.io.StringWriter;
 import java.io.Writer;
+import java.util.Collection;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
+import java.util.Map.Entry;
 import java.util.Set;
 import java.util.TreeMap;
 
@@ -74,12 +74,99 @@ public class MapUtil {
 	 * @param out File to write map out to
 	 * @throws IOException 
 	 */
+	public static void writeMap(Map<?,?> map, Writer writer, String keyValSep, String entrySep) throws IOException
+	{
+		for (Entry<?, ?> entry : map.entrySet()) {
+			writer.write(entry.getKey().toString());
+			writer.write(keyValSep);
+			writer.write(entry.getValue().toString());
+			writer.write(entrySep);
+		}
+	}
+	
 	public static void writeMap(Map<?,?> map, String out) throws IOException
 	{
-		Writer outputWriter = FileUtil.createBufferedWriter(out);
-		for (Object key : map.keySet()) {
-			outputWriter.write(key + "\t" + map.get(key) + "\n");
+		Writer writer = FileUtil.createBufferedWriter(out);
+		writeMap(map, writer, "\t", "\n");
+		writer.close();
+	}
+	
+	public static String toString(Map<?,?> map, String keyValSep, String entrySep) {
+		StringWriter writer = new StringWriter();
+		try {
+			writeMap(map, writer, keyValSep, entrySep);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
-		outputWriter.close();
+		return writer.toString();
+	}
+	
+	/**
+	 * Gets the value of <code>key</code> in <code>map</code>, creating
+	 * a new instance of <code>valueClass</code> as value of <code>key</code> if
+	 * it does not exist yet.
+	 * 
+	 * @return The value of <code>key</code>
+	 */
+	@SuppressWarnings("unchecked")
+	public static <A, B> B getOrCreate(Map<A, B> map, A key, Class<?> valueClass) {
+		B value = map.get(key);
+		if (value == null) {
+			try {
+				value = (B)valueClass.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			map.put(key, value);
+		}
+		return value;
+	}
+	
+	/**
+	 * Adds <code>element</code> to the value-collection of <code>key</code> in <code>map</code>.
+	 * If <code>key</code> does not exist in <code>map</code> yet, a new collection of type
+	 * <code>collectionClass</code> will be instantiated, inserted in <code>map</code> with
+	 * the specified <code>key</code>, and <code>element</code> will be added to it.
+	 */
+	@SuppressWarnings({ "unchecked", "rawtypes" })
+	public static <N, E, C extends Collection> void addTo(Map<N, C> map, N key, E element, Class<? extends Collection> collectionClass) {
+		C collection = map.get(key);
+		if (collection == null) {
+			try {
+				collection = (C)collectionClass.newInstance();
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			map.put(key, collection);
+		}
+		collection.add(element);
+	}
+	
+	/**
+	 * Adds <code>num</code> to the value belonging to <code>key</code> in
+	 * <code>map</code>, instantiating the value with 0 if it <code>map</code>
+	 * does not contain <code>key</code> yet.
+	 */
+	public static <T> void addIntTo(Map<T, Integer> map, T key, int num) {
+		Integer val = map.get(key);
+		if (val == null) {
+			val = 0;
+		}
+		val += num;
+		map.put(key, val);
+	}
+	
+	/**
+	 * Adds <code>num</code> to the value belonging to <code>key</code> in
+	 * <code>map</code>, instantiating the value with 0 if it <code>map</code>
+	 * does not contain <code>key</code> yet.
+	 */
+	public static <T> void addFloatTo(Map<T, Float> map, T key, float num) {
+		Float val = map.get(key);
+		if (val == null) {
+			val = 0.0f;
+		}
+		val += num;
+		map.put(key, val);
 	}
 }

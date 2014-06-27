@@ -36,4 +36,16 @@ public class WikiUtil {
 	public static String getLinkedResource(Map<String, String> redirects, String target) {
 		return getLinkedResource(redirects, target, false);
 	}
+	
+	public static String formatResourceName(String resource) {
+		if (resource.length() == 0) {
+			System.err.println("WARNING: RESOURCE OF LENGTH 0!");
+			Thread.dumpStack();
+			return resource;
+		}
+		// Uppercase first letter
+		resource = Character.toUpperCase(resource.charAt(0)) + resource.substring(1);
+		resource = resource.replace(' ', '_');
+		return resource;
+	}
 }

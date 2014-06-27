@@ -1,7 +1,11 @@
 package de.tudarmstadt.lt.util;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Map.Entry;
 
 public class IndexUtil {
 	@SuppressWarnings("rawtypes")
@@ -44,5 +48,29 @@ public class IndexUtil {
 	@SuppressWarnings("unchecked")
 	public static <N> IdentityIndex<N> getIdentityIndex() {
 		return identityIndexInstance;
+	}
+	
+	public static <A, B> List<A> map(Collection<B> c, Index<A, B> index) {
+		List<A> res = new ArrayList<A>(c.size());
+		for (B a : c) {
+			res.add(index.get(a));
+		}
+		return res;
+	}
+	
+	public static <A, B, C> Map<A, C> mapKeys(Map<B, C> m, Index<A, B> index) {
+		Map<A, C> res = new HashMap<A, C>(m.size());
+		for (Entry<B, C> entry : m.entrySet()) {
+			res.put(index.get(entry.getKey()), entry.getValue());
+		}
+		return res;
+	}
+	
+	public static <A, B, C> Map<C, A> mapValues(Map<C, B> m, Index<A, B> index) {
+		Map<C, A> res = new HashMap<C, A>(m.size());
+		for (Entry<C, B> entry : m.entrySet()) {
+			res.put(entry.getKey(), index.get(entry.getValue()));
+		}
+		return res;
 	}
 }
