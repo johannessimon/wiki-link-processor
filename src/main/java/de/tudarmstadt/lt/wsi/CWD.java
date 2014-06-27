@@ -79,7 +79,7 @@ public class CWD {
 	public Map<Integer, Set<Integer>> findSenseClusters(Integer node) {
 		List<Integer> neighbors = getTransitiveNeighbors(node, 1);
 		Graph<Integer, Float> subgraph = graph.undirectedSubgraph(neighbors);
-		String nodeName = graphWrapper.get(node);
+		/*String nodeName = graphWrapper.get(node);
 		try {
 			subgraph.writeDot(new BufferedOutputStream(new FileOutputStream(new File("/Users/jsimon/Desktop/graph-" + nodeName + ".dot"))), graphWrapper);
 		} catch (FileNotFoundException e) {
@@ -88,7 +88,7 @@ public class CWD {
 		} catch (IOException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
-		}
+		}*/
 		/*try {
 			OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/graph.dot");
 			subgraph.writeDot(os);
