@@ -18,6 +18,8 @@ import org.apache.hadoop.mapreduce.lib.input.TextInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 
+import de.tudarmstadt.lt.util.WikiUtil;
+
 /*
  * To change this license header, choose License Headers in Project Properties.
  * To change this template file, choose Tools | Templates
@@ -66,18 +68,6 @@ public class ResourceInlinkCount {
 		private String formatResourceName(String resource) {
 			return resource.replace(' ', '_');
 		}
-		
-		private String getLinkedResource(String target) {
-			int startIndex = target.indexOf('#');
-			if (startIndex >= 0) {
-				target = target.substring(0, startIndex);
-			}
-			String redirectedTarget = redirects.get(target);
-//			System.out.println("REDIRECT SEARCH: " + target + " -> " + redirectedTarget);
-			if (redirectedTarget != null)
-				return target = redirectedTarget;
-			return target;
-		}
 
 		@Override
 		public void map(LongWritable key, Text Value, Context context)
@@ -86,7 +76,7 @@ public class ResourceInlinkCount {
 			String parts[] = line.split("\t");
 			// A valid line has 3 spits: link text, link target and context
 			if (parts.length == 3) {
-				String to = getLinkedResource(parts[1]);
+				String to = WikiUtil.getLinkedResource(redirects, parts[1]);
 				context.write(new Text(to), new IntWritable(1));
 			}
 		}
