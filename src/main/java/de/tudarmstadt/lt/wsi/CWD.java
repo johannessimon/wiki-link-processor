@@ -33,7 +33,6 @@ import de.tudarmstadt.lt.cw.graph.ArrayBackedGraphCW;
 import de.tudarmstadt.lt.cw.graph.Graph;
 import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 import de.tudarmstadt.lt.cw.io.GraphReader;
-import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 public class CWD {
@@ -144,11 +143,6 @@ public class CWD {
 		                  .hasArg()
                           .withDescription("min. edge weight")
                           .create("e"));
-		options.addOption(OptionBuilder.withArgName("integer")
-                .hasArg()
-                .withDescription("number of words the word graph specified in the input file will have (will count line number if not specified)")
-                .withLongOpt("graph-size")
-                .create("s"));
 		options.addOption(OptionBuilder.withArgName("node-list")
                 .hasArgs()
                 .withDescription("comma-separated list of nodes to cluster")
@@ -176,8 +170,7 @@ public class CWD {
 		float minEdgeWeight = cl.hasOption("e") ? Float.parseFloat(cl.getOptionValue("e")) : 0.0f;
 		int N = Integer.parseInt(cl.getOptionValue("N"));
 		int n = Integer.parseInt(cl.getOptionValue("n"));
-		int numNodes = cl.hasOption("s") ? Integer.parseInt(cl.getOptionValue("s")) : FileUtil.readNumberOfLines(args[0]);
-		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new MonitoredFileReader(args[0]), false, false, numNodes, N, minEdgeWeight);
+		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new MonitoredFileReader(args[0]), false, N, minEdgeWeight);
 		CWD cwd = new CWD(graphWrapper, n);
 		System.out.println("Running CW sense clustering...");
 		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));

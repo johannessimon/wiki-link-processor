@@ -33,7 +33,7 @@ public class GraphReaderTest {
 	public void testIndexed() throws IOException {
 		File in = new File("src/test/resources/graph/test.txt");
 		String input = FileUtils.readFileToString(in, "UTF-8");
-		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new StringReader(input), true, true, 3, 2, 0.0f);
+		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new StringReader(input), true, 3, 0.0f);
 		assertEquals(graphWrapper.getGraph(), testGraph);
 	}
 

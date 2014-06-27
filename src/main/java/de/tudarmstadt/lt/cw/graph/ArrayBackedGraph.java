@@ -3,6 +3,7 @@ package de.tudarmstadt.lt.cw.graph;
 import it.unimi.dsi.fastutil.ints.IntOpenHashSet;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.BitSet;
 import java.util.Collection;
 import java.util.Collections;
@@ -27,12 +28,12 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	protected int initialNumEdgesPerNode;
 	
 	@SuppressWarnings("unchecked")
-	public ArrayBackedGraph(int size, int initialNumEdgesPerNode) {
-		this.size = size;
-		nodes = new BitSet(size);
-		edgeTargetSet = new IntOpenHashSet[size];
-		edgeWeights = new ArrayList[size];
-		edgeTargets = new ArrayList[size];
+	public ArrayBackedGraph(int initialSize, int initialNumEdgesPerNode) {
+		this.size = initialSize;
+		nodes = new BitSet(initialSize);
+		edgeTargetSet = new IntOpenHashSet[initialSize];
+		edgeWeights = new ArrayList[initialSize];
+		edgeTargets = new ArrayList[initialSize];
 		this.initialNumEdgesPerNode = initialNumEdgesPerNode;
 	}
 
@@ -52,8 +53,27 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 			}
 		};
 	}
+	
+	private void ensureCapacity(int minSize) {
+		if (minSize > size) {
+			int newSize = Math.max(minSize, size * 2);
+			edgeTargetSet = Arrays.copyOf(edgeTargetSet, newSize);
+			edgeWeights = Arrays.copyOf(edgeWeights, newSize);
+			edgeTargets = Arrays.copyOf(edgeTargets, newSize);
+			size = newSize;
+		}
+	}
+
+	public void addNode(Integer node, ArrayList<Integer> targets, ArrayList<E> weights) {
+		ensureCapacity(node + 1);
+		nodes.set(node);
+		edgeTargetSet[node] = new IntOpenHashSet(targets.size());
+		edgeTargets[node] = targets;
+		edgeWeights[node] = weights;
+	}
 
 	public void addNode(Integer node) {
+		ensureCapacity(node + 1);
 		if (!nodes.get(node)) {
 			nodes.set(node);
 			edgeTargetSet[node] = new IntOpenHashSet(initialNumEdgesPerNode);

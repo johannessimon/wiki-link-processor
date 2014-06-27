@@ -12,15 +12,16 @@ import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 public class GraphReader {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	
-	public static StringIndexGraphWrapper<Float> readABCIndexed(Reader r, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
+	public static StringIndexGraphWrapper<Float> readABCIndexed(Reader r, boolean includeSelfEdges, int maxNumEdgesPerNode, float minEdgeWeight) throws IOException {
 		System.out.println("Reading input graph...");
-		ArrayBackedGraph<Float> g = new ArrayBackedGraph<Float>(numNodes, numEdgesPerNode);
+		ArrayBackedGraph<Float> g = new ArrayBackedGraph<Float>(1024 * 1024, maxNumEdgesPerNode);
 		StringIndexGraphWrapper<Float> gWrapper = new StringIndexGraphWrapper<Float>(g);
 		BufferedReader reader = new BufferedReader(r);
 		String line;
-		ArrayList<String> targets = new ArrayList<String>(numEdgesPerNode);
-		ArrayList<Float> weights = new ArrayList<Float>(numEdgesPerNode);
+		ArrayList<Integer> targets = new ArrayList<Integer>(maxNumEdgesPerNode);
+		ArrayList<Float> weights = new ArrayList<Float>(maxNumEdgesPerNode);
 		String lastNode = null;
+		int numEdgesOfCurrNode = 0;
 		while ((line = reader.readLine()) != null) {
 			String[] lineSplits = line.split("\t");
 			if (lineSplits.length != 3) {
@@ -30,25 +31,31 @@ public class GraphReader {
 			String from = lineSplits[0];
 			String to = lineSplits[1];
 
-			// TODO: respect numEdgesPerNode (don't add further nodes when this number is reached)
-			if (lastNode != null && !from.equals(lastNode) && !targets.isEmpty()) {
-				gWrapper.addNode(lastNode, targets, weights, undirected);
-				targets.clear();
-				weights.clear();
+			if (lastNode != null && !from.equals(lastNode)) {
+				if (!targets.isEmpty()) {
+					g.addNode(gWrapper.getIndex(lastNode), targets, weights);
+					targets.clear();
+					weights.clear();
+				}
+				numEdgesOfCurrNode = 0;
 			}
-			
+
+			lastNode = from;
+			if (numEdgesOfCurrNode > maxNumEdgesPerNode) {
+				continue;
+			}
+
 			float weight = Float.parseFloat(lineSplits[2]);
 			if (weight >= minEdgeWeight) {
 				if (includeSelfEdges || !to.equals(from)) {
-					targets.add(to);
+					targets.add(gWrapper.getIndex(to));
+					weights.add(weight);
+					numEdgesOfCurrNode++;
 				}
-				weights.add(weight);
 			}
-			
-			lastNode = from;
 		}
 		
-		gWrapper.addNode(lastNode, targets, weights, undirected);
+		g.addNode(gWrapper.getIndex(lastNode), targets, weights);
 		targets.clear();
 		weights.clear();
 
