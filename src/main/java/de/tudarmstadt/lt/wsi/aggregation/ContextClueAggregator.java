@@ -1,15 +1,9 @@
 package de.tudarmstadt.lt.wsi.aggregation;
 
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
-import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Reader;
+import java.io.Writer;
 import java.nio.charset.Charset;
 import java.util.HashMap;
 import java.util.LinkedList;
@@ -17,6 +11,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.StringTokenizer;
 
+import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.wsi.Cluster;
@@ -25,14 +20,14 @@ import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 public class ContextClueAggregator {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	Map<String, List<Cluster<String>>> clusters = new HashMap<String, List<Cluster<String>>>();
-	BufferedWriter writer;
+	Writer writer;
 	
-	public ContextClueAggregator(OutputStream os) {
-		this.writer = new BufferedWriter(new OutputStreamWriter(os));
+	public ContextClueAggregator(Writer writer) {
+		this.writer = writer;
 	}
 	
-	public void readContextFeatures(InputStream is) throws IOException {
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
+	public void readContextFeatures(Reader r) throws IOException {
+		BufferedReader reader = new BufferedReader(r);
 		String line;
 		List<Cluster<String>> finishedClusters = new LinkedList<Cluster<String>>();
 		while ((line = reader.readLine()) != null) {
@@ -73,14 +68,19 @@ public class ContextClueAggregator {
 	}
 	
 	public static void main(String[] args) throws IOException {
-		OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-cluster-withfeatures");
-		ContextClueAggregator ccg = new ContextClueAggregator(os);
-		Reader reader = new MonitoredFileReader("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-simcounts-simsort-cluster");
-//		System.out.println("Reading clusters...");
-		ccg.clusters = ClusterReaderWriter.readClusters(reader);
-		InputStream is2 = new FileInputStream("/Users/jsimon/No-Backup/wiki-holing-all/wiki-holing-all-simcounts-withfeatures");
+		if (args.length != 3) {
+			System.out.println("Usage: ContextClueAggregator <cluster-file> <feature-file> <output-file>");
+		}
+		String clusterFile = args[0];
+		String featureFile = args[1];
+		String outputFile = args[2];
+		Writer writer = FileUtil.createBufferedWriter(outputFile);
+		ContextClueAggregator ccg = new ContextClueAggregator(writer);
+		Reader clusterReader = new MonitoredFileReader(clusterFile);
+		ccg.clusters = ClusterReaderWriter.readClusters(clusterReader);
+		Reader featureReader = new MonitoredFileReader(featureFile);
 		System.out.println("Processing context features...");
-		ccg.readContextFeatures(is2);
+		ccg.readContextFeatures(featureReader);
 		ccg.writeClusters();
 	}
 }

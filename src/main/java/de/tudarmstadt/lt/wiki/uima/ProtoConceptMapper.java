@@ -52,12 +52,14 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	String outputFileName;
 	
 	int numProcessesSentences = 0;
-	int numSingleWordsMatched = 0;
+	int numInstances = 0;
 	int numMappingFails = 0;
 	int numMappingSuccesses = 0;
 	int numMissingSenseClusters = 0;
 	int numMappingMatches = 0;
 	int numMappingMatchesFails = 0;
+	int numBaselineMappingMatches = 0;
+	int numBaselineMappingMatchesFails = 0;
 	
 	// (jo, sense) -> resource -> count
 	Map<Cluster<Integer>, Map<String, Integer>> conceptMappings = new HashMap<Cluster<Integer>, Map<String, Integer>>();
@@ -92,7 +94,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 			if (clusterMappingFileName != null && !clusterMappingFileName.isEmpty()) {
 				clusterMapping = ClusterReaderWriter.readClusterMapping(new MonitoredFileReader(clusterMappingFileName), strIndex, words, clusters);
-				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(clusterMappingFileName), strIndex, words, clusters);
+				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(clusterMappingFileName + "-baseline"), strIndex, words, clusters);
 			}
 			System.out.println("Writing ProtoConceptMapper results to " + outputFileName);
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));
@@ -112,7 +114,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		System.out.println("Writing concept mappings...");
 		BufferedWriter mappingWriter;
 		try {
-			mappingWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName + ".baseline-mappings")));
+			mappingWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName + ".mappings-baseline")));
 			for (Entry<Integer, Map<String, Integer>> mappings : baselineConceptMappings.entrySet()) {
 				Integer jo = mappings.getKey();
 				mappingWriter.write(strIndex.get(jo) + "\t");
@@ -182,12 +184,18 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	private void evaluateConceptMapping() {
 		System.out.println("=== Statistics ===");
 		System.out.println("# processed sentences:\t" + numProcessesSentences);
-		System.out.println("# words covered entirely by JoBim annotation:\t" + numSingleWordsMatched);
-		System.out.println("# Failed mappings:\t" + numMappingFails);
-		System.out.println("# Successful mappings:\t" + numMappingSuccesses);
-		System.out.println("# Correct mappings:\t" + numMappingMatches);
-		System.out.println("# Incorrect mappings:\t" + numMappingMatchesFails);
-		System.out.println("# Missing sense clusters:\t" + numMissingSenseClusters);
+		System.out.println("# words covered entirely by JoBim annotation:\t" + numInstances);
+		System.out.println("# - Successful assignments of cluster: " + numMappingSuccesses + "/" + numInstances);
+		System.out.println("# - Failed assignments of cluster:     " + numMappingFails + "/" + numInstances);
+		System.out.println("# - No clusters found at all:          " + numMissingSenseClusters + "/" + numInstances);
+		System.out.println();
+		System.out.println("# Evaluation");
+		System.out.println("# Correct mappings:                    " + numMappingMatches + "/" + numMappingSuccesses);
+		System.out.println("# Incorrect mappings:                  " + numMappingMatchesFails + "/" + numMappingSuccesses);
+		System.out.println();
+		System.out.println("# Baseline comparison");
+		System.out.println("# Correct baseline mappings:           " + numBaselineMappingMatches + "/" + numMappingSuccesses);
+		System.out.println("# Incorrect baseline mappings:         " + numBaselineMappingMatchesFails + "/" + numMappingSuccesses);
 	}
 
 	@Override
@@ -195,7 +203,6 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		for (Sentence s : select(aJCas, Sentence.class)) {
 			numProcessesSentences++;
 			if (numProcessesSentences % 1000 == 0) {
-				writeConceptMappings();
 				evaluateConceptMapping();
 			}
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
@@ -215,7 +222,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				}
 				
 				if (jo != null) {
-					numSingleWordsMatched++;
+					numInstances++;
 					Map<Cluster<Integer>, Integer> senseScores = new HashMap<Cluster<Integer>, Integer>();
 					List<Cluster<Integer>> senseClusters = clusters.get(jo);
 					if (senseClusters == null) {
@@ -252,17 +259,25 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 							
 							if (clusterMapping != null) {
 								String mappedResource = clusterMapping.get(highestRankedSense);
-								if (mappedResource == null) {
-									System.out.println("foo: " + strIndex.get(jo));
-								}
 								if (mappedResource != null && mappedResource.equals(resource)) {
 									numMappingMatches++;
 								} else {
 									numMappingMatchesFails++;
 								}
+							} else {
+								registerMapping(conceptMappings, highestRankedSense, resource);
 							}
-							registerMapping(baselineConceptMappings, jo, resource);
-							registerMapping(conceptMappings, highestRankedSense, resource);
+							
+							if (baselineMapping != null) {
+								String mappedResource = baselineMapping.get(jo);
+								if (mappedResource != null && mappedResource.equals(resource)) {
+									numBaselineMappingMatches++;
+								} else {
+									numBaselineMappingMatchesFails++;
+								}
+							} else {
+								registerMapping(baselineConceptMappings, jo, resource);
+							}
 						}
 						
 						try {

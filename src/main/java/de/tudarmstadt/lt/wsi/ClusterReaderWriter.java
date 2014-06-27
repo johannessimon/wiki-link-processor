@@ -70,6 +70,7 @@ public class ClusterReaderWriter {
 			N clusterLabel = index.getIndex(lineSplits[2]);
 			String[] clusterNodes = lineSplits[3].split("  ");
 			Set<N> clusterNodeSet = new HashSet<N>(5);
+			// TODO: replace by IndexUtil.map ...
 			for (String clusterNode : clusterNodes) {
 				if (!clusterNode.isEmpty()) {
 					clusterNodeSet.add(index.getIndex(clusterNode));
@@ -79,6 +80,7 @@ public class ClusterReaderWriter {
 			if (lineSplits.length >= 5) {
 				String[] clusterFeatures = lineSplits[4].split("  ");
 				for (String featureCountPair : clusterFeatures) {
+					// TODO: remove isEmpty() check
 					if (!featureCountPair.isEmpty()) {
 						int sepIndex = featureCountPair.lastIndexOf(':');
 						if (sepIndex >= 0) {
