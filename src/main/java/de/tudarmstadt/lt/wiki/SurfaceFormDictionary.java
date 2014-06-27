@@ -14,7 +14,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
 
@@ -28,7 +28,7 @@ public class SurfaceFormDictionary {
 		String redirectFile = args[1];
 		String out = args[2];
 
-		Map<String, String> redirects = MapHelper.readMapFromFile(redirectFile, "\t");
+		Map<String, String> redirects = MapUtil.readMapFromFile(redirectFile, "\t");
 
 		BufferedReader reader = new BufferedReader(new MonitoredFileReader(in));
 		Map<String, Set<String>> surfaceForm2Resources = new HashMap<String, Set<String>>();

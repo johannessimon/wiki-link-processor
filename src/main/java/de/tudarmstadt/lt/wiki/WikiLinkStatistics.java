@@ -13,7 +13,7 @@ import java.util.TreeMap;
 
 import org.apache.commons.io.input.CountingInputStream;
 
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.WikiUtil;
 
 
@@ -79,7 +79,7 @@ public class WikiLinkStatistics {
 			}
 		}
 		int nonRedirectPageCount = pageTitles.size() - redirects.size();
-		MapHelper.writeMap(createCountStat(resourceInRedirectCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inredirects.txt");
+		MapUtil.writeMap(createCountStat(resourceInRedirectCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inredirects.txt");
 	}
 
 	public void run () throws IOException {
@@ -101,16 +101,16 @@ public class WikiLinkStatistics {
 			processLine(line);
 		}
 		
-		MapHelper.writeMap(resourceSurfaceFormCounts, PREFIX + "enwiki-stat-surfaceforms.txt");
+		MapUtil.writeMap(resourceSurfaceFormCounts, PREFIX + "enwiki-stat-surfaceforms.txt");
 		Map<String, Integer> surfaceFormsPerResource = countSurfaceFormsPerResource();
-		MapHelper.writeMap(createCountStat(surfaceFormsPerResource, nonRedirectPageCount), PREFIX + "enwiki-stat-surfaceforms-per-resource.txt");
+		MapUtil.writeMap(createCountStat(surfaceFormsPerResource, nonRedirectPageCount), PREFIX + "enwiki-stat-surfaceforms-per-resource.txt");
 
 		System.out.println("Results:");
 		System.out.println("# Resources in article namespace (ns 0): " + pageTitles.size());
 		System.out.println("# Linked Resources: " + resourceInlinkCounts.size());
 		System.out.println("# Redirect-linked Resources: " + redirects.size());
 
-		MapHelper.writeMap(createCountStat(resourceInlinkCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inlinks.txt");
+		MapUtil.writeMap(createCountStat(resourceInlinkCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inlinks.txt");
 
 		inReader.close();
 	}

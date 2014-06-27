@@ -15,7 +15,7 @@ import java.util.Set;
 
 import de.tudarmstadt.lt.util.IndexUtil;
 import de.tudarmstadt.lt.util.IndexUtil.Index;
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MapUtil;
 
 public class ClusterReaderWriter {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
@@ -49,7 +49,7 @@ public class ClusterReaderWriter {
 		}
 		if (!cluster.featureCounts.isEmpty()) {
 			writer.write("\t");
-			Map<N, Integer> sortedFeatureCountes = MapHelper.sortMapByValue(cluster.featureCounts);
+			Map<N, Integer> sortedFeatureCountes = MapUtil.sortMapByValue(cluster.featureCounts);
 			first = true;
 			for (Entry<N, Integer> featureCount : sortedFeatureCountes.entrySet()) {
 				if (!first) {

@@ -13,7 +13,7 @@ import java.util.Map;
 import java.util.Set;
 import java.util.TreeMap;
 
-public class MapHelper {
+public class MapUtil {
 	public static Map<String, String> readMapFromFile(String fileName, String delimiter) throws IOException {
 		Map<String, String> map = new HashMap<String, String>();
 		BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName));
@@ -76,7 +76,7 @@ public class MapHelper {
 	 */
 	public static void writeMap(Map<?,?> map, String out) throws IOException
 	{
-		Writer outputWriter = FileHelper.createBufferedWriter(out);
+		Writer outputWriter = FileUtil.createBufferedWriter(out);
 		for (Object key : map.keySet()) {
 			outputWriter.write(key + "\t" + map.get(key) + "\n");
 		}

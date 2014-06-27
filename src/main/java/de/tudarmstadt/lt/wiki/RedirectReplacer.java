@@ -5,8 +5,8 @@ import java.io.IOException;
 import java.util.Map;
 import java.util.Set;
 
-import de.tudarmstadt.lt.util.FileHelper;
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.FileUtil;
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
 
@@ -28,10 +28,10 @@ public class RedirectReplacer {
 	Set<String> pages;
 	Map<String, String> redirects;
 	public void run(String inFile, String redirectFile, String pagesFile, String outFile) throws IOException {
-		redirects = MapHelper.readMapFromFile(redirectFile, "\t");
-		pages = MapHelper.readSetFromFile(pagesFile);
+		redirects = MapUtil.readMapFromFile(redirectFile, "\t");
+		pages = MapUtil.readSetFromFile(pagesFile);
 		BufferedReader inReader = new BufferedReader(new MonitoredFileReader(inFile));
-		BufferedWriter outWriter = FileHelper.createBufferedWriter(outFile);
+		BufferedWriter outWriter = FileUtil.createBufferedWriter(outFile);
 		
 		String line;
 		while ((line = inReader.readLine()) != null) {

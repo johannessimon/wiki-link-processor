@@ -10,8 +10,8 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
-import de.tudarmstadt.lt.util.FileHelper;
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.FileUtil;
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 public class WikiLinkFilter {
@@ -24,10 +24,10 @@ public class WikiLinkFilter {
 		String wordFile = args[1];
 		String out = args[2];
 
-		Set<String> words = MapHelper.readSetFromFile(wordFile);
+		Set<String> words = MapUtil.readSetFromFile(wordFile);
 
 		BufferedReader reader = new BufferedReader(new MonitoredFileReader(in));
-		BufferedWriter writer = FileHelper.createBufferedGzipWriter(out);
+		BufferedWriter writer = FileUtil.createBufferedGzipWriter(out);
 		String line;
 		while ((line = reader.readLine()) != null) {
 			String cols[] = line.split("\t");

@@ -25,7 +25,7 @@ import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
 import de.tudarmstadt.lt.util.IndexUtil.StringIndex;
-import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
@@ -93,7 +93,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		String wordFile = (String) context
 				.getConfigParameterValue(PARAM_WORD_FILE);
 		try {
-			Set<String> words = MapHelper.readSetFromFile(wordFile);
+			Set<String> words = MapUtil.readSetFromFile(wordFile);
 			extractor = JobimExtractorConfiguration
 					.getExtractorFromXmlFile(extractorConfFileName);
 			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
@@ -102,7 +102,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			}
 			System.out.println("Writing ProtoConceptMapper results to " + outputFileName);
 			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));
-			redirects = MapHelper.readMapFromFile(redirectsFileName, "\t");
+			redirects = MapUtil.readMapFromFile(redirectsFileName, "\t");
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
 		}
@@ -122,7 +122,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			for (Entry<Integer, Map<String, Integer>> mappings : baselineConceptMappings.entrySet()) {
 				Integer jo = mappings.getKey();
 				mappingWriter.write(strIndex.get(jo) + "\t");
-				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
+				Map<String, Integer> sortedMappingCounts = MapUtil.sortMapByValue(mappings.getValue());
 				boolean first = true;
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 					if (!first) {
@@ -151,7 +151,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				Integer concept = c.name;
 				Integer sense = c.clusterId;
 				mappingWriter.write(strIndex.get(concept) + "\t" + sense + "\t");
-				Map<String, Integer> sortedMappingCounts = MapHelper.sortMapByValue(mappings.getValue());
+				Map<String, Integer> sortedMappingCounts = MapUtil.sortMapByValue(mappings.getValue());
 				boolean first = true;
 				for (Entry<String, Integer> mapping : sortedMappingCounts.entrySet()) {
 					if (!first) {
