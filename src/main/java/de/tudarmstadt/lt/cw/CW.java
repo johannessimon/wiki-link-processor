@@ -20,6 +20,7 @@ public class CW<N> {
 	protected Map<N, N> nodeLabels;
 	protected boolean changeInPrevStep;
 	protected Map<N, Float> labelScores = new HashMap<N, Float>();
+	public final static int UNLIMITED_NUMBER_EDGES = -1;
 	
 	protected void init(Graph<N, Float> graph) {
 		this.graph = graph;

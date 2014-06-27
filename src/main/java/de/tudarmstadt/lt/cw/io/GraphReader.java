@@ -2,8 +2,7 @@ package de.tudarmstadt.lt.cw.io;
 
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.InputStreamReader;
+import java.io.Reader;
 import java.nio.charset.Charset;
 import java.util.ArrayList;
 
@@ -13,21 +12,16 @@ import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 public class GraphReader {
 	final static Charset UTF_8 = Charset.forName("UTF-8");
 	
-	public static StringIndexGraphWrapper<Float> readABCIndexed(InputStream is, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
+	public static StringIndexGraphWrapper<Float> readABCIndexed(Reader r, boolean includeSelfEdges, boolean undirected, int numNodes, int numEdgesPerNode, float minEdgeWeight) throws IOException {
 		System.out.println("Reading input graph...");
 		ArrayBackedGraph<Float> g = new ArrayBackedGraph<Float>(numNodes, numEdgesPerNode);
 		StringIndexGraphWrapper<Float> gWrapper = new StringIndexGraphWrapper<Float>(g);
-		BufferedReader reader = new BufferedReader(new InputStreamReader(is, UTF_8));
+		BufferedReader reader = new BufferedReader(r);
 		String line;
-		int lineCount = 0;
 		ArrayList<String> targets = new ArrayList<String>(numEdgesPerNode);
 		ArrayList<Float> weights = new ArrayList<Float>(numEdgesPerNode);
 		String lastNode = null;
 		while ((line = reader.readLine()) != null) {
-			if (lineCount % 1000000 == 0) {
-				System.out.print(".");
-			}
-			lineCount++;
 			String[] lineSplits = line.split("\t");
 			if (lineSplits.length != 3) {
 				System.err.println("Warning: Found " + lineSplits.length + " columns instead of 3!");

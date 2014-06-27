@@ -112,7 +112,57 @@ public class ClusterReaderWriter {
 		return clusters;
 	}
 	
-	public static <N> void addCluster(Map<N, List<Cluster<N>>> clusters, N name, Cluster<N> cluster) {
+	public static <N> Map<N, String> readBaselineMapping(Reader in, Index<String, N> index, Set<String> whitelist, Map<N, List<Cluster<N>>> clusters) throws IOException {
+		Map<N, String> mapping = new HashMap<N, String>();
+		
+		BufferedReader reader = new BufferedReader(in);
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String[] lineSplits = line.split("\t");
+			if (whitelist != null && !whitelist.contains(lineSplits[0])) {
+				continue;
+			}
+			N jo = index.getIndex(lineSplits[0]);
+			String[] resources = lineSplits[1].split("  ");
+			String resource = resources[0].split(":")[0];
+			
+			mapping.put(jo, resource);
+		}
+		
+		return mapping;
+	}
+	
+	public static <N> Map<Cluster<N>, String> readClusterMapping(Reader in, Index<String, N> index, Set<String> whitelist, Map<N, List<Cluster<N>>> clusters) throws IOException {
+		Map<Cluster<N>, String> mapping = new HashMap<Cluster<N>, String>();
+		
+		BufferedReader reader = new BufferedReader(in);
+		String line;
+		while ((line = reader.readLine()) != null) {
+			String[] lineSplits = line.split("\t");
+			if (whitelist != null && !whitelist.contains(lineSplits[0])) {
+				continue;
+			}
+			N jo = index.getIndex(lineSplits[0]);
+			int clusterId = Integer.parseInt(lineSplits[1]);
+			String[] resources = lineSplits[2].split("  ");
+			String resource = resources[0].split(":")[0];
+			
+			Cluster<N> sense = null;
+			List<Cluster<N>> clusterSet = clusters.get(jo);
+			for (Cluster<N> c : clusterSet) {
+				if (c.clusterId == clusterId) {
+					sense = c;
+					break;
+				}
+			}
+			
+			mapping.put(sense, resource);
+		}
+		
+		return mapping;
+	}
+	
+	private static <N> void addCluster(Map<N, List<Cluster<N>>> clusters, N name, Cluster<N> cluster) {
 		List<Cluster<N>> clusterSet = clusters.get(name);
 		if (clusterSet == null) {
 			clusterSet = new ArrayList<Cluster<N>>();
