@@ -1,13 +1,9 @@
 package de.tudarmstadt.lt.wiki;
 import java.io.BufferedReader;
-import java.io.BufferedWriter;
 import java.io.File;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStreamReader;
-import java.io.OutputStreamWriter;
-import java.io.Writer;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -16,6 +12,9 @@ import java.util.Set;
 import java.util.TreeMap;
 
 import org.apache.commons.io.input.CountingInputStream;
+
+import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.WikiUtil;
 
 
 public class WikiLinkStatistics {
@@ -62,17 +61,7 @@ public class WikiLinkStatistics {
 	Map<String, String> redirects = new HashMap<String, String>();
 	Map<String, Integer> resourceInlinkCounts = new HashMap<String, Integer>();
 	Map<String, Integer> resourceSurfaceFormCounts = new HashMap<String, Integer>();
-	Map<String, Integer> resourceIDs = new HashMap<String, Integer>();
 	int lastProgress = 0;
-	
-	private int getResourceID(String resource) {
-		if (resourceIDs.containsKey(resource)) {
-			return resourceIDs.get(resource);
-		}
-		int id = resourceIDs.size();
-		resourceIDs.put(resource, id);
-		return id;
-	}
 	
 	private void processRedirects() throws IOException {
 		Map<String, Integer> resourceInRedirectCounts = new HashMap<String, Integer>();
@@ -90,7 +79,7 @@ public class WikiLinkStatistics {
 			}
 		}
 		int nonRedirectPageCount = pageTitles.size() - redirects.size();
-		writeMap(createCountStat(resourceInRedirectCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inredirects.txt");
+		MapHelper.writeMap(createCountStat(resourceInRedirectCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inredirects.txt");
 	}
 
 	public void run () throws IOException {
@@ -112,16 +101,16 @@ public class WikiLinkStatistics {
 			processLine(line);
 		}
 		
-		writeMap(resourceSurfaceFormCounts, PREFIX + "enwiki-stat-surfaceforms.txt");
+		MapHelper.writeMap(resourceSurfaceFormCounts, PREFIX + "enwiki-stat-surfaceforms.txt");
 		Map<String, Integer> surfaceFormsPerResource = countSurfaceFormsPerResource();
-		writeMap(createCountStat(surfaceFormsPerResource, nonRedirectPageCount), PREFIX + "enwiki-stat-surfaceforms-per-resource.txt");
+		MapHelper.writeMap(createCountStat(surfaceFormsPerResource, nonRedirectPageCount), PREFIX + "enwiki-stat-surfaceforms-per-resource.txt");
 
 		System.out.println("Results:");
 		System.out.println("# Resources in article namespace (ns 0): " + pageTitles.size());
 		System.out.println("# Linked Resources: " + resourceInlinkCounts.size());
 		System.out.println("# Redirect-linked Resources: " + redirects.size());
 
-		writeMap(createCountStat(resourceInlinkCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inlinks.txt");
+		MapHelper.writeMap(createCountStat(resourceInlinkCounts, nonRedirectPageCount), PREFIX + "enwiki-stat-inlinks.txt");
 
 		inReader.close();
 	}
@@ -156,7 +145,7 @@ public class WikiLinkStatistics {
 		if (lineSplits.length == 3) {
 			String linkText = lineSplits[0];
 			String linkTarget = lineSplits[1];
-			String resource = getLinkedResource(linkTarget);
+			String resource = WikiUtil.getLinkedResource(redirects, linkTarget);
 			// Ignore non-existing pages
 			if (pageTitles.contains(resource)) {
 				increaseCount(resourceSurfaceFormCounts, resource + "\t" + linkText, 1);
@@ -171,31 +160,6 @@ public class WikiLinkStatistics {
 			count = 0;
 		}
 		map.put(key, count + increaseBy);
-	}
-	
-	/**
-	 * Resolves link to actual target resources, i.e. this function resolves
-	 * redirects and removes subsection strings ("PAGE#some_section")
-	 * @param target Link target
-	 * @return  Actual target resource
-	 */
-	public String getLinkedResource(String target) {
-		String resource = target;
-		if (resource.contains("#")) {
-			resource = resource.substring(0, resource.indexOf('#'));
-		}
-		// Take redirects into account
-		String redirectTarget = redirects.get(resource);
-		if (redirectTarget != null) {
-			resource = redirectTarget;
-		}
-		if (resource.contains("#")) {
-			resource = resource.substring(0, resource.indexOf('#'));
-		}
-//		if (!target.equals(resource)) {
-//			System.out.println("getLinkedResource: " + target + " -> " + resource);
-//		}
-		return resource;
 	}
 
 
@@ -229,23 +193,5 @@ public class WikiLinkStatistics {
 		countMap.put(0, nonRedirectPageCount - linkedPageCount);
 
 		return countMap;
-	}
-	
-	
-	/**
-	 * Writes out a map to a UTF-8 file in tsv (tab-separated value) format.
-	 * @param map Map to write out
-	 * @param out File to write map out to
-	 * @throws IOException 
-	 */
-	public static void writeMap(Map map, String out) throws IOException
-	{
-		Writer outputWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out), "UTF-8"));
-
-		for (Object key : map.keySet()) {
-			outputWriter.write(key + "\t" + map.get(key) + "\n");
-		}
-
-		outputWriter.close();
 	}
 }

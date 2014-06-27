@@ -1,4 +1,4 @@
-package de.tudarmstadt.lt.util;
+package de.tudarmstadt.lt.wiki;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -14,20 +14,11 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MonitoredFileReader;
+import de.tudarmstadt.lt.util.WikiUtil;
+
 public class SurfaceFormDictionary {
-	
-	// TODO: move to helper class
-	private static String getLinkedResource(Map<String, String> redirects, String target) {
-		int startIndex = target.indexOf('#');
-		if (startIndex >= 0) {
-			target = target.substring(0, startIndex);
-		}
-		String redirectedTarget = redirects.get(target);
-		if (redirectedTarget != null)
-			return target = redirectedTarget;
-		return target;
-	}
-	
 	public static void main(String[] args) throws IOException {
 		if (args.length != 3) {
 			System.out.println("Usage: SurfaceFormDictionary <wiki-link-file> <redirect-file> <out>");
@@ -56,7 +47,7 @@ public class SurfaceFormDictionary {
 				try {
 					String link = s.next();
 					int atPos = link.lastIndexOf('@');
-					String resource = getLinkedResource(redirects, link.substring(0, atPos));
+					String resource = WikiUtil.getLinkedResource(redirects, link.substring(0, atPos));
 					String beginEnd[] = link.substring(atPos + 1).split(":");
 					int begin = Integer.parseInt(beginEnd[0]);
 					int end = Integer.parseInt(beginEnd[1]);

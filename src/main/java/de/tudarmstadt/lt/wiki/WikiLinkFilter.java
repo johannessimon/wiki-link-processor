@@ -1,4 +1,4 @@
-package de.tudarmstadt.lt.util;
+package de.tudarmstadt.lt.wiki;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
@@ -9,6 +9,10 @@ import java.util.Scanner;
 import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
+
+import de.tudarmstadt.lt.util.FileHelper;
+import de.tudarmstadt.lt.util.MapHelper;
+import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 public class WikiLinkFilter {
 	public static void main(String[] args) throws IOException {

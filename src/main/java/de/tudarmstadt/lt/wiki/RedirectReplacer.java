@@ -8,6 +8,7 @@ import java.util.Set;
 import de.tudarmstadt.lt.util.FileHelper;
 import de.tudarmstadt.lt.util.MapHelper;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
+import de.tudarmstadt.lt.util.WikiUtil;
 
 
 public class RedirectReplacer {
@@ -39,7 +40,7 @@ public class RedirectReplacer {
 				String linkText = parts[0];
 				String target = parts[1];
 				String sentence = parts[2];
-				target = getLinkedResource(target);
+				target = WikiUtil.getLinkedResource(redirects, target, true);
 				if (pages.contains(target)) {
 					outWriter.write(linkText + "\t" + target + "\t" + sentence + "\n");
 				}
@@ -48,19 +49,5 @@ public class RedirectReplacer {
 		
 		inReader.close();
 		outWriter.close();
-	}
-	
-	private String getLinkedResource(String target) {
-		int startIndex = target.indexOf('#');
-		String subsection = "";
-		if (startIndex >= 0) {
-			subsection = target.substring(startIndex);
-			target = target.substring(0, startIndex);
-		}
-		String redirectedTarget = redirects.get(target);
-		if (redirectedTarget != null)
-			return target = redirectedTarget;
-		target += subsection;
-		return target;
 	}
 }

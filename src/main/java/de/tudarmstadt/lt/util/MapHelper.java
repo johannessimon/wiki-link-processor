@@ -1,7 +1,11 @@
 package de.tudarmstadt.lt.util;
 
 import java.io.BufferedReader;
+import java.io.BufferedWriter;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStreamWriter;
+import java.io.Writer;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
@@ -64,7 +68,18 @@ public class MapHelper {
 	    }
 	}
 	
-	public static void main(String[] args) throws IOException {
-		readMapFromFile("/Volumes/G-DRIVE/Masterarbeit/wiki/enwiki-lex-filtered.txt.redirects", "\t");
+	/**
+	 * Writes out a map to a UTF-8 file in tsv (tab-separated value) format.
+	 * @param map Map to write out
+	 * @param out File to write map out to
+	 * @throws IOException 
+	 */
+	public static void writeMap(Map<?,?> map, String out) throws IOException
+	{
+		Writer outputWriter = FileHelper.createBufferedWriter(out);
+		for (Object key : map.keySet()) {
+			outputWriter.write(key + "\t" + map.get(key) + "\n");
+		}
+		outputWriter.close();
 	}
 }

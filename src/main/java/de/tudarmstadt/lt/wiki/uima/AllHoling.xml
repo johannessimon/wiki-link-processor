@@ -33,8 +33,8 @@
     <delegateAnalysisEngine key="SentenceTokenAnnotatorLucene">
       <import name="org.jobimtext.holing.segmenter.SentenceTokenAnnotatorLucene"/>
     </delegateAnalysisEngine>
-    <delegateAnalysisEngine key="ProtoConceptAnnotator">
-      <import name="de.tudarmstadt.lt.wiki.uima.ProtoConceptAnnotator"/>
+    <delegateAnalysisEngine key="ProtoConceptMapper">
+      <import name="de.tudarmstadt.lt.wiki.uima.ProtoConceptMapper"/>
     </delegateAnalysisEngine>
     <!--
     <delegateAnalysisEngine key="SentenceFilter">
@@ -58,7 +58,7 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>ProtoConceptAnnotator/ExtractorConfigurationFile</parameter>
+          <parameter>ProtoConceptMapper/ExtractorConfigurationFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -67,7 +67,7 @@
         <multiValued>false</multiValued>
         <mandatory>true</mandatory>
         <overrides>
-          <parameter>ProtoConceptAnnotator/RedirectsFile</parameter>
+          <parameter>ProtoConceptMapper/RedirectsFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -76,7 +76,7 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>ProtoConceptAnnotator/OutputFile</parameter>
+          <parameter>ProtoConceptMapper/OutputFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -85,7 +85,7 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>ProtoConceptAnnotator/WordFile</parameter>
+          <parameter>ProtoConceptMapper/WordFile</parameter>
         </overrides>
       </configurationParameter>
       <configurationParameter>
@@ -94,7 +94,16 @@
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
         <overrides>
-          <parameter>ProtoConceptAnnotator/ClusterFile</parameter>
+          <parameter>ProtoConceptMapper/ClusterFile</parameter>
+        </overrides>
+      </configurationParameter>
+      <configurationParameter>
+        <name>ClusterMappingFile</name>
+        <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+        <overrides>
+          <parameter>ProtoConceptMapper/ClusterMappingFile</parameter>
         </overrides>
       </configurationParameter>
     
@@ -145,6 +154,12 @@
         </value>
       </nameValuePair>
       <nameValuePair>
+        <name>ClusterMappingFile</name>
+        <value>
+          <string></string>
+        </value>
+      </nameValuePair>
+      <nameValuePair>
         <name>RedirectsFile</name>
         <value>
           <string>/Users/jsimon/No-Backup/jobimtext/wiki-redirects.gz</string>
@@ -179,7 +194,7 @@
         <node>JogramHolingAnnotator</node>
         <node>TrigramHolingAnnotator</node>
         
-        <node>ProtoConceptAnnotator</node>
+        <node>ProtoConceptMapper</node>
         <!-- <node>HolingOutputIndexedFS</node> -->
       </fixedFlow>
     </flowConstraints>
