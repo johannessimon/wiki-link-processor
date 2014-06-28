@@ -86,7 +86,7 @@ public class MapUtil {
 	
 	public static void writeMap(Map<?,?> map, String out) throws IOException
 	{
-		Writer writer = FileUtil.createBufferedWriter(out);
+		Writer writer = FileUtil.createWriter(out);
 		writeMap(map, writer, "\t", "\n");
 		writer.close();
 	}

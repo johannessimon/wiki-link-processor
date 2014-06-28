@@ -3,9 +3,7 @@ package de.tudarmstadt.lt.wiki.uima;
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -24,6 +22,7 @@ import org.jobimtext.holing.extractor.JobimExtractorConfiguration;
 import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
+import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.IndexUtil.StringIndex;
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
@@ -35,11 +34,15 @@ import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	public static final String PARAM_EXTRACTOR_CONFIGURATION_FILE = "ExtractorConfigurationFile";
 	public static final String PARAM_CLUSTER_FILE = "ClusterFile";
+	public static final String PARAM_INSTANCE_OUTPUT_FILE = "InstanceOutputFile";
 	public static final String PARAM_CLUSTER_MAPPING_FILE = "ClusterMappingFile";
 	public static final String PARAM_REDIRECTS_FILE = "RedirectsFile";
 	public static final String PARAM_WORD_FILE = "WordFile";
-	public static final String PARAM_OUTPUT_FILE = "OutputFile";
+	public static final String PARAM_TEST_MODE = "TestMode";
 	
+	String instanceOutputFile;
+	String clusterMappingFile;
+	String baselineMappingFile;
 	JobimAnnotationExtractor extractor;
 	StringIndex strIndex = new StringIndex();
 	Map<Integer, List<Cluster<Integer>>> clusters;
@@ -49,7 +52,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	// jo -> resource (MFS)
 	Map<Integer, String> baselineMapping;
 	BufferedWriter writer;
-	String outputFileName;
+	boolean testMode;
 	
 	int numProcessesSentences = 0;
 	int numInstances = 0;
@@ -79,10 +82,13 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				.getConfigParameterValue(PARAM_EXTRACTOR_CONFIGURATION_FILE);
 		String clusterFileName = (String) context
 				.getConfigParameterValue(PARAM_CLUSTER_FILE);
-		String clusterMappingFileName = (String) context
+		instanceOutputFile = (String) context
+				.getConfigParameterValue(PARAM_INSTANCE_OUTPUT_FILE);
+		clusterMappingFile = (String) context
 				.getConfigParameterValue(PARAM_CLUSTER_MAPPING_FILE);
-		outputFileName = (String) context
-				.getConfigParameterValue(PARAM_OUTPUT_FILE);
+		baselineMappingFile = clusterMappingFile + "-baseline";
+		testMode = (Boolean) context
+				.getConfigParameterValue(PARAM_TEST_MODE);
 		String redirectsFileName = (String) context
 				.getConfigParameterValue(PARAM_REDIRECTS_FILE);
 		String wordFile = (String) context
@@ -92,12 +98,15 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			extractor = JobimExtractorConfiguration
 					.getExtractorFromXmlFile(extractorConfFileName);
 			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
-			if (clusterMappingFileName != null && !clusterMappingFileName.isEmpty()) {
-				clusterMapping = ClusterReaderWriter.readClusterMapping(new MonitoredFileReader(clusterMappingFileName), strIndex, words, clusters);
-				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(clusterMappingFileName + "-baseline"), strIndex, words, clusters);
+			if (testMode) {
+				System.out.println("Reading concept mappings from " + clusterMappingFile + " and " + baselineMappingFile);
+				clusterMapping = ClusterReaderWriter.readClusterMapping(new MonitoredFileReader(clusterMappingFile), strIndex, words, clusters);
+				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(baselineMappingFile), strIndex, words, clusters);
+			} else {
+				System.out.println("Writing concept mappings to " + clusterMappingFile + " and " + baselineMappingFile);
+				writer = FileUtil.createWriter(instanceOutputFile);
 			}
-			System.out.println("Writing ProtoConceptMapper results to " + outputFileName);
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName)));
+			System.out.println("Writing instance assignments to " + instanceOutputFile);
 			redirects = MapUtil.readMapFromFile(redirectsFileName, "\t");
 		} catch (Exception e) {
 			throw new ResourceInitializationException(e);
@@ -109,12 +118,27 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		evaluateConceptMapping();
 		super.collectionProcessComplete();
 	}
+
+	@Override
+	public void batchProcessComplete() throws AnalysisEngineProcessException {
+		try {
+			writer.close();
+			if (!testMode) {
+				writeBaselineConceptMappings();
+				writeConceptMappings();
+			}
+		} catch (IOException e) {
+			e.printStackTrace();
+		} finally {
+			super.batchProcessComplete();
+		}
+	}
 	
 	public void writeBaselineConceptMappings() {
 		System.out.println("Writing concept mappings...");
 		BufferedWriter mappingWriter;
 		try {
-			mappingWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName + ".mappings-baseline")));
+			mappingWriter = FileUtil.createWriter(baselineMappingFile);
 			for (Entry<Integer, Map<String, Integer>> mappings : baselineConceptMappings.entrySet()) {
 				Integer jo = mappings.getKey();
 				mappingWriter.write(strIndex.get(jo) + "\t");
@@ -141,7 +165,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		System.out.println("Writing concept mappings...");
 		BufferedWriter mappingWriter;
 		try {
-			mappingWriter = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(outputFileName + ".mappings")));
+			mappingWriter = FileUtil.createWriter(clusterMappingFile);
 			for (Entry<Cluster<Integer>, Map<String, Integer>> mappings : conceptMappings.entrySet()) {
 				Cluster<Integer> c = mappings.getKey();
 				Integer concept = c.name;
@@ -163,21 +187,6 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 			mappingWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
-		}
-	}
-
-	@Override
-	public void batchProcessComplete() throws AnalysisEngineProcessException {
-		try {
-			writer.close();
-			if (clusterMapping == null) {
-				writeBaselineConceptMappings();
-				writeConceptMappings();
-			}
-		} catch (IOException e) {
-			e.printStackTrace();
-		} finally {
-			super.batchProcessComplete();
 		}
 	}
 	
@@ -282,7 +291,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 						
 						try {
 							String sense = highestRankedSense != null ? Integer.toString(highestRankedSense.clusterId) : "NULL";
-							writer.write(strIndex.get(jo) + "." + sense + " -> " + resource + "\t" + s.getCoveredText() + "\n");
+							writer.write(strIndex.get(jo) + "\t" + sense + "\t" + resource + "\t" + s.getCoveredText() + "\n");
 						} catch (IOException e) {
 							throw new AnalysisEngineProcessException(e);
 						}

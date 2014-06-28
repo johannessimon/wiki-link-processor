@@ -31,7 +31,7 @@ public class RedirectReplacer {
 		redirects = MapUtil.readMapFromFile(redirectFile, "\t");
 		pages = MapUtil.readSetFromFile(pagesFile);
 		BufferedReader inReader = new BufferedReader(new MonitoredFileReader(inFile));
-		BufferedWriter outWriter = FileUtil.createBufferedWriter(outFile);
+		BufferedWriter outWriter = FileUtil.createWriter(outFile);
 		
 		String line;
 		while ((line = inReader.readLine()) != null) {

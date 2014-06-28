@@ -13,15 +13,11 @@ import org.apache.commons.io.input.CountingInputStream;
 public class MonitoredFileReader extends Reader {
 	private CountingInputStream countingIn;
 	private Reader inReader;
-	private long fileSize;
 	private File file;
-	private double reportProgressAfter;
-	
-	private double lastProgress = 0.0;
+	private ProgressMonitor monitor;
 	
 	public MonitoredFileReader(String fileName, String encoding, double reportProgressAfter) throws IOException {
 		file = new File(fileName);
-		fileSize = file.length();
 		InputStream in = countingIn = new CountingInputStream(new FileInputStream(file));
 		if (fileName.endsWith(".gz")) {
 			try {
@@ -35,8 +31,7 @@ public class MonitoredFileReader extends Reader {
 			}
 		}
 		inReader = new InputStreamReader(in, encoding);
-		this.reportProgressAfter = reportProgressAfter;
-		System.out.println("[" + file.getName() + "] Starting to read... (" + fileSize + " bytes)");
+		monitor = new ProgressMonitor(file.getName(), "bytes", file.length(), reportProgressAfter);
 	}
 	
 	public MonitoredFileReader(String fileName, String encoding) throws IOException {
@@ -50,13 +45,7 @@ public class MonitoredFileReader extends Reader {
 	@Override
 	public int read(char[] cbuf, int off, int len) throws IOException {
 		int res = inReader.read(cbuf, off, len);
-		
-		double progress = (double)countingIn.getByteCount() / (double)fileSize;
-		if (progress - lastProgress >= reportProgressAfter) {
-			System.out.printf("[%s] Processed %.2f%%\n", file.getName(), progress * 100.0);
-			lastProgress = progress;
-		}
-		
+		monitor.reportProgress(countingIn.getByteCount());
 		return res;
 	}
 

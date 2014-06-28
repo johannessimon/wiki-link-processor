@@ -3,7 +3,6 @@ package de.tudarmstadt.lt.util;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.FileInputStream;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
@@ -26,7 +25,7 @@ public class Shuf {
 		RandomAccessFile file = new RandomAccessFile(args[0], "r");
 		BufferedWriter writer;
 		if (args.length == 3) {
-			writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(args[2]), "UTF-8"));
+			writer = FileUtil.createWriter(args[2]);
 		} else {
 			writer = new BufferedWriter(new OutputStreamWriter(System.out, "UTF-8"));
 		}

@@ -27,7 +27,7 @@ public class WikiLinkFilter {
 		Set<String> words = MapUtil.readSetFromFile(wordFile);
 
 		BufferedReader reader = new BufferedReader(new MonitoredFileReader(in));
-		BufferedWriter writer = FileUtil.createBufferedGzipWriter(out);
+		BufferedWriter writer = FileUtil.createWriter(out);
 		String line;
 		while ((line = reader.readLine()) != null) {
 			String cols[] = line.split("\t");

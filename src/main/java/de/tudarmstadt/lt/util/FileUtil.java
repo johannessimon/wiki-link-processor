@@ -9,12 +9,20 @@ import java.io.OutputStreamWriter;
 import java.util.zip.GZIPOutputStream;
 
 public class FileUtil {
-	public static BufferedWriter createBufferedGzipWriter(String fileName) throws IOException {
+	private static BufferedWriter createBufferedGzipWriter(String fileName) throws IOException {
 		return new BufferedWriter(new OutputStreamWriter(new GZIPOutputStream(new FileOutputStream(fileName)), "UTF-8"));
 	}
 	
-	public static BufferedWriter createBufferedWriter(String fileName) throws IOException {
+	private static BufferedWriter createBufferedWriter(String fileName) throws IOException {
 		return new BufferedWriter(new OutputStreamWriter(new FileOutputStream(fileName), "UTF-8"));
+	}
+	
+	public static BufferedWriter createWriter(String fileName) throws IOException {
+		if (fileName.endsWith(".gz")) {
+			return createBufferedGzipWriter(fileName);
+		} else {
+			return createBufferedWriter(fileName);
+		}
 	}
 	
 	public static int readNumberOfLines(String fileName) throws IOException {

@@ -70,11 +70,12 @@ public class ContextClueAggregator {
 	public static void main(String[] args) throws IOException {
 		if (args.length != 3) {
 			System.out.println("Usage: ContextClueAggregator <cluster-file> <feature-file> <output-file>");
+			System.exit(1);
 		}
 		String clusterFile = args[0];
 		String featureFile = args[1];
 		String outputFile = args[2];
-		Writer writer = FileUtil.createBufferedWriter(outputFile);
+		Writer writer = FileUtil.createWriter(outputFile);
 		ContextClueAggregator ccg = new ContextClueAggregator(writer);
 		Reader clusterReader = new MonitoredFileReader(clusterFile);
 		ccg.clusters = ClusterReaderWriter.readClusters(clusterReader);

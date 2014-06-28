@@ -21,7 +21,7 @@
         <mandatory>false</mandatory>
       </configurationParameter>
     <configurationParameter>
-        <name>OutputFile</name>
+        <name>InstanceOutputFile</name>
         <type>String</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
@@ -41,6 +41,12 @@
     <configurationParameter>
         <name>ClusterMappingFile</name>
         <type>String</type>
+        <multiValued>false</multiValued>
+        <mandatory>false</mandatory>
+      </configurationParameter>
+    <configurationParameter>
+        <name>TestMode</name>
+        <type>Boolean</type>
         <multiValued>false</multiValued>
         <mandatory>false</mandatory>
       </configurationParameter>

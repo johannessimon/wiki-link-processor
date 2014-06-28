@@ -24,7 +24,7 @@ public class GraphReader {
 		int numEdgesOfCurrNode = 0;
 		while ((line = reader.readLine()) != null) {
 			String[] lineSplits = line.split("\t");
-			if (lineSplits.length != 3) {
+			if (lineSplits.length < 3) {
 				System.err.println("Warning: Found " + lineSplits.length + " columns instead of 3!");
 				continue;
 			}
@@ -34,8 +34,8 @@ public class GraphReader {
 			if (lastNode != null && !from.equals(lastNode)) {
 				if (!targets.isEmpty()) {
 					g.addNode(gWrapper.getIndex(lastNode), targets, weights);
-					targets.clear();
-					weights.clear();
+					targets = new ArrayList<Integer>(maxNumEdgesPerNode);
+					weights = new ArrayList<Float>(maxNumEdgesPerNode);
 				}
 				numEdgesOfCurrNode = 0;
 			}
@@ -56,8 +56,6 @@ public class GraphReader {
 		}
 		
 		g.addNode(gWrapper.getIndex(lastNode), targets, weights);
-		targets.clear();
-		weights.clear();
 
 		System.out.println();
 		return gWrapper;

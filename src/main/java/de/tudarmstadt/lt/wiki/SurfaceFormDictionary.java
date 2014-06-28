@@ -2,9 +2,7 @@ package de.tudarmstadt.lt.wiki;
 
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.OutputStreamWriter;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.Map;
@@ -14,6 +12,7 @@ import java.util.Set;
 
 import org.apache.commons.lang.StringUtils;
 
+import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
@@ -62,7 +61,7 @@ public class SurfaceFormDictionary {
 		}
 		reader.close();
 		
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(out), "UTF-8"));
+		BufferedWriter writer = FileUtil.createWriter(out);
 		
 		for (Entry<String, Set<String>> surfaceForm : surfaceForm2Resources.entrySet()) {
 			writer.write(surfaceForm.getKey() + "\t");

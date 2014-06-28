@@ -1,7 +1,7 @@
 package de.tudarmstadt.lt.cw.graph;
 
 import java.io.IOException;
-import java.io.OutputStream;
+import java.io.Writer;
 import java.util.Collection;
 import java.util.Iterator;
 
@@ -35,7 +35,7 @@ public interface Graph<N, E> extends Iterable<N>{
 	 */
 	public Graph<N, E> subgraph(Collection<N> subgraphNodes);
 
-	public void writeDot(OutputStream os) throws IOException;
+	public void writeDot(Writer writer) throws IOException;
 
-	public void writeDot(OutputStream os, Index<?, N> index) throws IOException;
+	public void writeDot(Writer writer, Index<?, N> index) throws IOException;
 }

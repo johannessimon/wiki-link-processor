@@ -1,15 +1,7 @@
 package de.tudarmstadt.lt.wsi;
 
-import java.io.BufferedOutputStream;
-import java.io.BufferedWriter;
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
-import java.io.InputStream;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
+import java.io.Reader;
 import java.io.Writer;
 import java.util.HashSet;
 import java.util.Iterator;
@@ -33,7 +25,9 @@ import de.tudarmstadt.lt.cw.graph.ArrayBackedGraphCW;
 import de.tudarmstadt.lt.cw.graph.Graph;
 import de.tudarmstadt.lt.cw.graph.StringIndexGraphWrapper;
 import de.tudarmstadt.lt.cw.io.GraphReader;
+import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
+import de.tudarmstadt.lt.util.ProgressMonitor;
 
 public class CWD {
 	protected Graph<Integer, Float> graph;
@@ -82,19 +76,7 @@ public class CWD {
 		/*String nodeName = graphWrapper.get(node);
 		try {
 			subgraph.writeDot(new BufferedOutputStream(new FileOutputStream(new File("/Users/jsimon/Desktop/graph-" + nodeName + ".dot"))), graphWrapper);
-		} catch (FileNotFoundException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
-		}*/
-		/*try {
-			OutputStream os = new FileOutputStream("/Users/jsimon/No-Backup/wiki-holing-all/graph.dot");
-			subgraph.writeDot(os);
-			os.close();
-		} catch (IOException e) {
-			// TODO Auto-generated catch block
+		} catch (Exception e) {
 			e.printStackTrace();
 		}*/
 		return cw.findClusters(subgraph);
@@ -119,9 +101,13 @@ public class CWD {
 	
 	public void findSenseClusters(Writer writer) throws IOException {
 		Iterator<Integer> nodeIt = graph.iterator();
+		int processedNodes = 0;
+		ProgressMonitor monitor = new ProgressMonitor("word graph", "nodes", graph.getSize(), 0.01);
 		while (nodeIt.hasNext()) {
 			Integer node = nodeIt.next();
 			findSenseClusters(writer, node);
+			processedNodes++;
+			monitor.reportProgress(processedNodes);
 		}
 	}
 	
@@ -129,6 +115,16 @@ public class CWD {
 	public static void main(String args[]) throws IOException {
 		CommandLineParser clParser = new BasicParser();
 		Options options = new Options();
+		options.addOption(OptionBuilder.withArgName("file")
+		                  .hasArg()
+                          .withDescription("input graph in ABC format (uncompressed or gzipped)")
+                          .isRequired()
+                          .create("in"));
+		options.addOption(OptionBuilder.withArgName("file")
+		                  .hasArg()
+                          .withDescription("name of cluster output file (add .gz for compressed output)")
+                          .isRequired()
+                          .create("out"));
 		options.addOption(OptionBuilder.withArgName("integer")
 		                  .hasArg()
 		                  .withDescription("max. number of edges to process for each similar word (word subgraph connectivity)")
@@ -150,30 +146,29 @@ public class CWD {
                 .create("nodes"));
 		CommandLine cl = null;
 		boolean success = false;
-		if (args.length >= 2) {
-			try {
-				cl = clParser.parse(options, args);
-				success = true;
-			} catch (ParseException e) {
-				System.out.println(e.getMessage());
-			}
+		try {
+			cl = clParser.parse(options, args);
+			success = true;
+		} catch (ParseException e) {
+			System.out.println(e.getMessage());
 		}
 		
 		if (!success) {
 			HelpFormatter formatter = new HelpFormatter();
-			formatter.printHelp("CWD <input> <output>", options, true);
+			formatter.printHelp("CWD", options, true);
 			System.exit(1);
 		}
 		String[] nodes = cl.getOptionValues("nodes");
-		InputStream is = new FileInputStream(args[0]);
-		OutputStream os = new FileOutputStream(args[1]);
+		String inFile = cl.getOptionValue("in");
+		String outFile = cl.getOptionValue("out");
+		Reader inReader = new MonitoredFileReader(inFile);
+		Writer writer = FileUtil.createWriter(outFile);
 		float minEdgeWeight = cl.hasOption("e") ? Float.parseFloat(cl.getOptionValue("e")) : 0.0f;
 		int N = Integer.parseInt(cl.getOptionValue("N"));
 		int n = Integer.parseInt(cl.getOptionValue("n"));
-		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(new MonitoredFileReader(args[0]), false, N, minEdgeWeight);
+		StringIndexGraphWrapper<Float> graphWrapper = GraphReader.readABCIndexed(inReader, false, N, minEdgeWeight);
 		CWD cwd = new CWD(graphWrapper, n);
 		System.out.println("Running CW sense clustering...");
-		BufferedWriter writer = new BufferedWriter(new OutputStreamWriter(os));
 		if (nodes != null) {
 			for (String node : nodes) {
 				node = node.trim();
@@ -184,6 +179,5 @@ public class CWD {
 			cwd.findSenseClusters(writer);
 		}
 		writer.close();
-		is.close();
 	}
 }

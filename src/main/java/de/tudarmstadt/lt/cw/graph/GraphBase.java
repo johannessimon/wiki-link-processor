@@ -1,11 +1,7 @@
 package de.tudarmstadt.lt.cw.graph;
 
-import java.io.BufferedWriter;
 import java.io.IOException;
-import java.io.OutputStream;
-import java.io.OutputStreamWriter;
 import java.io.Writer;
-import java.nio.charset.Charset;
 import java.util.Iterator;
 import java.util.List;
 
@@ -19,18 +15,15 @@ import de.tudarmstadt.lt.util.IndexUtil.Index;
  * methods
  */
 public abstract class GraphBase<N, E> implements Graph<N, E> {
-	final static Charset UTF_8 = Charset.forName("UTF-8");
-
 	public GraphBase() {
 		super();
 	}
 
-	public void writeDot(OutputStream os) throws IOException {
-		writeDot(os, IndexUtil.<N>getIdentityIndex());
+	public void writeDot(Writer writer) throws IOException {
+		writeDot(writer, IndexUtil.<N>getIdentityIndex());
 	}
 
-	public void writeDot(OutputStream os, Index<?, N> index) throws IOException {
-		Writer writer = new BufferedWriter(new OutputStreamWriter(os, UTF_8));
+	public void writeDot(Writer writer, Index<?, N> index) throws IOException {
 		writer.write("digraph g {\n");
 		Iterator<N> it = iterator();
 		while (it.hasNext()) {

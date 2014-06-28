@@ -103,11 +103,15 @@ public class CW<N> {
 	
 	public Map<N, Set<N>> findClusters(Graph<N, Float> graph) {		
 		init(graph);
+		int numSteps = 0;
 		do {
+			if (numSteps > 100) {
+				System.out.println("Too many steps!");
+			}
 			changeInPrevStep = false;
 			step();
+			numSteps++;
 		} while (changeInPrevStep);
-		
 		return getClusters();
 	}
 }
