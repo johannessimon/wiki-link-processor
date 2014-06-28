@@ -77,6 +77,7 @@ public class ContextClueAggregator {
 		String outputFile = args[2];
 		Writer writer = FileUtil.createWriter(outputFile);
 		ContextClueAggregator ccg = new ContextClueAggregator(writer);
+		writer.close();
 		Reader clusterReader = new MonitoredFileReader(clusterFile);
 		ccg.clusters = ClusterReaderWriter.readClusters(clusterReader);
 		Reader featureReader = new MonitoredFileReader(featureFile);

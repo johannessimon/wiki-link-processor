@@ -154,7 +154,6 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				mappingWriter.write("\n");
 			}
 			
-			mappingWriter.flush();
 			mappingWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
@@ -183,7 +182,6 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				mappingWriter.write("\n");
 			}
 			
-			mappingWriter.flush();
 			mappingWriter.close();
 		} catch (IOException e) {
 			e.printStackTrace();
