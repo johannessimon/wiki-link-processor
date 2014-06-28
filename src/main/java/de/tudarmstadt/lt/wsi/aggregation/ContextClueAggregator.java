@@ -76,13 +76,13 @@ public class ContextClueAggregator {
 		String featureFile = args[1];
 		String outputFile = args[2];
 		Writer writer = FileUtil.createWriter(outputFile);
-		ContextClueAggregator ccg = new ContextClueAggregator(writer);
-		writer.close();
+		ContextClueAggregator cca = new ContextClueAggregator(writer);
 		Reader clusterReader = new MonitoredFileReader(clusterFile);
-		ccg.clusters = ClusterReaderWriter.readClusters(clusterReader);
+		cca.clusters = ClusterReaderWriter.readClusters(clusterReader);
 		Reader featureReader = new MonitoredFileReader(featureFile);
 		System.out.println("Processing context features...");
-		ccg.readContextFeatures(featureReader);
-		ccg.writeClusters();
+		cca.readContextFeatures(featureReader);
+		cca.writeClusters();
+		writer.close();
 	}
 }
