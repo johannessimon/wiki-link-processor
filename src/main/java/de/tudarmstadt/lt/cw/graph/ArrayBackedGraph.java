@@ -36,6 +36,10 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 		edgeTargets = new ArrayList[initialSize];
 		this.initialNumEdgesPerNode = initialNumEdgesPerNode;
 	}
+	
+	public int getSize() {
+		return nodes.cardinality();
+	}
 
 	public Iterator<Integer> iterator() {
 		return new Iterator<Integer>() {
@@ -67,7 +71,11 @@ public class ArrayBackedGraph<E> extends GraphBase<Integer, E> {
 	public void addNode(Integer node, ArrayList<Integer> targets, ArrayList<E> weights) {
 		ensureCapacity(node + 1);
 		nodes.set(node);
+		for (int target : targets) {
+			addNode(target);
+		}
 		edgeTargetSet[node] = new IntOpenHashSet(targets.size());
+		edgeTargetSet[node].addAll(targets);
 		edgeTargets[node] = targets;
 		edgeWeights[node] = weights;
 	}

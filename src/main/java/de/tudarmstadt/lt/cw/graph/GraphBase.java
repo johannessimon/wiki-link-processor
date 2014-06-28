@@ -10,7 +10,6 @@ import java.util.Iterator;
 import java.util.List;
 
 import org.apache.commons.collections.IteratorUtils;
-import org.apache.commons.lang.StringUtils;
 
 import de.tudarmstadt.lt.util.IndexUtil;
 import de.tudarmstadt.lt.util.IndexUtil.Index;
@@ -51,7 +50,7 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 		writer.flush();
 		return;
 	}
-
+/*
 	@Override
 	public String toString() {
 		StringBuilder sb = new StringBuilder();
@@ -66,7 +65,7 @@ public abstract class GraphBase<N, E> implements Graph<N, E> {
 		sb.append("}\n");
 		return sb.toString();
 	}
-
+*/
 	@SuppressWarnings("unchecked")
 	public boolean equals(Object other) {
 		if (!(other instanceof Graph<?, ?>)) {
