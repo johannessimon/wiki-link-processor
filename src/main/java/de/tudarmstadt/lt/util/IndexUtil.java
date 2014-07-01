@@ -3,6 +3,7 @@ package de.tudarmstadt.lt.util;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
@@ -59,7 +60,7 @@ public class IndexUtil {
 	}
 	
 	public static <A, B, C> Map<A, C> mapKeys(Map<B, C> m, Index<A, B> index) {
-		Map<A, C> res = new HashMap<A, C>(m.size());
+		Map<A, C> res = new LinkedHashMap<A, C>(m.size());
 		for (Entry<B, C> entry : m.entrySet()) {
 			res.put(index.get(entry.getKey()), entry.getValue());
 		}
@@ -67,7 +68,7 @@ public class IndexUtil {
 	}
 	
 	public static <A, B, C> Map<C, A> mapValues(Map<C, B> m, Index<A, B> index) {
-		Map<C, A> res = new HashMap<C, A>(m.size());
+		Map<C, A> res = new LinkedHashMap<C, A>(m.size());
 		for (Entry<C, B> entry : m.entrySet()) {
 			res.put(entry.getKey(), index.get(entry.getValue()));
 		}
