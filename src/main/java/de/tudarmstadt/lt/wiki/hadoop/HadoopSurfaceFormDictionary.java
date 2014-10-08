@@ -16,22 +16,29 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+import org.apache.log4j.Logger;
 
 public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, IntWritable> {
+		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
+		
 		@Override
 		public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
-			String valueParts[] = value.toString().split("\t");
-			String text = valueParts[0];
-			String linkParts[] = valueParts[1].split("@");
-			String target = linkParts[0];
-			String startEnd[] = linkParts[1].split(":");
-			int start = Integer.parseInt(startEnd[0]);
-			int end = Integer.parseInt(startEnd[1]);
-			String surfaceForm = text.substring(start, end);
-			
-			context.write(new Text(surfaceForm + "@@" + target), new IntWritable(1));
+			try {
+				String valueParts[] = value.toString().split("\t");
+				String text = valueParts[0];
+				String linkParts[] = valueParts[1].split("@");
+				String target = linkParts[0];
+				String startEnd[] = linkParts[1].split(":");
+				int start = Integer.parseInt(startEnd[0]);
+				int end = Integer.parseInt(startEnd[1]);
+				String surfaceForm = text.substring(start, end);
+				
+				context.write(new Text(surfaceForm + "@@" + target), new IntWritable(1));
+			} catch (Exception e) {
+				log.error("Can't process line: " + value.toString(), e);
+			}
 		}
 	}
 
