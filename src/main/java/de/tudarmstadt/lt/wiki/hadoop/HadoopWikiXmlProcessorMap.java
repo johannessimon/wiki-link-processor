@@ -86,7 +86,11 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 						
 						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
 						if (implicitLinks != null) {
-							mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
+							if (implicitLinks.size() > 1000) {
+								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
+							} else {
+								log.error("too many implicit links: " + implicitLinks.subList(0, 100));
+							}
 						}
 						sIndex++;
 					} else {
