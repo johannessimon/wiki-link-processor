@@ -7,6 +7,7 @@ import java.util.List;
 import java.util.Map;
 
 import org.apache.commons.lang.StringUtils;
+import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
@@ -20,11 +21,14 @@ import de.tudarmstadt.lt.wiki.WikiProcessor.WikiXmlRecord;
 public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 	private MultipleOutputs<Text, Text> mos;
 	private WikiProcessor p;
+	private int maxSentenceLength;
 	
 	@Override
 	public void setup(Context context) {
 		mos = new MultipleOutputs<Text, Text>(context);
 		p = new WikiProcessor();
+		Configuration conf = context.getConfiguration();
+		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1000);
 	}
 	
 	@Override
@@ -63,19 +67,21 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 			p.parse(record.text, sentences, sentenceLinks, implicitSentenceLinks);
 			int sIndex = 0;
 			for (String sentence : sentences) {
-				Text sentenceText = new Text(sentence);
-				mos.write("sentences", sentenceText, NullWritable.get());
-				
-				List<String> links = sentenceLinks.get(sIndex);
-				if (links != null) {
-					mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+				if (sentence.length() <= maxSentenceLength) {
+					Text sentenceText = new Text(sentence);
+					mos.write("sentences", sentenceText, NullWritable.get());
+					
+					List<String> links = sentenceLinks.get(sIndex);
+					if (links != null) {
+						mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+					}
+					
+					List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
+					if (implicitLinks != null) {
+						mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
+					}
+					sIndex++;
 				}
-				
-				List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
-				if (implicitLinks != null) {
-					mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
-				}
-				sIndex++;
 			}
 		}
 	}
