@@ -13,6 +13,7 @@ import org.apache.hadoop.io.NullWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.hadoop.mapreduce.lib.output.MultipleOutputs;
+import org.apache.log4j.Logger;
 
 import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.lt.wiki.WikiProcessor;
@@ -22,13 +23,19 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 	private MultipleOutputs<Text, Text> mos;
 	private WikiProcessor p;
 	private int maxSentenceLength;
+	private int maxPageLength;
+	
+	Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 	
 	@Override
 	public void setup(Context context) {
 		mos = new MultipleOutputs<Text, Text>(context);
 		p = new WikiProcessor();
 		Configuration conf = context.getConfiguration();
-		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1000);
+		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1_000);
+		maxPageLength = conf.getInt("wiki.page.maxlength", 100_000);
+		log.info("Max sentence length is " + maxSentenceLength);
+		log.info("Max page length is " + maxPageLength);
 	}
 	
 	@Override
@@ -61,27 +68,33 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		}
 		
 		if (record.text != null) {
-			List<String> sentences = new LinkedList<String>();
-			Map<Integer, List<String>> sentenceLinks = new HashMap<Integer, List<String>>();
-			Map<Integer, List<String>> implicitSentenceLinks = new HashMap<Integer, List<String>>();
-			p.parse(record.text, sentences, sentenceLinks, implicitSentenceLinks);
-			int sIndex = 0;
-			for (String sentence : sentences) {
-				if (sentence.length() <= maxSentenceLength) {
-					Text sentenceText = new Text(sentence);
-					mos.write("sentences", sentenceText, NullWritable.get());
-					
-					List<String> links = sentenceLinks.get(sIndex);
-					if (links != null) {
-						mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+			if (record.text.length() <= maxPageLength) {
+				List<String> sentences = new LinkedList<String>();
+				Map<Integer, List<String>> sentenceLinks = new HashMap<Integer, List<String>>();
+				Map<Integer, List<String>> implicitSentenceLinks = new HashMap<Integer, List<String>>();
+				p.parse(record.text, sentences, sentenceLinks, implicitSentenceLinks);
+				int sIndex = 0;
+				for (String sentence : sentences) {
+					if (sentence.length() <= maxSentenceLength) {
+						Text sentenceText = new Text(sentence);
+						mos.write("sentences", sentenceText, NullWritable.get());
+						
+						List<String> links = sentenceLinks.get(sIndex);
+						if (links != null) {
+							mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+						}
+						
+						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
+						if (implicitLinks != null) {
+							mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
+						}
+						sIndex++;
+					} else {
+						log.info("Skipping sentence of length " + sentence.length() + " as it is too long.");
 					}
-					
-					List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
-					if (implicitLinks != null) {
-						mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
-					}
-					sIndex++;
 				}
+			} else {
+				log.info("Skipping page of length " + record.text.length() + " as it is too long.");
 			}
 		}
 	}

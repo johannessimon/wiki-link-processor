@@ -15,7 +15,7 @@
 		</repository>
 	    <repository>
 	        <id>johannessimon-mvn-repo</id>
-	        <url>https://raw.github.com/johannessimon/mvn-repo/master</url>
+	        <url>https://raw.github.com/johannessimon/mvn-repo/master/</url>
 	        <snapshots>
 	            <enabled>true</enabled>
 	            <!-- <updatePolicy>always</updatePolicy> -->
@@ -140,6 +140,12 @@
 			<groupId>de.tudarmstadt.lt</groupId>
 			<artifactId>de.tudarmstadt.lt.util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
+		</dependency>
+		<dependency>
+			<groupId>org.apache.logging.log4j</groupId>
+			<artifactId>log4j</artifactId>
+			<version>2.0.2</version>
+			<type>pom</type>
 		</dependency>
 	</dependencies>
 
