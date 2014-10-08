@@ -33,7 +33,7 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		p = new WikiProcessor();
 		Configuration conf = context.getConfiguration();
 		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1_000);
-		maxPageLength = conf.getInt("wiki.page.maxlength", 100_000);
+		maxPageLength = conf.getInt("wiki.page.maxlength", 1_000_000);
 		log.info("Max sentence length is " + maxSentenceLength);
 		log.info("Max page length is " + maxPageLength);
 	}
