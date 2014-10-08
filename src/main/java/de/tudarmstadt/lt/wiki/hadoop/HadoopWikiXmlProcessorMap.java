@@ -24,6 +24,7 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 	private WikiProcessor p;
 	private int maxSentenceLength;
 	private int maxPageLength;
+	private int maxNumLinksPerPage;
 	
 	Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 	
@@ -34,8 +35,10 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		Configuration conf = context.getConfiguration();
 		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1_000);
 		maxPageLength = conf.getInt("wiki.page.maxlength", 1_000_000);
+		maxNumLinksPerPage = conf.getInt("wiki.links.maxperpage", 1_000);
 		log.info("Max sentence length is " + maxSentenceLength);
 		log.info("Max page length is " + maxPageLength);
+		log.info("Max num links per page is " + maxNumLinksPerPage);
 	}
 	
 	@Override
@@ -81,24 +84,28 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 						
 						List<String> links = sentenceLinks.get(sIndex);
 						if (links != null) {
-							mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+							if (links.size() < maxNumLinksPerPage) {
+								mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+							} else {
+								log.error("(" + pageTitle + ") too many links: " + links.subList(0, 100));
+							}
 						}
 						
 						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
 						if (implicitLinks != null) {
-							if (implicitLinks.size() < 1000) {
+							if (implicitLinks.size() < maxNumLinksPerPage) {
 								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
 							} else {
-								log.error("too many implicit links: " + implicitLinks.subList(0, 100));
+								log.error("(" + pageTitle + ") too many implicit links: " + implicitLinks.subList(0, 100));
 							}
 						}
 						sIndex++;
 					} else {
-						log.info("Skipping sentence of length " + sentence.length() + " as it is too long.");
+						log.info("(" + pageTitle + ") Skipping sentence of length " + sentence.length() + " as it is too long.");
 					}
 				}
 			} else {
-				log.info("Skipping page of length " + record.text.length() + " as it is too long.");
+				log.info("(" + pageTitle + ") Skipping page of length " + record.text.length() + " as it is too long.");
 			}
 		}
 	}
