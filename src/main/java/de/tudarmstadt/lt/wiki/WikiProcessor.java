@@ -290,7 +290,10 @@ public class WikiProcessor {
 
 		Collection<LinkOccurrence> links = new LinkedList<>();
 		Map<Paragraph, Span[]> paragraphsWithSentenceSpans = new HashMap<>();
-		for (Paragraph p : pp.getParagraphs()){
+		Map<Paragraph, Integer> paragraphsSentenceOffsets = new HashMap<>();
+		int sOffset = 0;
+		for (Paragraph p : pp.getParagraphs()) {
+			paragraphsSentenceOffsets.put(p, sOffset);
 			// Replace newlines by spaces. This keeps all spans (e.g. of links) intact,
 			// as the number of characters does not change anywhere.
 			String pText = p.getText().replace('\n', ' ');
@@ -300,12 +303,14 @@ public class WikiProcessor {
 			for (Span sSpan : sentenceSpans) {
 				sentences.add(pText.substring(sSpan.getStart(), sSpan.getEnd()));
 			}
+			sOffset += sentenceSpans.length;
 		}
 
 		Collection<LinkOccurrence> implicitLinks = new LinkedList<>();
 		for (LinkOccurrence link : links) {
 			if (sentenceLinks != null) {
-				MapUtil.addTo(sentenceLinks, link.sIndex, getLinkRef(link), LinkedList.class);
+				int sIndex = link.sIndex + paragraphsSentenceOffsets.get(link.p);
+				MapUtil.addTo(sentenceLinks, sIndex, getLinkRef(link), LinkedList.class);
 			}
 			for (Paragraph p : paragraphsWithSentenceSpans.keySet()) {
 				Span[] spans = paragraphsWithSentenceSpans.get(p);
@@ -314,7 +319,8 @@ public class WikiProcessor {
 		}
 		if (implicitSentenceLinks != null) {
 			for (LinkOccurrence link : implicitLinks) {
-				MapUtil.addTo(implicitSentenceLinks, link.sIndex, getLinkRef(link), LinkedList.class);
+				int sIndex = link.sIndex + paragraphsSentenceOffsets.get(link.p);
+				MapUtil.addTo(implicitSentenceLinks, sIndex, getLinkRef(link), LinkedList.class);
 			}
 		}
 	}
