@@ -13,6 +13,14 @@
 			<id>cloudera</id>
 			<url>https://repository.cloudera.com/artifactory/cloudera-repos/</url>
 		</repository>
+	    <repository>
+	        <id>johannessimon-mvn-repo</id>
+	        <url>https://raw.github.com/johannessimon/mvn-repo/</url>
+	        <snapshots>
+	            <enabled>true</enabled>
+	            <updatePolicy>always</updatePolicy>
+	        </snapshots>
+	    </repository>
 	</repositories>
 	<dependencies>
 		<dependency>
