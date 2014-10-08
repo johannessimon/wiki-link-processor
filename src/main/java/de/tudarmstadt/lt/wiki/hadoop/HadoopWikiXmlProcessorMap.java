@@ -59,7 +59,8 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 		if (record.text != null) {
 			List<String> sentences = new LinkedList<String>();
 			Map<Integer, List<String>> sentenceLinks = new HashMap<Integer, List<String>>();
-			p.parse(record.text, sentences, sentenceLinks);
+			Map<Integer, List<String>> implicitSentenceLinks = new HashMap<Integer, List<String>>();
+			p.parse(record.text, sentences, sentenceLinks, implicitSentenceLinks);
 			int sIndex = 0;
 			for (String sentence : sentences) {
 				Text sentenceText = new Text(sentence);
@@ -68,6 +69,11 @@ public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, 
 				List<String> links = sentenceLinks.get(sIndex);
 				if (links != null) {
 					mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
+				}
+				
+				List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
+				if (implicitLinks != null) {
+					mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
 				}
 				sIndex++;
 			}

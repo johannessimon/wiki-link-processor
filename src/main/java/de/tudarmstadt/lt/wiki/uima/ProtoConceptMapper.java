@@ -1,5 +1,5 @@
 package de.tudarmstadt.lt.wiki.uima;
-
+/*
 import static org.apache.uima.fit.util.JCasUtil.select;
 
 import java.io.BufferedWriter;
@@ -10,6 +10,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
+import java.util.TreeMap;
 
 import org.apache.uima.UimaContext;
 import org.apache.uima.analysis_component.JCasAnnotator_ImplBase;
@@ -44,7 +45,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	String clusterMappingFile;
 	String baselineMappingFile;
 	JobimAnnotationExtractor extractor;
-	StringIndex strIndex = new StringIndex();
+	final StringIndex strIndex = new StringIndex();
 	Map<Integer, List<Cluster<Integer>>> clusters;
 	Map<String, String> redirects;
 	// (jo, sense) -> resource (MFS)
@@ -104,8 +105,8 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				baselineMapping = ClusterReaderWriter.readBaselineMapping(new MonitoredFileReader(baselineMappingFile), strIndex, words, clusters);
 			} else {
 				System.out.println("Writing concept mappings to " + clusterMappingFile + " and " + baselineMappingFile);
-				writer = FileUtil.createWriter(instanceOutputFile);
 			}
+			writer = FileUtil.createWriter(instanceOutputFile);
 			System.out.println("Writing instance assignments to " + instanceOutputFile);
 			redirects = MapUtil.readMapFromFile(redirectsFileName, "\t");
 		} catch (Exception e) {
@@ -116,11 +117,6 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 	@Override
 	public void collectionProcessComplete() throws AnalysisEngineProcessException {
 		evaluateConceptMapping();
-		super.collectionProcessComplete();
-	}
-
-	@Override
-	public void batchProcessComplete() throws AnalysisEngineProcessException {
 		try {
 			writer.close();
 			if (!testMode) {
@@ -132,10 +128,11 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 		} finally {
 			super.batchProcessComplete();
 		}
+		super.collectionProcessComplete();
 	}
 	
 	public void writeBaselineConceptMappings() {
-		System.out.println("Writing concept mappings...");
+		System.out.println("Writing baseline concept mappings...");
 		BufferedWriter mappingWriter;
 		try {
 			mappingWriter = FileUtil.createWriter(baselineMappingFile);
@@ -213,6 +210,7 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				evaluateConceptMapping();
 			}
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
+				String resource = WikiUtil.getLinkedResource(redirects, link.getResource());
 				List<JoBim> jobims = JCasUtil.selectCovered(JoBim.class, link);
 				
 				Integer jo = null;
@@ -229,8 +227,17 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 				}
 				
 				if (jo != null) {
+					String mappedResourceBaseline = null;
+					String mappedResourceCluster = null;
+					if (testMode) {
+						mappedResourceBaseline = baselineMapping.get(jo);
+						mappedResourceCluster = mappedResourceBaseline;
+					} else {
+						registerMapping(baselineConceptMappings, jo, resource);
+					}
+					
 					numInstances++;
-					Map<Cluster<Integer>, Integer> senseScores = new HashMap<Cluster<Integer>, Integer>();
+					Map<Cluster<Integer>, Integer> senseScores = new TreeMap<Cluster<Integer>, Integer>();
 					List<Cluster<Integer>> senseClusters = clusters.get(jo);
 					if (senseClusters == null) {
 						numMissingSenseClusters++;
@@ -258,32 +265,18 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 							}
 						}
 
-						String resource = WikiUtil.getLinkedResource(redirects, link.getResource());
 						if (highestRankedSense == null) {
 							numMappingFails++;
 						} else {
 							numMappingSuccesses++;
 							
-							if (clusterMapping != null) {
-								String mappedResource = clusterMapping.get(highestRankedSense);
-								if (mappedResource != null && mappedResource.equals(resource)) {
-									numMappingMatches++;
-								} else {
-									numMappingMatchesFails++;
+							if (testMode) {
+								String _mappedResourceCluster = clusterMapping.get(highestRankedSense);
+								if (_mappedResourceCluster != null) {
+									mappedResourceCluster = _mappedResourceCluster;
 								}
 							} else {
 								registerMapping(conceptMappings, highestRankedSense, resource);
-							}
-							
-							if (baselineMapping != null) {
-								String mappedResource = baselineMapping.get(jo);
-								if (mappedResource != null && mappedResource.equals(resource)) {
-									numBaselineMappingMatches++;
-								} else {
-									numBaselineMappingMatchesFails++;
-								}
-							} else {
-								registerMapping(baselineConceptMappings, jo, resource);
 							}
 						}
 						
@@ -294,9 +287,23 @@ public class ProtoConceptMapper extends JCasAnnotator_ImplBase {
 							throw new AnalysisEngineProcessException(e);
 						}
 					}
+					
+					if (testMode) {
+						if (mappedResourceCluster != null && mappedResourceCluster.equals(resource)) {
+							numMappingMatches++;
+						} else {
+							numMappingMatchesFails++;
+						}
+						if (mappedResourceBaseline != null && mappedResourceBaseline.equals(resource)) {
+							numBaselineMappingMatches++;
+						} else {
+							numBaselineMappingMatchesFails++;
+						}
+					}
 				}
 			}
 		}
 	}
 
 }
+*/

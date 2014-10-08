@@ -21,7 +21,7 @@ public class WikiProcessorTest {
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");
 		List<String> sentences = new LinkedList<String>();
-		p.parse(page, sentences, null);
+		p.parse(page, sentences, null, null);
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}
@@ -35,7 +35,7 @@ public class WikiProcessorTest {
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");
 		List<String> sentences = new LinkedList<String>();
-		p.parse(page, sentences, null);
+		p.parse(page, sentences, null, null);
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}
@@ -49,7 +49,7 @@ public class WikiProcessorTest {
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");
 		List<String> sentences = new LinkedList<String>();
-		p.parse(page, sentences, null);
+		p.parse(page, sentences, null, null);
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}
@@ -63,7 +63,7 @@ public class WikiProcessorTest {
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");
 		List<String> sentences = new LinkedList<String>();
-		p.parse(page, sentences, null);
+		p.parse(page, sentences, null, null);
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}
@@ -77,7 +77,7 @@ public class WikiProcessorTest {
 		WikiProcessor p = new WikiProcessor();
 		String page = FileUtils.readFileToString(in, "UTF-8");
 		List<String> sentences = new LinkedList<String>();
-		p.parse(page, sentences, null);
+		p.parse(page, sentences, null, null);
 		FileUtils.writeLines(outActual, "UTF-8", sentences);
 		assertEquals(outExpected, outActual);
 	}

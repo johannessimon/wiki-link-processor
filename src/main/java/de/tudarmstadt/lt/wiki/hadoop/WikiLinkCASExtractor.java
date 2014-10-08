@@ -9,12 +9,20 @@ import org.apache.uima.cas.CASException;
 import org.apache.uima.jcas.JCas;
 
 import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
-import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.Text2CASInputFormat.AnnotationExtractor;
-import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.Text2CASInputFormat.DocumentTextExtractor;
+import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.MultiLineText2CASInputFormat.AnnotationExtractor;
+import de.tudarmstadt.ukp.dkpro.bigdata.io.hadoop.MultiLineText2CASInputFormat.DocumentTextExtractor;
 
 public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationExtractor {
 
 	public void extractAnnotations(Text key, Text value, CAS cas) {
+		extractAnnotations(value.toString(), cas);
+	}
+
+	public Text extractDocumentText(Text key, Text value) {
+		return new Text(extractDocumentText(value.toString()));
+	}
+
+	public void extractAnnotations(String doc, CAS cas) {
 		JCas jCas;
 		try {
 			jCas = cas.getJCas();
@@ -23,7 +31,7 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 			return;
 		}
 		int offset = 0;
-		String[] lines = value.toString().split("\n");
+		String[] lines = doc.split("\n");
 		for (String line : lines) {
 			String cols[] = line.split("\t");
 			if (cols.length != 2) {
@@ -60,8 +68,8 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 		}
 	}
 
-	public Text extractDocumentText(Text key, Text value) {
-		String[] lines = value.toString().split("\n");
+	public String extractDocumentText(String doc) {
+		String[] lines = doc.split("\n");
 		StringBuilder documentText = new StringBuilder();
 		for (String line : lines) {
 			String[] cols = line.split("\t");
@@ -72,7 +80,7 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 			documentText.append(cols[0]);
 			documentText.append("\n");
 		}
-		return new Text(documentText.toString());
+		return documentText.toString();
 	}
 
 }

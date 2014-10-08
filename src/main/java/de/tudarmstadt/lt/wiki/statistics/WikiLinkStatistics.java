@@ -1,4 +1,4 @@
-package de.tudarmstadt.lt.wiki;
+package de.tudarmstadt.lt.wiki.statistics;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileInputStream;

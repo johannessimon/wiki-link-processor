@@ -3,6 +3,8 @@ package de.tudarmstadt.lt.wiki;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.StringReader;
+import java.util.Collection;
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
@@ -25,6 +27,7 @@ import org.w3c.dom.Node;
 import org.xml.sax.InputSource;
 import org.xml.sax.SAXException;
 
+import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.ukp.wikipedia.api.WikiConstants.Language;
 import de.tudarmstadt.ukp.wikipedia.parser.Link;
@@ -58,7 +61,6 @@ public class WikiProcessor {
 		} catch (final IOException e) {
 			e.printStackTrace();
 		} catch (ParserConfigurationException e) {
-			// TODO Auto-generated catch block
 			e.printStackTrace();
 		} finally {
 			if (modelIn != null) {
@@ -168,45 +170,151 @@ public class WikiProcessor {
 		return xml;
 	}
 	
-	public void parse(String xml, List<String> sentences, Map<Integer, List<String>> sentenceLinks) {
+	/**
+	 * Returns a textual reference of this link relative to its sentence
+	 */
+	private String getLinkRef(LinkOccurrence lo) {
+		String target = WikiUtil.formatResourceName(lo.target);
+		int start = lo.start - lo.s.getStart();
+		int end = lo.end - lo.s.getStart();
+		return target + "@" + start + ":" + end;
+	}
+	
+	/**
+	 * Represents a link occurrence within a given span of a paragraph
+	 */
+	private class LinkOccurrence {
+		int start;
+		int end;
+		String target;
+		Span s;
+		int sIndex;
+		Paragraph p;
+		
+		public LinkOccurrence(int start, int end, String target, Paragraph p, Span s, int sIndex) {
+			this.start = start;
+			this.end = end;
+			this.target = target;
+			this.p = p;
+			this.s = s;
+			this.sIndex = sIndex;
+		}
+	}
+	
+	/**
+	 * Extracts all explicit links from a paragraph, given its sentence spans
+	 */
+	private Collection<LinkOccurrence> extractLinks(Paragraph p, Span[] spans) {
+		Collection<LinkOccurrence> links = new LinkedList<>();
+		for (int i = 0; i < spans.length; i++) {
+			Span span = spans[i];
+			int sStart = span.getStart();
+			int sEnd = span.getEnd();
+			for (Link link : p.getLinks(Link.type.INTERNAL)) {
+				de.tudarmstadt.ukp.wikipedia.parser.Span lSpan = link.getPos();
+				int lStart = lSpan.getStart();
+				int lEnd = lSpan.getEnd();
+				int spanLength = lEnd - lStart;
+				if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
+					links.add(new LinkOccurrence(lStart, lEnd, link.getTarget(), p, span, i));
+				}
+			}
+		}
+		return links;
+	}
+	
+	/**
+	 * Finds a word occuring in a given text, excluding all partial matches, i.e. all occurrences
+	 * that have at least one more letter appearing directly in front or after it.<br/>
+	 * <br/>
+	 * <b>Example:</b><br/>
+	 * <code>findWord("aba ab xyzab", "ab", 0)</code> finds only the 2nd occurrence of "ab",
+	 * as the others are considered to be parts of other words.
+	 */
+	private int findWord(String text, String word, int startFrom) {
+		while (startFrom < text.length()) {
+			int start = text.indexOf(word, startFrom);
+			if (start < 0) {
+				return -1;
+			}
+			int end = start + word.length();
+			boolean hasLettersInFront = start > 0 && 
+					Character.isLetter(text.charAt(start - 1));
+			boolean hasLettersAfter = end < text.length() - 1 && 
+					Character.isLetter(text.charAt(end));
+			// Make sure this is not part of another word
+			if (!hasLettersInFront && !hasLettersAfter) {
+				return start;
+			}
+			startFrom = end;
+		}
+		return -1;
+	}
+
+	/**
+	 * Extracts all links implied by an explicit link (based on the "one sense per discourse"
+	 * assumption)
+	 */
+	private Collection<LinkOccurrence> extractImplicitLinks(LinkOccurrence link, Paragraph p, Span[] spans) {
+		Collection<LinkOccurrence> implicitLinks = new LinkedList<>();
+		String linkText = link.p.getText().substring(link.start, link.end);
+		for (int i = 0; i < spans.length; i++) {
+			Span span = spans[i];
+			String sentence = p.getText().substring(span.getStart(), span.getEnd());
+			int sStart = span.getStart();
+			int searchFrom = 0;
+			int lStart;
+			while ((lStart = findWord(sentence, linkText, searchFrom)) >= 0) {
+				int lStartInP = lStart + sStart;
+				int lEndInP = lStartInP + linkText.length();
+				// Do not add the explicit link itself (which we will of course find again in this
+				// way) as implicit link
+				if (lStartInP != link.start || p != link.p) {
+					implicitLinks.add(new LinkOccurrence(lStartInP, lEndInP, link.target, p, span, i));
+				}
+				searchFrom = lStart + linkText.length();
+			}
+		}
+		return implicitLinks;
+	}
+	
+	public void parse(String xml,
+			          List<String> sentences,
+			          Map<Integer, List<String>> sentenceLinks,
+			          Map<Integer, List<String>> implicitSentenceLinks) {
 		xml = preprocessXml(xml);
-		
 		ParsedPage pp = parser.parse(xml);
-		
 		if (pp == null || pp.getParagraphs() == null) {
 			return;
 		}
-		
+
+		Collection<LinkOccurrence> links = new LinkedList<>();
+		Map<Paragraph, Span[]> paragraphsWithSentenceSpans = new HashMap<>();
 		for (Paragraph p : pp.getParagraphs()){
-			String pText = p.getText();
 			// Replace newlines by spaces. This keeps all spans (e.g. of links) intact,
 			// as the number of characters does not change anywhere.
-			pText = pText.replace('\n', ' ');
+			String pText = p.getText().replace('\n', ' ');
 			Span[] sentenceSpans = sentenceDetector.sentPosDetect(pText);
-		
+			paragraphsWithSentenceSpans.put(p, sentenceSpans);
+			links.addAll(extractLinks(p, sentenceSpans));
 			for (Span sSpan : sentenceSpans) {
-				int sStart = sSpan.getStart();
-				int sEnd = sSpan.getEnd();
-				String sentence = pText.substring(sStart, sEnd);
-				sentences.add(sentence);
-				
-				if (sentenceLinks != null) {
-					List<String> links = new LinkedList<String>();
-					for (Link link : p.getLinks(Link.type.INTERNAL)) {
-						de.tudarmstadt.ukp.wikipedia.parser.Span lSpan = link.getPos();
-						int lStart = lSpan.getStart();
-						int lEnd = lSpan.getEnd();
-						int spanLength = lEnd - lStart;
-						if (spanLength > 0 && lStart >= sStart && lEnd < sEnd) {
-							String target = WikiUtil.formatResourceName(link.getTarget());
-							String linkRef = target + "@" + (lStart - sStart) + ":" + (lEnd - sStart);
-							links.add(linkRef);
-						}
-					}
-					if (!links.isEmpty()) {
-						sentenceLinks.put(sentences.size() - 1, links);
-					}
-				}
+				sentences.add(pText.substring(sSpan.getStart(), sSpan.getEnd()));
+			}
+		}
+
+		Collection<LinkOccurrence> implicitLinks = new LinkedList<>();
+		for (LinkOccurrence link : links) {
+			if (sentenceLinks != null) {
+				MapUtil.addTo(sentenceLinks, link.sIndex, getLinkRef(link), LinkedList.class);
+			}
+			for (Paragraph p : paragraphsWithSentenceSpans.keySet()) {
+				Span[] spans = paragraphsWithSentenceSpans.get(p);
+				implicitLinks.addAll(extractImplicitLinks(link, p, spans));
+			}
+		}
+		if (implicitSentenceLinks != null) {
+			for (LinkOccurrence link : implicitLinks) {
+				MapUtil.addTo(implicitSentenceLinks, link.sIndex, getLinkRef(link), LinkedList.class);
 			}
 		}
 	}

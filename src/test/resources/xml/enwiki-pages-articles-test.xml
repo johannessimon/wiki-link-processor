@@ -43,6 +43,14 @@
 		</revision>
 	</page>
 	<page>
+		<title>C D</title>
+		<ns>0</ns>
+		<id>5</id>
+		<revision>
+			<text xml:space="preserve">This is another link to [[A B|a b]] with a custom alternative link text. And an unlinked occurrence of the same a b anchor text. And an unlinked almost-occurrence of the same a bc anchor text.</text>
+		</revision>
+	</page>
+	<page>
 		<title>C D E</title>
 		<ns>0</ns>
 		<id>6</id>
