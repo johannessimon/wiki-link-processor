@@ -8,6 +8,7 @@ import java.util.Map;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
+import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
 import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
@@ -37,23 +38,24 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 		public void setup(Context context) throws IOException {
 			Configuration conf = context.getConfiguration();
 			FileSystem fs = FileSystem.get(conf);
-			String redirectsFilePattern = conf.get("wiki.redirects.dir");
+			String redirectsFilePattern = conf.get("wiki.redirects.file");
 			if (redirectsFilePattern != null) {
-				log.info("Reading redirects files: " + redirectsFilePattern);
+				log.info("Reading redirects file: " + redirectsFilePattern);
 				try {
-					RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(redirectsFilePattern), false);
-					while (it.hasNext()) {
-						LocatedFileStatus fileStat = it.next();
-						Path filePath = fileStat.getPath();
+//					RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(redirectsFilePattern), false);
+//					while (it.hasNext()) {
+//						LocatedFileStatus fileStat = it.next();
+						Path filePath = new Path(redirectsFilePattern);//fileStat.getPath();
+						FileStatus fileStat = fs.getFileStatus(filePath);
 						long fileLen = fileStat.getLen();
 						String fileName = filePath.getName();
 						if (fileName.startsWith("redirects")) {
 							log.info("Processing redirects file: " + filePath);
 							InputStream in = fs.open(filePath);
 		                    BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName, in, fileLen, "UTF-8", 0.01));
-		                    redirects.putAll(MapUtil.readMapFromReader(reader, "\t"));
+		                    redirects =MapUtil.readMapFromReader(reader, "\t");
 						}
-					}
+//					}
 				} catch (Exception e) {
 					log.error("Error reading redirect files", e);
 				}
