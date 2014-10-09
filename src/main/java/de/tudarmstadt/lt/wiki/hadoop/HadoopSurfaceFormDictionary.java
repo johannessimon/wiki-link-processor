@@ -2,11 +2,9 @@ package de.tudarmstadt.lt.wiki.hadoop;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
-import java.io.InputStreamReader;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
-import java.util.zip.GZIPInputStream;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -27,6 +25,7 @@ import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import de.tudarmstadt.lt.util.MapUtil;
+import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, IntWritable> {
@@ -44,14 +43,13 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 				try {
 					RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(redirectsFilePattern), false);
 					while (it.hasNext()) {
-						Path file = it.next().getPath();
-						String fileName = file.getName();
+						LocatedFileStatus fileStat = it.next();
+						Path filePath = fileStat.getPath();
+						long fileLen = fileStat.getLen();
+						String fileName = filePath.getName();
 						if (fileName.startsWith("redirects")) {
-							InputStream in = fs.open(file);
-							if (fileName.endsWith(".gz")) {
-								in = new GZIPInputStream(in);
-							}
-		                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+							InputStream in = fs.open(filePath);
+		                    BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName, in, fileLen, "UTF-8", 0.01));
 		                    redirects.putAll(MapUtil.readMapFromReader(reader, "\t"));
 						}
 					}
