@@ -10,9 +10,7 @@ import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
-import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
-import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -49,12 +47,12 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 						FileStatus fileStat = fs.getFileStatus(filePath);
 						long fileLen = fileStat.getLen();
 						String fileName = filePath.getName();
-						if (fileName.startsWith("redirects")) {
+//						if (fileName.startsWith("redirects")) {
 							log.info("Processing redirects file: " + filePath);
 							InputStream in = fs.open(filePath);
 		                    BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName, in, fileLen, "UTF-8", 0.01));
 		                    redirects =MapUtil.readMapFromReader(reader, "\t");
-						}
+//						}
 //					}
 				} catch (Exception e) {
 					log.error("Error reading redirect files", e);
