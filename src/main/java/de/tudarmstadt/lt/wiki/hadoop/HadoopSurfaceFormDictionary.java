@@ -69,18 +69,21 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 			try {
 				String valueParts[] = value.toString().split("\t");
 				String text = valueParts[0];
-				String linkParts[] = valueParts[1].split("@");
-				String target = linkParts[0];
-				String _target = redirects.get(target);
-				if (_target != null) {
-					target = _target;
+				String links[] = valueParts[1].split("  ");
+				for (String link : links) {
+					String linkParts[] = link.split("@");
+					String target = linkParts[0];
+					String _target = redirects.get(target);
+					if (_target != null) {
+						target = _target;
+					}
+					String startEnd[] = linkParts[1].split(":");
+					int start = Integer.parseInt(startEnd[0]);
+					int end = Integer.parseInt(startEnd[1]);
+					String surfaceForm = text.substring(start, end);
+					
+					context.write(new Text(surfaceForm + "@@" + target), new IntWritable(1));
 				}
-				String startEnd[] = linkParts[1].split(":");
-				int start = Integer.parseInt(startEnd[0]);
-				int end = Integer.parseInt(startEnd[1]);
-				String surfaceForm = text.substring(start, end);
-				
-				context.write(new Text(surfaceForm + "@@" + target), new IntWritable(1));
 			} catch (Exception e) {
 				log.error("Can't process line: " + value.toString(), e);
 			}
