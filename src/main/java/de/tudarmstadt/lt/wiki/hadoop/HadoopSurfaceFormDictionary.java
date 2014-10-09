@@ -1,11 +1,19 @@
 package de.tudarmstadt.lt.wiki.hadoop;
+import java.io.BufferedReader;
 import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
 import java.util.Arrays;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.zip.GZIPInputStream;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
+import org.apache.hadoop.fs.LocatedFileStatus;
 import org.apache.hadoop.fs.Path;
+import org.apache.hadoop.fs.RemoteIterator;
 import org.apache.hadoop.io.IntWritable;
 import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
@@ -18,9 +26,43 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
+import de.tudarmstadt.lt.util.MapUtil;
+
 public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, IntWritable> {
 		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
+		
+		Map<String, String> redirects = new HashMap<>();
+		
+		@Override
+		public void setup(Context context) throws IOException {
+			Configuration conf = context.getConfiguration();
+			FileSystem fs = FileSystem.get(conf);
+			String redirectsFilePattern = conf.get("wiki.redirects.dir");
+			if (redirectsFilePattern != null) {
+				log.info("Reading redirects files: " + redirectsFilePattern);
+				try {
+					RemoteIterator<LocatedFileStatus> it = fs.listFiles(new Path(redirectsFilePattern), false);
+					while (it.hasNext()) {
+						Path file = it.next().getPath();
+						String fileName = file.getName();
+						if (fileName.startsWith("redirects")) {
+							InputStream in = fs.open(file);
+							if (fileName.endsWith(".gz")) {
+								in = new GZIPInputStream(in);
+							}
+		                    BufferedReader reader = new BufferedReader(new InputStreamReader(in));
+		                    redirects.putAll(MapUtil.readMapFromReader(reader, "\t"));
+						}
+					}
+				} catch (Exception e) {
+					log.error("Error reading redirect files", e);
+				}
+			} else {
+				log.error("For redirects to be processed, you need to specify a redirects file"
+						+ "pattern (on HDFS) using -Dwiki.redirects.filepattern=...");
+			}
+		}
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context)
@@ -30,6 +72,10 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 				String text = valueParts[0];
 				String linkParts[] = valueParts[1].split("@");
 				String target = linkParts[0];
+				String _target = redirects.get(target);
+				if (_target != null) {
+					target = _target;
+				}
 				String startEnd[] = linkParts[1].split(":");
 				int start = Integer.parseInt(startEnd[0]);
 				int end = Integer.parseInt(startEnd[1]);
