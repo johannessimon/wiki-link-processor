@@ -51,7 +51,7 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 							log.info("Processing redirects file: " + filePath);
 							InputStream in = fs.open(filePath);
 		                    BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName, in, fileLen, "UTF-8", 0.01));
-		                    redirects =MapUtil.readMapFromReader(reader, "\t");
+		                    redirects = MapUtil.readMapFromReader(reader, "\t");
 //						}
 //					}
 				} catch (Exception e) {
