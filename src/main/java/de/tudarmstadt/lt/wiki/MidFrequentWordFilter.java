@@ -63,6 +63,6 @@ public class MidFrequentWordFilter {
 		writer.close();
 		
 
-		MapUtil.writeMap(words, wordOut);
+		MapUtil.writeMap(MapUtil.sortMapByValue(words), wordOut);
 	}
 }
