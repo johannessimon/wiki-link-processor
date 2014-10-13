@@ -101,6 +101,7 @@ public class RedirectReplacer extends Configured implements Tool {
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
+		job.setNumReduceTasks(0);
 //		job.setInputFormatClass(TextInputFormat.class);
 		return job.waitForCompletion(true);
 	}
