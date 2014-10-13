@@ -17,8 +17,8 @@ public class MidFrequentWordFilter {
 	static Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 	
 	public static void main(String[] args) throws IOException {
-		if (args.length != 5) {
-			log.info("Usage: WordListNounFilter <word-file> <sample-file> <top-cutoff> <min-freq> <out>");
+		if (args.length != 6) {
+			log.info("Usage: WordListNounFilter <word-file> <sample-file> <top-cutoff> <min-freq> <out> <word-out>");
 			return;
 		}
 		String wordFile = args[0];
@@ -26,6 +26,7 @@ public class MidFrequentWordFilter {
 		int topCutoff = Integer.parseInt(args[2]);
 		int minFreq = Integer.parseInt(args[3]);
 		String out = args[4];
+		String wordOut = args[5];
 
 		Map<String, Integer> words = new HashMap<String, Integer>();
 		BufferedReader reader = new BufferedReader(new MonitoredFileReader(wordFile));
@@ -60,5 +61,8 @@ public class MidFrequentWordFilter {
 			}
 		}
 		writer.close();
+		
+
+		MapUtil.writeMap(words, wordOut);
 	}
 }
