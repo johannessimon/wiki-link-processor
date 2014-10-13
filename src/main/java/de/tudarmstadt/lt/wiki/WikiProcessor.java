@@ -5,9 +5,11 @@ import java.io.InputStream;
 import java.io.StringReader;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 import java.util.regex.Pattern;
 
 import javax.xml.parsers.DocumentBuilder;
@@ -199,6 +201,62 @@ public class WikiProcessor {
 			this.s = s;
 			this.sIndex = sIndex;
 		}
+		
+		@Override public String toString() { return target + "@" + start + ":" + end; }
+
+		private WikiProcessor getOuterType() {
+			return WikiProcessor.this;
+		}
+
+		@Override
+		public int hashCode() {
+			final int prime = 31;
+			int result = 1;
+			result = prime * result + getOuterType().hashCode();
+			result = prime * result + end;
+			result = prime * result + ((p == null) ? 0 : p.hashCode());
+			result = prime * result + ((s == null) ? 0 : s.hashCode());
+			result = prime * result + sIndex;
+			result = prime * result + start;
+			result = prime * result
+					+ ((target == null) ? 0 : target.hashCode());
+			return result;
+		}
+
+		@Override
+		public boolean equals(Object obj) {
+			if (this == obj)
+				return true;
+			if (obj == null)
+				return false;
+			if (getClass() != obj.getClass())
+				return false;
+			LinkOccurrence other = (LinkOccurrence) obj;
+			if (!getOuterType().equals(other.getOuterType()))
+				return false;
+			if (end != other.end)
+				return false;
+			if (p == null) {
+				if (other.p != null)
+					return false;
+			} else if (!p.equals(other.p))
+				return false;
+			if (s == null) {
+				if (other.s != null)
+					return false;
+			} else if (!s.equals(other.s))
+				return false;
+			if (sIndex != other.sIndex)
+				return false;
+			if (start != other.start)
+				return false;
+			if (target == null) {
+				if (other.target != null)
+					return false;
+			} else if (!target.equals(other.target))
+				return false;
+			return true;
+		}
 	}
 	
 	/**
@@ -269,9 +327,7 @@ public class WikiProcessor {
 				int lEndInP = lStartInP + linkText.length();
 				// Do not add the explicit link itself (which we will of course find again in this
 				// way) as implicit link
-				if (lStartInP != link.start || p != link.p) {
-					implicitLinks.add(new LinkOccurrence(lStartInP, lEndInP, link.target, p, span, i));
-				}
+				implicitLinks.add(new LinkOccurrence(lStartInP, lEndInP, link.target, p, span, i));
 				searchFrom = lStart + linkText.length();
 			}
 		}
@@ -288,7 +344,7 @@ public class WikiProcessor {
 			return;
 		}
 
-		Collection<LinkOccurrence> links = new LinkedList<>();
+		Set<LinkOccurrence> links = new HashSet<LinkOccurrence>();
 		Map<Paragraph, Span[]> paragraphsWithSentenceSpans = new HashMap<>();
 		Map<Paragraph, Integer> paragraphsSentenceOffsets = new HashMap<>();
 		int sOffset = 0;
@@ -306,7 +362,7 @@ public class WikiProcessor {
 			sOffset += sentenceSpans.length;
 		}
 
-		Collection<LinkOccurrence> implicitLinks = new LinkedList<>();
+		Set<LinkOccurrence> implicitLinks = new HashSet<LinkOccurrence>();
 		for (LinkOccurrence link : links) {
 			if (sentenceLinks != null) {
 				int sIndex = link.sIndex + paragraphsSentenceOffsets.get(link.p);
@@ -317,6 +373,7 @@ public class WikiProcessor {
 				implicitLinks.addAll(extractImplicitLinks(link, p, spans));
 			}
 		}
+		implicitLinks.removeAll(links);
 		if (implicitSentenceLinks != null) {
 			for (LinkOccurrence link : implicitLinks) {
 				int sIndex = link.sIndex + paragraphsSentenceOffsets.get(link.p);

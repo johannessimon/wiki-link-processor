@@ -3,10 +3,12 @@ import java.io.IOException;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.LinkedList;
+import java.util.List;
 import java.util.Map;
-import java.util.Map.Entry;
 import java.util.Random;
+import java.util.Set;
 
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
@@ -24,11 +26,12 @@ import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
 import de.tudarmstadt.lt.util.FibonacciHeap;
+import de.tudarmstadt.lt.util.MapUtil;
 
 public class WordSentenceSampler extends Configured implements Tool {
 	// Maps e.g. "a b c bla de f", "abc@0:5  def@10:14" to
 	// ("a b c", "de f") and ("a b c@@abc" and "de f@@def"(
-	private static void getLinks(String text, String linkRefs, Collection<String> textsWithLink, Collection<String> textsWithoutLink) {
+	private static void getLinks(String text, String linkRefs, Collection<String> linkTextsWithTarget, Collection<String> linkTexts) {
 		String links[] = linkRefs.split("  ");
 		for (String link : links) {
 			String linkParts[] = link.split("@");
@@ -38,11 +41,11 @@ public class WordSentenceSampler extends Configured implements Tool {
 			int end = Integer.parseInt(startEnd[1]);
 			String surfaceForm = text.substring(start, end);
 			
-			if (textsWithLink != null) {
-				textsWithLink.add(surfaceForm + "@@" + target);
+			if (linkTextsWithTarget != null) {
+				linkTextsWithTarget.add(surfaceForm + "@@" + target);
 			}
-			if (textsWithoutLink != null) {
-				textsWithoutLink.add(surfaceForm);
+			if (linkTexts != null) {
+				linkTexts.add(surfaceForm);
 			}
 		}
 	}
@@ -57,9 +60,14 @@ public class WordSentenceSampler extends Configured implements Tool {
 				String valueParts[] = value.toString().split("\t");
 				String text = valueParts[0];
 				String linkRefs = valueParts[1];
-				Collection<String> textsWithoutLink = new LinkedList<String>();
-				getLinks(text, linkRefs, null, textsWithoutLink);
-				for (String linkText : textsWithoutLink) {
+				// it is important that this is a set, otherwise words that
+				// appear twice in the same sentence will add this sentence twice
+				Set<String> linkTexts = new HashSet<String>();
+				getLinks(text, linkRefs, null, linkTexts);
+				for (String linkText : linkTexts) {
+					if (linkText.equals("\"government failure\"")) {
+						System.out.println("foo");
+					}
 					context.write(new Text(linkText), value);
 				}
 			} catch (Exception e) {
@@ -73,55 +81,75 @@ public class WordSentenceSampler extends Configured implements Tool {
 		
 		final static int MAX_WORD_SAMPLES = 10;
 		final static int MAX_WORD_SENSE_SAMPLES = 3;
+		final static int MAX_WORD_SENSES = 3;
 		
 		@Override
 		public void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
 			String word = key.toString();
 			Random r = new Random();
-			FibonacciHeap<String> wordSampleSentences = new FibonacciHeap<String>();
-			Map<String, FibonacciHeap<String>> wordSenseSampleSentences = new HashMap<String, FibonacciHeap<String>>();
+			Map<String, Integer> targetCounts = new HashMap<String, Integer>();
+			FibonacciHeap<String> sampleSentences = new FibonacciHeap<String>();
+			Map<String, FibonacciHeap<String>> targetSampleSentences = new HashMap<String, FibonacciHeap<String>>();
 			for (Text value : values) {
 				try {
-					String valueParts[] = value.toString().split("\t");
+					String valueString = value.toString();
+					String valueParts[] = valueString.split("\t");
 					String text = valueParts[0];
 					String linkRefs = valueParts[1];
-					Collection<String> textsWithLink = new LinkedList<String>();
-					getLinks(text, linkRefs, textsWithLink, null);
-					for (String linkText : textsWithLink) {
-						String _word = linkText.split("@@")[0];
-						if (_word.equals(word)) {
-							FibonacciHeap<String> sentences = wordSenseSampleSentences.get(linkText);
+					Collection<String> linkTextsWithTarget = new LinkedList<String>();
+					getLinks(text, linkRefs, linkTextsWithTarget, null);
+					for (String linkTextWithTarget : linkTextsWithTarget) {
+						String[] linkTextSplits = linkTextWithTarget.split("@@");
+						String linkText = linkTextSplits[0];
+						String target = linkTextSplits[1];
+						if (linkText.equals(word)) {
+							MapUtil.addIntTo(targetCounts, target, 1);
+							FibonacciHeap<String> sentences = targetSampleSentences.get(target);
 							if (sentences == null) {
 								sentences = new FibonacciHeap<String>();
-								wordSenseSampleSentences.put(linkText, sentences);
+								targetSampleSentences.put(target, sentences);
 							}
-							sentences.enqueue(text, r.nextDouble());
+							sentences.enqueue(valueString, r.nextDouble());
 						}
 					}
-					wordSampleSentences.enqueue(text, r.nextDouble());
+					sampleSentences.enqueue(valueString, r.nextDouble());
 				} catch (Exception e) {
 					log.error("Can't process line: " + value.toString(), e);
 				}
 
-				while (wordSampleSentences.size() > MAX_WORD_SAMPLES) {
-					wordSampleSentences.dequeueMin();
+				while (sampleSentences.size() >
+					MAX_WORD_SAMPLES + MAX_WORD_SENSES*MAX_WORD_SENSE_SAMPLES) {
+					sampleSentences.dequeueMin();
 				}
-				for (Entry<String, FibonacciHeap<String>> entry : wordSenseSampleSentences.entrySet()) {
-					FibonacciHeap<String> sentences = entry.getValue();
+				for (FibonacciHeap<String> sentences : targetSampleSentences.values()) {
 					while (sentences.size() > MAX_WORD_SENSE_SAMPLES) {
 						sentences.dequeueMin();
 					}
 				}
 			}
-			
-			while (!wordSampleSentences.isEmpty()) {
-				context.write(key, new Text(wordSampleSentences.dequeueMin().getValue()));
+
+			HashSet<String> sentencesUsed = new HashSet<String>();
+			// keep only most frequent N senses
+			List<String> sortedTargets = MapUtil.sortMapKeysByValue(targetCounts);
+			if (sortedTargets.size() > MAX_WORD_SENSES) {
+				sortedTargets = sortedTargets.subList(0, MAX_WORD_SENSES);
 			}
-			for (Entry<String, FibonacciHeap<String>> entry : wordSenseSampleSentences.entrySet()) {
-				FibonacciHeap<String> sentences = entry.getValue();
+			for (String target : sortedTargets) {
+				FibonacciHeap<String> sentences = targetSampleSentences.get(target);
 				while (!sentences.isEmpty()) {
-					context.write(new Text(entry.getKey()), new Text(sentences.dequeueMin().getValue()));
+					String sentence = sentences.dequeueMin().getValue();
+					context.write(new Text(word + "@@" + target), new Text(sentence));
+					sentencesUsed.add(sentence);
+				}
+			}
+			int samplesCollected = 0;
+			while (!sampleSentences.isEmpty() &&
+					samplesCollected < MAX_WORD_SAMPLES) {
+				String sentence = sampleSentences.dequeueMin().getValue();
+				if (!sentencesUsed.contains(sentence)) {
+					context.write(key, new Text(sentence));
+					samplesCollected++;
 				}
 			}
 		}
@@ -148,7 +176,6 @@ public class WordSentenceSampler extends Configured implements Tool {
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
-//		job.setInputFormatClass(TextInputFormat.class);
 		return job.waitForCompletion(true);
 	}
 
