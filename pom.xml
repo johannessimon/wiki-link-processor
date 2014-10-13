@@ -149,6 +149,17 @@
 			<artifactId>de.tudarmstadt.lt.util</artifactId>
 			<version>0.0.1-SNAPSHOT</version>
 		</dependency>
+	  	<dependency>
+	  		<groupId>edu.stanford.nlp</groupId>
+	  		<artifactId>stanford-corenlp</artifactId>
+	  		<version>3.4</version>
+	  	</dependency>
+	  	<dependency>
+	  		<groupId>edu.stanford.nlp</groupId>
+	  		<artifactId>stanford-corenlp</artifactId>
+	  		<version>3.4</version>
+	  		<classifier>models</classifier>
+	  	</dependency>
 	</dependencies>
 
 

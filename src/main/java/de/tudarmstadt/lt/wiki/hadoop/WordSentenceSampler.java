@@ -7,6 +7,7 @@ import java.util.HashSet;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Properties;
 import java.util.Random;
 import java.util.Set;
 
@@ -27,6 +28,10 @@ import org.apache.log4j.Logger;
 
 import de.tudarmstadt.lt.util.FibonacciHeap;
 import de.tudarmstadt.lt.util.MapUtil;
+import edu.stanford.nlp.ling.CoreAnnotations.TokensAnnotation;
+import edu.stanford.nlp.ling.CoreLabel;
+import edu.stanford.nlp.pipeline.Annotation;
+import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class WordSentenceSampler extends Configured implements Tool {
 	// Maps e.g. "a b c bla de f", "abc@0:5  def@10:14" to
@@ -52,6 +57,14 @@ public class WordSentenceSampler extends Configured implements Tool {
 	
 	private static class WordSentenceSamplerMap extends Mapper<LongWritable, Text, Text, Text> {
 		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
+		StanfordCoreNLP pipeline;
+		
+		@Override
+		public void setup(Context context) {
+			Properties props = new Properties();
+			props.put("annotators", "tokenize, ssplit, pos, lemma");
+			pipeline = new StanfordCoreNLP(props);
+		}
 		
 		@Override
 		public void map(LongWritable key, Text value, Context context)
@@ -59,11 +72,30 @@ public class WordSentenceSampler extends Configured implements Tool {
 			try {
 				String valueParts[] = value.toString().split("\t");
 				String text = valueParts[0];
+				Annotation document = new Annotation(text);
+				pipeline.annotate(document);
+				List<CoreLabel> tokens = document.get(TokensAnnotation.class);
 				String linkRefs = valueParts[1];
 				// it is important that this is a set, otherwise words that
 				// appear twice in the same sentence will add this sentence twice
 				Set<String> linkTexts = new HashSet<String>();
-				getLinks(text, linkRefs, null, linkTexts);
+				String links[] = linkRefs.split("  ");
+				for (String link : links) {
+					String linkParts[] = link.split("@");
+					String startEnd[] = linkParts[1].split(":");
+					int start = Integer.parseInt(startEnd[0]);
+					int end = Integer.parseInt(startEnd[1]);
+					for (CoreLabel token : tokens) {
+						if (token.beginPosition() == start &&
+							token.endPosition() == end &&
+							(token.tag().equals("NN") ||
+							 token.tag().equals("NNS"))) {
+							linkTexts.add(token.lemma());
+							break;
+						}
+					}
+				}
+				
 				for (String linkText : linkTexts) {
 					if (linkText.equals("\"government failure\"")) {
 						System.out.println("foo");
