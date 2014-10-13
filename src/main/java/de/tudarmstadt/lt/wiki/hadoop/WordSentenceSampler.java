@@ -79,13 +79,15 @@ public class WordSentenceSampler extends Configured implements Tool {
 	private static class WordSentenceSamplerReduce extends Reducer<Text, Text, Text, Text> {
 		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 		
-		final static int MAX_WORD_SAMPLES = 10;
+		final static int MAX_WORD_SAMPLES = 5;
 		final static int MAX_WORD_SENSE_SAMPLES = 3;
-		final static int MAX_WORD_SENSES = 3;
+		final static int MAX_WORD_SENSES = 10;
+		final static int MIN_WORD_SENSES = 3;
 		
 		@Override
 		public void reduce(Text key, Iterable<Text> values, Context context)
 			throws IOException, InterruptedException {
+			context.getCounter("de.tudarmstadt.lt.wiki", "NUM_LINK_TEXTS").increment(1);
 			String word = key.toString();
 			Random r = new Random();
 			Map<String, Integer> targetCounts = new HashMap<String, Integer>();
@@ -129,27 +131,31 @@ public class WordSentenceSampler extends Configured implements Tool {
 				}
 			}
 
-			HashSet<String> sentencesUsed = new HashSet<String>();
-			// keep only most frequent N senses
-			List<String> sortedTargets = MapUtil.sortMapKeysByValue(targetCounts);
-			if (sortedTargets.size() > MAX_WORD_SENSES) {
-				sortedTargets = sortedTargets.subList(0, MAX_WORD_SENSES);
-			}
-			for (String target : sortedTargets) {
-				FibonacciHeap<String> sentences = targetSampleSentences.get(target);
-				while (!sentences.isEmpty()) {
-					String sentence = sentences.dequeueMin().getValue();
-					context.write(new Text(word + "@@" + target), new Text(sentence));
-					sentencesUsed.add(sentence);
+			if (targetCounts.size() >= MIN_WORD_SENSES) {
+				context.getCounter("de.tudarmstadt.lt.wiki", "NUM_POLYSEMOUS_LINK_TEXTS").increment(1);
+				HashSet<String> sentencesUsed = new HashSet<String>();
+				// keep only most frequent N senses
+				List<String> sortedTargets = MapUtil.sortMapKeysByValue(targetCounts);
+				if (sortedTargets.size() > MAX_WORD_SENSES) {
+					sortedTargets = sortedTargets.subList(0, MAX_WORD_SENSES);
+					context.getCounter("de.tudarmstadt.lt.wiki", "NUM_POLYSEMOUS_LINK_TEXTS_CUTOFF").increment(1);
 				}
-			}
-			int samplesCollected = 0;
-			while (!sampleSentences.isEmpty() &&
-					samplesCollected < MAX_WORD_SAMPLES) {
-				String sentence = sampleSentences.dequeueMin().getValue();
-				if (!sentencesUsed.contains(sentence)) {
-					context.write(key, new Text(sentence));
-					samplesCollected++;
+				for (String target : sortedTargets) {
+					FibonacciHeap<String> sentences = targetSampleSentences.get(target);
+					while (!sentences.isEmpty()) {
+						String sentence = sentences.dequeueMin().getValue();
+						context.write(new Text(word + "@@" + target), new Text(sentence));
+						sentencesUsed.add(sentence);
+					}
+				}
+				int samplesCollected = 0;
+				while (!sampleSentences.isEmpty() &&
+						samplesCollected < MAX_WORD_SAMPLES) {
+					String sentence = sampleSentences.dequeueMin().getValue();
+					if (!sentencesUsed.contains(sentence)) {
+						context.write(key, new Text(sentence));
+						samplesCollected++;
+					}
 				}
 			}
 		}

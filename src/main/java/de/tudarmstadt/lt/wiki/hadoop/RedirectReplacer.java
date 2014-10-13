@@ -53,7 +53,7 @@ public class RedirectReplacer extends Configured implements Tool {
 				}
 			} else {
 				log.error("For redirects to be processed, you need to specify a redirects file"
-						+ "pattern (on HDFS) using -Dwiki.redirects.filepattern=...");
+						+ "pattern (on HDFS) using -Dwiki.redirects.file=...");
 			}
 		}
 		
