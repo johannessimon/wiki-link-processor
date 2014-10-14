@@ -102,7 +102,7 @@ public class RedirectReplacer extends Configured implements Tool {
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
 		job.setNumReduceTasks(0);
-//		job.setInputFormatClass(TextInputFormat.class);
+		job.setJobName("WikiLinkProcessor:RedirectReplacer");
 		return job.waitForCompletion(true);
 	}
 

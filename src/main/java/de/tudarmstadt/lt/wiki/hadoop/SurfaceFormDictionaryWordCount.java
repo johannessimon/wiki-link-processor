@@ -17,7 +17,7 @@ import org.apache.hadoop.mapreduce.lib.reduce.IntSumReducer;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class HadoopSurfaceFormDictionaryWordCount extends Configured implements Tool {
+public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, IntWritable> {
 		@Override
 		public void map(LongWritable key, Text value, Context context)
@@ -41,7 +41,7 @@ public class HadoopSurfaceFormDictionaryWordCount extends Configured implements 
 		conf.setBoolean("mapred.output.compress", true);
 		conf.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 		Job job = Job.getInstance(conf);
-		job.setJarByClass(HadoopSurfaceFormDictionaryWordCount.class);
+		job.setJarByClass(SurfaceFormDictionaryWordCount.class);
 		FileInputFormat.addInputPath(job, new Path(inDir));
 		FileOutputFormat.setOutputPath(job, new Path(_outDir));
 		job.setMapperClass(HadoopSurfaceFormDictionaryMap.class);
@@ -50,7 +50,7 @@ public class HadoopSurfaceFormDictionaryWordCount extends Configured implements 
 		job.setMapOutputValueClass(IntWritable.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-//		job.setInputFormatClass(TextInputFormat.class);
+		job.setJobName("WikiLinkProcessor:SurfaceFormDictionaryWordCount");
 		return job.waitForCompletion(true);
 	}
 
@@ -68,7 +68,7 @@ public class HadoopSurfaceFormDictionaryWordCount extends Configured implements 
 
 	public static void main(final String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		int res = ToolRunner.run(conf, new HadoopSurfaceFormDictionaryWordCount(), args);
+		int res = ToolRunner.run(conf, new SurfaceFormDictionaryWordCount(), args);
 		System.exit(res);
 	}
 }

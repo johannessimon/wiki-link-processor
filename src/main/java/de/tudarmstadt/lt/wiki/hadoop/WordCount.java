@@ -90,6 +90,7 @@ public class WordCount extends Configured implements Tool {
 		job.setMapOutputValueClass(IntWritable.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
+		job.setJobName("WikiLinkProcessor:WordCount");
 		return job.waitForCompletion(true);
 	}
 

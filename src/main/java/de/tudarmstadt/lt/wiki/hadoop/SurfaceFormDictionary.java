@@ -18,7 +18,7 @@ import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
 
-public class HadoopSurfaceFormDictionary extends Configured implements Tool {
+public class SurfaceFormDictionary extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, IntWritable> {
 		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 		
@@ -57,7 +57,7 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 		conf.setBoolean("mapred.output.compress", true);
 		conf.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 		Job job = Job.getInstance(conf);
-		job.setJarByClass(HadoopSurfaceFormDictionary.class);
+		job.setJarByClass(SurfaceFormDictionary.class);
 		FileInputFormat.addInputPath(job, new Path(inDir));
 		FileOutputFormat.setOutputPath(job, new Path(_outDir));
 		job.setMapperClass(HadoopSurfaceFormDictionaryMap.class);
@@ -66,7 +66,7 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 		job.setMapOutputValueClass(IntWritable.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(IntWritable.class);
-//		job.setInputFormatClass(TextInputFormat.class);
+		job.setJobName("WikiLinkProcessor:SurfaceFormDictionary");
 		return job.waitForCompletion(true);
 	}
 
@@ -84,7 +84,7 @@ public class HadoopSurfaceFormDictionary extends Configured implements Tool {
 
 	public static void main(final String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		int res = ToolRunner.run(conf, new HadoopSurfaceFormDictionary(), args);
+		int res = ToolRunner.run(conf, new SurfaceFormDictionary(), args);
 		System.exit(res);
 	}
 }

@@ -19,7 +19,7 @@ import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.lt.wiki.WikiProcessor;
 import de.tudarmstadt.lt.wiki.WikiProcessor.WikiXmlRecord;
 
-public class HadoopWikiXmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
+public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 	private MultipleOutputs<Text, Text> mos;
 	private WikiProcessor p;
 	private int maxSentenceLength;

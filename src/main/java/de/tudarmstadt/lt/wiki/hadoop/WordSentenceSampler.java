@@ -97,9 +97,6 @@ public class WordSentenceSampler extends Configured implements Tool {
 				}
 				
 				for (String linkText : linkTexts) {
-					if (linkText.equals("\"government failure\"")) {
-						System.out.println("foo");
-					}
 					context.write(new Text(linkText), value);
 				}
 			} catch (Exception e) {
@@ -214,6 +211,7 @@ public class WordSentenceSampler extends Configured implements Tool {
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
 		job.setOutputValueClass(Text.class);
+		job.setJobName("WikiLinkProcessor:WordSentenceSampler");
 		return job.waitForCompletion(true);
 	}
 

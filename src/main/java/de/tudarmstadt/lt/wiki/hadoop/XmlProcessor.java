@@ -16,7 +16,7 @@ import org.apache.hadoop.mapreduce.lib.output.TextOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 
-public class HadoopWikiXmlProcessor extends Configured implements Tool {
+public class XmlProcessor extends Configured implements Tool {
 
 	public boolean runJob(String inDir, String outDir) throws Exception {
 		Configuration conf = getConf();
@@ -33,10 +33,10 @@ public class HadoopWikiXmlProcessor extends Configured implements Tool {
 		conf.setBoolean("mapred.output.compress", true);
 		conf.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 		Job job = Job.getInstance(conf);
-		job.setJarByClass(HadoopWikiXmlProcessor.class);
+		job.setJarByClass(XmlProcessor.class);
 		FileInputFormat.addInputPath(job, new Path(inDir));
 		FileOutputFormat.setOutputPath(job, new Path(_outDir));
-		job.setMapperClass(HadoopWikiXmlProcessorMap.class);
+		job.setMapperClass(XmlProcessorMap.class);
 		job.setMapOutputKeyClass(Text.class);
 		job.setMapOutputValueClass(Text.class);
 		job.setOutputKeyClass(Text.class);
@@ -49,6 +49,7 @@ public class HadoopWikiXmlProcessor extends Configured implements Tool {
 		MultipleOutputs.addNamedOutput(job, "implicitlinks", TextOutputFormat.class, Text.class, Text.class);
 		MultipleOutputs.addNamedOutput(job, "xml", TextOutputFormat.class, Text.class, NullWritable.class);
 		LazyOutputFormat.setOutputFormatClass(job, TextOutputFormat.class);
+		job.setJobName("WikiLinkProcessor:XmlProcessor");
 		return job.waitForCompletion(true);
 	}
 
@@ -74,7 +75,7 @@ public class HadoopWikiXmlProcessor extends Configured implements Tool {
 
 	public static void main(final String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		int res = ToolRunner.run(conf, new HadoopWikiXmlProcessor(), args);
+		int res = ToolRunner.run(conf, new XmlProcessor(), args);
 		System.exit(res);
 	}
 }
