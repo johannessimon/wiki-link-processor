@@ -36,9 +36,11 @@ public class WordDependencyHoling extends Configured implements Tool {
 		
 		@Override
 		public void setup(Context context) {
+			log.info("Initializing WordDependencyHoling...");
 			Properties props = new Properties();
 			props.put("annotators", "tokenize, ssplit, pos, lemma, parse");
 			pipeline = new StanfordCoreNLP(props);
+			log.info("Ready!");
 		}
 		
 		@Override
@@ -46,6 +48,7 @@ public class WordDependencyHoling extends Configured implements Tool {
 			throws IOException, InterruptedException {
 			try {
 				String text = value.toString();
+				log.info("Handling sentence of length " + text.length());
 				Annotation document = new Annotation(text);
 				pipeline.annotate(document);
 				List<CoreMap> sentences = document.get(SentencesAnnotation.class);
