@@ -49,15 +49,18 @@ public class WordCount extends Configured implements Tool {
 				String linkRefs = valueParts[1];
 				String links[] = linkRefs.split("  ");
 				for (String link : links) {
+					context.getCounter("de.tudarmstadt.lt.wiki", "NUM_LINKS").increment(1);
 					String linkParts[] = link.split("@");
 					String startEnd[] = linkParts[1].split(":");
 					int start = Integer.parseInt(startEnd[0]);
 					int end = Integer.parseInt(startEnd[1]);
 					for (CoreLabel token : tokens) {
+						context.getCounter("de.tudarmstadt.lt.wiki", "NUM_TOKENS").increment(1);
 						if (token.beginPosition() == start &&
 							token.endPosition() == end &&
 							(token.tag().equals("NN") ||
 							 token.tag().equals("NNS"))) {
+							context.getCounter("de.tudarmstadt.lt.wiki", "NUM_NOUN_LINKS").increment(1);
 							context.write(new Text(token.lemma()), new IntWritable(1));
 							break;
 						}
@@ -65,6 +68,7 @@ public class WordCount extends Configured implements Tool {
 				}
 			} catch (Exception e) {
 				log.error("Can't process line: " + value.toString(), e);
+				context.getCounter("de.tudarmstadt.lt.wiki", "NUM_MAP_ERRORS").increment(1);
 			}
 		}
 	}

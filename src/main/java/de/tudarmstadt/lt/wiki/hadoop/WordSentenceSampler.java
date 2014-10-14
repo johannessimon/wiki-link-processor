@@ -81,15 +81,18 @@ public class WordSentenceSampler extends Configured implements Tool {
 				Set<String> linkTexts = new HashSet<String>();
 				String links[] = linkRefs.split("  ");
 				for (String link : links) {
+					context.getCounter("de.tudarmstadt.lt.wiki", "NUM_LINKS").increment(1);
 					String linkParts[] = link.split("@");
 					String startEnd[] = linkParts[1].split(":");
 					int start = Integer.parseInt(startEnd[0]);
 					int end = Integer.parseInt(startEnd[1]);
 					for (CoreLabel token : tokens) {
+						context.getCounter("de.tudarmstadt.lt.wiki", "NUM_TOKENS").increment(1);
 						if (token.beginPosition() == start &&
 							token.endPosition() == end &&
 							(token.tag().equals("NN") ||
 							 token.tag().equals("NNS"))) {
+							context.getCounter("de.tudarmstadt.lt.wiki", "NUM_NOUN_LINKS").increment(1);
 							linkTexts.add(token.lemma());
 							break;
 						}
@@ -101,6 +104,7 @@ public class WordSentenceSampler extends Configured implements Tool {
 				}
 			} catch (Exception e) {
 				log.error("Can't process line: " + value.toString(), e);
+				context.getCounter("de.tudarmstadt.lt.wiki", "NUM_MAP_ERRORS").increment(1);
 			}
 		}
 	}
@@ -147,6 +151,7 @@ public class WordSentenceSampler extends Configured implements Tool {
 					sampleSentences.enqueue(valueString, r.nextDouble());
 				} catch (Exception e) {
 					log.error("Can't process line: " + value.toString(), e);
+					context.getCounter("de.tudarmstadt.lt.wiki", "NUM_REDUCE_ERRORS").increment(1);
 				}
 
 				while (sampleSentences.size() >
