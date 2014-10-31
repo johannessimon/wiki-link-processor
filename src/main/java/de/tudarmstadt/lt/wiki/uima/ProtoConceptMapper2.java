@@ -22,6 +22,7 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
+import org.glassfish.grizzly.WriteResult;
 import org.jobimtext.holing.annotator.DependencyHolingAnnotator;
 import org.jobimtext.holing.extractor.JobimAnnotationExtractor;
 import org.jobimtext.holing.type.JoBim;
@@ -90,7 +91,8 @@ public class ProtoConceptMapper2 {
 	
 	public static void main(String[] args) {
 		if (args.length != 6) {
-			System.out.println("Usage: ProtoConceptMapper <linked sentence file> <cluster file> <instance output file> <cluster mapping file> <test mode> <redirects file>");
+			System.out.println("Usage: ProtoConceptMapper <linked sentence file> <cluster file> <instance output file> <cluster mapping file> <test mode> <word file>");
+			return;
 		}
 		String linkedSentenceFile = args[0];
 		String clusterFileName = args[1];
@@ -115,6 +117,7 @@ public class ProtoConceptMapper2 {
 				mapper.processCas(jCas);
 			}
 			reader.close();
+			mapper.writeResults();
 		} catch (Exception e) {
 			log.error("Processing failed", e);
 		}
