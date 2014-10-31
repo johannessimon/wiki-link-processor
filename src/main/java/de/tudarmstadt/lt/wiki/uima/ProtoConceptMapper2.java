@@ -22,7 +22,6 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
-import org.glassfish.grizzly.WriteResult;
 import org.jobimtext.holing.annotator.DependencyHolingAnnotator;
 import org.jobimtext.holing.extractor.JobimAnnotationExtractor;
 import org.jobimtext.holing.type.JoBim;
@@ -110,8 +109,11 @@ public class ProtoConceptMapper2 {
 			String line;
 			while ((line = reader.readLine()) != null) {
 				jCas.reset();
-				jCas.setDocumentText(linkExtractor.extractDocumentText(line));
+				String doc = linkExtractor.extractDocumentText(line);
+				jCas.setDocumentText(doc);
 				jCas.setDocumentLanguage("en");
+				Sentence s = new Sentence(jCas, 0, doc.length());
+				s.addToIndexes();
 				linkExtractor.extractAnnotations(line, jCas.getCas());
 				engine.process(jCas);
 				mapper.processCas(jCas);
