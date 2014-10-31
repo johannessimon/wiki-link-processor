@@ -22,8 +22,9 @@ import org.apache.uima.fit.util.JCasUtil;
 import org.apache.uima.jcas.JCas;
 import org.apache.uima.resource.ResourceInitializationException;
 import org.apache.uima.util.CasCreationUtils;
-import org.jobimtext.holing.annotator.DependencyHolingAnnotator;
 import org.jobimtext.holing.extractor.JobimAnnotationExtractor;
+import org.jobimtext.holing.extractor.JobimExtractorConfiguration;
+import org.jobimtext.holing.extractor.TokenExtractors;
 import org.jobimtext.holing.type.JoBim;
 import org.jobimtext.holing.type.Sentence;
 
@@ -144,6 +145,12 @@ public class ProtoConceptMapper2 {
 		} catch (Exception e) {
 			log.error("Couldn't create ProtoConceptMapper2", e);
 		}
+		
+		JobimExtractorConfiguration extractorConf = new JobimExtractorConfiguration();
+		extractorConf.holeSymbol = "@@";
+		extractorConf.valueDelimiter = ",";
+		extractorConf.valueRelationPattern = "$relation($values)";
+		extractor = new TokenExtractors.CoveredText(extractorConf);
 	}
 
 	public void writeResults() {
