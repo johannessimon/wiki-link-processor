@@ -16,7 +16,7 @@ public class WikiUtil {
 			subsection = target.substring(startIndex);
 			target = target.substring(0, startIndex);
 		}
-		String redirectedTarget = redirects.get(target);
+		String redirectedTarget = redirects == null ? null : redirects.get(target);
 		if (redirectedTarget != null) {
 			target = redirectedTarget;
 			// "a#b" with redirect "a" -> "c#d" will redirect to "c#b" (not "c#b#d" or "c#d#b", i.e. delete "d" if "b" is not empty)
@@ -29,6 +29,14 @@ public class WikiUtil {
 		}
 		if (keepSubsection) {
 			target += subsection;
+		}
+		return target;
+	}
+	
+	public static String getLinkedResource(String target) {
+		int startIndex = target.indexOf('#');
+		if (startIndex >= 0) {
+			target = target.substring(0, startIndex);
 		}
 		return target;
 	}

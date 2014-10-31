@@ -35,7 +35,7 @@ import edu.stanford.nlp.pipeline.StanfordCoreNLP;
 
 public class WordSentenceSampler extends Configured implements Tool {
 	// Maps e.g. "a b c bla de f", "abc@0:5  def@10:14" to
-	// ("a b c", "de f") and ("a b c@@abc" and "de f@@def"(
+	// ("a b c", "de f") and ("a b c@@abc" and "de f@@def")
 	private static void getLinks(String text, String linkRefs, Collection<String> linkTextsWithTarget, Collection<String> linkTexts) {
 		String links[] = linkRefs.split("  ");
 		for (String link : links) {

@@ -22,6 +22,8 @@ import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
 import org.apache.log4j.Logger;
+import org.tartarus.snowball.SnowballStemmer;
+import org.tartarus.snowball.ext.englishStemmer;
 
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
@@ -31,6 +33,7 @@ public class RedirectReplacer extends Configured implements Tool {
 		Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 		
 		Map<String, String> redirects = new HashMap<>();
+		SnowballStemmer stemmer = new englishStemmer();
 		
 		@Override
 		public void setup(Context context) throws IOException {
@@ -68,11 +71,18 @@ public class RedirectReplacer extends Configured implements Tool {
 				for (String link : links) {
 					String linkParts[] = link.split("@");
 					String target = linkParts[0];
+					String spanStr[] = linkParts[1].split(":");
+					int begin = Integer.parseInt(spanStr[0]);
+					int end = Integer.parseInt(spanStr[0]);
+					String word = text.substring(begin, end);
+					stemmer.setCurrent(word);
+					stemmer.stem();
+					String wordStemmed = stemmer.getCurrent();
 					String _target = redirects.get(target);
 					if (_target != null) {
 						target = _target;
 					}
-					redirectedLinks.add(target + "@" + linkParts[1]);
+					redirectedLinks.add(wordStemmed + "@@" + target + "@" + linkParts[1]);
 				}
 				context.write(new Text(text), new Text(StringUtils.join(redirectedLinks, "  ")));
 			} catch (Exception e) {
