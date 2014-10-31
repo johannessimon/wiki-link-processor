@@ -1,7 +1,6 @@
 package de.tudarmstadt.lt.wiki.hadoop;
 
 import java.util.InputMismatchException;
-import java.util.Scanner;
 
 import org.apache.hadoop.io.Text;
 import org.apache.uima.cas.CAS;
@@ -39,23 +38,19 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 				continue;
 			}
 			String sentence = cols[0];
-			String links = cols[1];
-			Scanner s = new Scanner(links);
-			s.useDelimiter(",|:|@");
-			while (s.hasNext()) {
+			String linkStrings[] = cols[1].split("  ");
+			for (String linkStr : linkStrings) {
 				try {
 					WikiLink link = new WikiLink(jCas);
-					String resource = s.next();
+					// remove word itself from link (e.g. in "car@@Automobile@18:21")
+					linkStr = linkStr.replaceAll(".*@@", "");
+					String[] linkStrParts = linkStr.split("@");
+					String[] beginEnd = linkStrParts[1].split(":");
+					String resource = linkStrParts[0];
 					link.setResource(resource);
-					if (!s.hasNext()) {
-						break;
-					}
-					int from = s.nextInt();
-					if (!s.hasNext()) {
-						break;
-					}
-					int end = s.nextInt();
-					link.setBegin(from + offset);
+					int begin = Integer.parseInt(beginEnd[0]);
+					int end = Integer.parseInt(beginEnd[1]);
+					link.setBegin(begin + offset);
 					link.setEnd(end + offset);
 					link.addToIndexes();
 				} catch (InputMismatchException e) {
@@ -63,7 +58,6 @@ public class WikiLinkCASExtractor implements DocumentTextExtractor, AnnotationEx
 					break;
 				}
 			}
-			s.close();
 			offset += sentence.length() + 1; // +1 due to \n character
 		}
 	}
