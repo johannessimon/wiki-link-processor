@@ -12,7 +12,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Map.Entry;
 import java.util.Set;
-import java.util.TreeMap;
 
 import org.apache.log4j.Logger;
 import org.apache.uima.analysis_engine.AnalysisEngine;
@@ -30,6 +29,7 @@ import org.jobimtext.holing.type.Sentence;
 
 import de.tudarmstadt.lt.util.FileUtil;
 import de.tudarmstadt.lt.util.IndexUtil.StringIndex;
+import de.tudarmstadt.lt.util.IndexUtil;
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
@@ -37,6 +37,7 @@ import de.tudarmstadt.lt.wiki.hadoop.WikiLinkCASExtractor;
 import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
+import de.tudarmstadt.lt.wsi.WSD;
 import de.tudarmstadt.ukp.dkpro.core.maltparser.MaltParser;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
@@ -68,26 +69,12 @@ public class ProtoConceptMapper2 {
 	int numBaselineMappingMatches = 0;
 	int numBaselineMappingMatchesFails = 0;
 	
+	Set<String> words;
+	
 	// (jo, sense) -> resource -> count
 	Map<Cluster<Integer>, Map<String, Integer>> conceptMappings = new HashMap<Cluster<Integer>, Map<String, Integer>>();
 	// jo -> resource -> count
 	Map<Integer, Map<String, Integer>> baselineConceptMappings = new HashMap<Integer, Map<String, Integer>>();
-	
-	private <T> void registerMapping(Map<T, Map<String, Integer>> map, T key, String resource) {
-		Map<String, Integer> conceptMapping = MapUtil.getOrCreate(map, key, HashMap.class);
-		MapUtil.addIntTo(conceptMapping, resource, 1);
-	}
-
-	public static AnalysisEngineDescription buildAnalysisEngine() throws ResourceInitializationException {
-		AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(OpenNlpSegmenter.class);
-		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(StanfordLemmatizer.class);
-		AnalysisEngineDescription pos = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
-		AnalysisEngineDescription deps = AnalysisEngineFactory.createEngineDescription(MaltParser.class);
-		AnalysisEngineDescription depHoling = AnalysisEngineFactory.createEngineDescription(DependencyHolingAnnotator.class);
-
-		return AnalysisEngineFactory.createEngineDescription(
-				segmenter, lemmatizer, pos, deps, depHoling);
-	}
 	
 	public static void main(String[] args) {
 		if (args.length != 6) {
@@ -131,7 +118,7 @@ public class ProtoConceptMapper2 {
 		this.clusterMappingFile = clusterMappingFile;
 		this.baselineMappingFile = clusterMappingFile + "-baseline";
 		try {
-			Set<String> words = MapUtil.readSetFromFile(wordFile);
+			words = MapUtil.readSetFromFile(wordFile);
 			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 			if (testMode) {
 				log.info("Reading concept mappings from " + clusterMappingFile + " and " + baselineMappingFile);
@@ -151,6 +138,112 @@ public class ProtoConceptMapper2 {
 		extractorConf.valueDelimiter = ",";
 		extractorConf.valueRelationPattern = "$relation($values)";
 		extractor = new TokenExtractors.CoveredText(extractorConf);
+	}
+
+	public void processCas(JCas aJCas) {
+		for (Sentence s : select(aJCas, Sentence.class)) {
+			numProcessesSentences++;
+			if (numProcessesSentences % 1000 == 0) {
+				evaluateConceptMapping();
+			}
+			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
+				String resource = WikiUtil.getLinkedResource(link.getResource());
+				List<JoBim> jobims = JCasUtil.selectCovered(JoBim.class, link);
+				
+				String jo = null;
+				Set<String> bims = new HashSet<String>();
+				for (JoBim jobim : jobims) {
+					// Ignore multi-words (we can't handle them right now)
+					if (link.getBegin() == jobim.getBegin() &&
+						link.getEnd() == jobim.getEnd()) {
+						if (jo == null) {
+							jo = extractor.extractKey(jobim);
+						}
+						bims.add(extractor.extractValues(jobim));
+					}
+				}
+				
+				if (!words.contains(jo)) {
+					continue;
+				}
+				
+				if (jo != null) {
+					handleInstance(s.getCoveredText(), jo, bims, resource);
+				}
+			}
+		}
+	}
+	
+	private void handleInstance(String sentence, String jo, Set<String> bims, String goldSense) {
+		Integer joIndex = strIndex.getIndex(jo);
+		Set<Integer> bimsIndices = new HashSet<Integer>(IndexUtil.mapToIndices(bims, strIndex));
+		String mappedResourceBaseline = null;
+		String mappedResourceCluster = null;
+		if (testMode) {
+			mappedResourceBaseline = baselineMapping.get(joIndex);
+			mappedResourceCluster = mappedResourceBaseline;
+		} else {
+			registerMapping(baselineConceptMappings, joIndex, goldSense);
+		}
+		
+		numInstances++;
+		List<Cluster<Integer>> senseClusters = clusters.get(joIndex);
+		if (senseClusters == null) {
+			numMissingSenseClusters++;
+		} else {
+			Cluster<Integer> highestRankedSense = WSD.chooseCluster(senseClusters, bimsIndices);
+
+			if (highestRankedSense == null) {
+				numMappingFails++;
+			} else {
+				numMappingSuccesses++;
+				
+				if (testMode) {
+					String _mappedResourceCluster = clusterMapping.get(highestRankedSense);
+					if (_mappedResourceCluster != null) {
+						mappedResourceCluster = _mappedResourceCluster;
+					}
+				} else {
+					registerMapping(conceptMappings, highestRankedSense, goldSense);
+				}
+			}
+			
+			try {
+				String sense = highestRankedSense != null ? Integer.toString(highestRankedSense.clusterId) : "NULL";
+				writer.write(strIndex.get(joIndex) + "\t" + sense + "\t" + goldSense + "\t" + sentence + "\n");
+			} catch (IOException e) {
+				log.error("Failed to write to output", e);
+			}
+		}
+		
+		if (testMode) {
+			if (mappedResourceCluster != null && mappedResourceCluster.equals(goldSense)) {
+				numMappingMatches++;
+			} else {
+				numMappingMatchesFails++;
+			}
+			if (mappedResourceBaseline != null && mappedResourceBaseline.equals(goldSense)) {
+				numBaselineMappingMatches++;
+			} else {
+				numBaselineMappingMatchesFails++;
+			}
+		}
+	}
+	
+	private <T> void registerMapping(Map<T, Map<String, Integer>> map, T key, String resource) {
+		Map<String, Integer> conceptMapping = MapUtil.getOrCreate(map, key, HashMap.class);
+		MapUtil.addIntTo(conceptMapping, resource, 1);
+	}
+
+	public static AnalysisEngineDescription buildAnalysisEngine() throws ResourceInitializationException {
+		AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(OpenNlpSegmenter.class);
+		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(StanfordLemmatizer.class);
+		AnalysisEngineDescription pos = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
+		AnalysisEngineDescription deps = AnalysisEngineFactory.createEngineDescription(MaltParser.class);
+		AnalysisEngineDescription depHoling = AnalysisEngineFactory.createEngineDescription(DependencyHolingAnnotator.class);
+
+		return AnalysisEngineFactory.createEngineDescription(
+				segmenter, lemmatizer, pos, deps, depHoling);
 	}
 
 	public void writeResults() {
@@ -236,107 +329,4 @@ public class ProtoConceptMapper2 {
 		log.info("# Correct baseline mappings:           " + numBaselineMappingMatches + "/" + numMappingSuccesses);
 		log.info("# Incorrect baseline mappings:         " + numBaselineMappingMatchesFails + "/" + numMappingSuccesses);
 	}
-
-	public void processCas(JCas aJCas) {
-		for (Sentence s : select(aJCas, Sentence.class)) {
-			numProcessesSentences++;
-			if (numProcessesSentences % 1000 == 0) {
-				evaluateConceptMapping();
-			}
-			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
-				String resource = WikiUtil.getLinkedResource(link.getResource());
-				List<JoBim> jobims = JCasUtil.selectCovered(JoBim.class, link);
-				
-				Integer jo = null;
-				Set<Integer> bims = new HashSet<Integer>();
-				for (JoBim jobim : jobims) {
-					// Ignore multi-words (we can't handle them right now)
-					if (link.getBegin() == jobim.getBegin() &&
-						link.getEnd() == jobim.getEnd()) {
-						if (jo == null) {
-							jo = strIndex.getIndex(extractor.extractKey(jobim));
-						}
-						bims.add(strIndex.getIndex(extractor.extractValues(jobim)));
-					}
-				}
-				
-				if (jo != null) {
-					String mappedResourceBaseline = null;
-					String mappedResourceCluster = null;
-					if (testMode) {
-						mappedResourceBaseline = baselineMapping.get(jo);
-						mappedResourceCluster = mappedResourceBaseline;
-					} else {
-						registerMapping(baselineConceptMappings, jo, resource);
-					}
-					
-					numInstances++;
-					Map<Cluster<Integer>, Integer> senseScores = new TreeMap<Cluster<Integer>, Integer>();
-					List<Cluster<Integer>> senseClusters = clusters.get(jo);
-					if (senseClusters == null) {
-						numMissingSenseClusters++;
-//						log.error("No sense cluster found for jo: " + jo);
-					} else {
-						for (Cluster<Integer> cluster : senseClusters) {
-							int score = 0;
-							for (Entry<Integer, Integer> feature : cluster.featureCounts.entrySet()) {
-								if (bims.contains(feature.getKey())) {
-									score += feature.getValue();
-								}
-							}
-							if (score > 0) {
-								senseScores.put(cluster, score);
-							}
-						}
-						
-						Cluster<Integer> highestRankedSense = null;
-						int highestScore = -1;
-						for (Cluster<Integer> sense : senseScores.keySet()) {
-							int score = senseScores.get(sense);
-							if (score > highestScore) {
-								highestRankedSense = sense;
-								highestScore = score;
-							}
-						}
-
-						if (highestRankedSense == null) {
-							numMappingFails++;
-						} else {
-							numMappingSuccesses++;
-							
-							if (testMode) {
-								String _mappedResourceCluster = clusterMapping.get(highestRankedSense);
-								if (_mappedResourceCluster != null) {
-									mappedResourceCluster = _mappedResourceCluster;
-								}
-							} else {
-								registerMapping(conceptMappings, highestRankedSense, resource);
-							}
-						}
-						
-						try {
-							String sense = highestRankedSense != null ? Integer.toString(highestRankedSense.clusterId) : "NULL";
-							writer.write(strIndex.get(jo) + "\t" + sense + "\t" + resource + "\t" + s.getCoveredText() + "\n");
-						} catch (IOException e) {
-							log.error("Failed to write to output", e);
-						}
-					}
-					
-					if (testMode) {
-						if (mappedResourceCluster != null && mappedResourceCluster.equals(resource)) {
-							numMappingMatches++;
-						} else {
-							numMappingMatchesFails++;
-						}
-						if (mappedResourceBaseline != null && mappedResourceBaseline.equals(resource)) {
-							numBaselineMappingMatches++;
-						} else {
-							numBaselineMappingMatchesFails++;
-						}
-					}
-				}
-			}
-		}
-	}
-
 }
