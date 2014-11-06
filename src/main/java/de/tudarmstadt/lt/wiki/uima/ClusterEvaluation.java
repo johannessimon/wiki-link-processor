@@ -43,7 +43,7 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 
-public class ProtoConceptMapper2 {
+public class ClusterEvaluation {
 	static Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki.uima");
 	
 	String instanceOutputFile;
@@ -78,7 +78,7 @@ public class ProtoConceptMapper2 {
 	
 	public static void main(String[] args) {
 		if (args.length != 6) {
-			System.out.println("Usage: ProtoConceptMapper <linked sentence file> <cluster file> <instance output file> <cluster mapping file> <test mode> <word file>");
+			System.out.println("Usage: ClusterEvaluation <linked sentence file> <cluster file> <instance output file> <cluster mapping file> <test mode> <word file>");
 			return;
 		}
 		String linkedSentenceFile = args[0];
@@ -87,7 +87,7 @@ public class ProtoConceptMapper2 {
 		String clusterMappingFile = args[3];
 		boolean testMode = args[4].toLowerCase().equals("true");
 		String wordFile = args[5];
-		ProtoConceptMapper2 mapper = new ProtoConceptMapper2(clusterFileName, instanceOutputFile, clusterMappingFile, testMode, wordFile);
+		ClusterEvaluation mapper = new ClusterEvaluation(clusterFileName, instanceOutputFile, clusterMappingFile, testMode, wordFile);
 
 		try {
 			BufferedReader reader = new BufferedReader(new MonitoredFileReader(linkedSentenceFile));
@@ -113,7 +113,7 @@ public class ProtoConceptMapper2 {
 		}
 	}
 
-	public ProtoConceptMapper2(String clusterFileName, String instanceOutputFile, String clusterMappingFile, boolean testMode, String wordFile) {
+	public ClusterEvaluation(String clusterFileName, String instanceOutputFile, String clusterMappingFile, boolean testMode, String wordFile) {
 		this.testMode = testMode;
 		this.instanceOutputFile = instanceOutputFile;
 		this.clusterMappingFile = clusterMappingFile;
