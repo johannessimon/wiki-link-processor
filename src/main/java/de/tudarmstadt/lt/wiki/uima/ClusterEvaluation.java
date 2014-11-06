@@ -43,10 +43,33 @@ import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 
+/**
+ * Evaluation for DT clusters based on Wikipedia links.<br/>
+ * <br/>
+ * <b>How it works:</b><br/>
+ * Upfront, Wikipedia sentences are extracted that contain links having certain
+ * target words as text. These are the words that you want to evaluate against.
+ * The targets of these links are then assumed to be the "gold" senses of the
+ * words in their specific context.<br/>
+ * <br/>
+ * The evaluation has two stages: train and test. During training, it iterates
+ * over the given sentences and attempts to assign clusters to your target
+ * words in context. It then counts how many times each cluster appears with
+ * which gold sense. Based on this, it assigns a sense to each cluster.<br/>
+ * <br/>
+ * These assignments are then used in the test stage to determine the
+ * discrepancy between the "Wikipedia senses" and the clusters that are assigned
+ * in context. The evaluation does so by assuming the most frequent sense
+ * that appeared with each cluster to be the Wikipedia sense alignment of the
+ * cluster. After this, it simply counts how often there is a match between
+ * this aligned sense and the actual gold sense in this context.
+ * 
+ * @author Johannes Simon
+ *
+ */
 public class ClusterEvaluation {
 	static Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki.uima");
 	
-	String instanceOutputFile;
 	String clusterMappingFile;
 	String baselineMappingFile;
 	JobimAnnotationExtractor extractor;
@@ -115,7 +138,6 @@ public class ClusterEvaluation {
 
 	public ClusterEvaluation(String clusterFileName, String instanceOutputFile, String clusterMappingFile, boolean testMode, String wordFile) {
 		this.testMode = testMode;
-		this.instanceOutputFile = instanceOutputFile;
 		this.clusterMappingFile = clusterMappingFile;
 		this.baselineMappingFile = clusterMappingFile + "-baseline";
 		try {
