@@ -1,4 +1,4 @@
-package de.tudarmstadt.lt.wiki.uima;
+package de.tudarmstadt.lt.wiki.eval;
 
 import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTypeSystemDescription;
 import static org.apache.uima.fit.util.JCasUtil.select;
@@ -34,6 +34,7 @@ import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.util.WikiUtil;
 import de.tudarmstadt.lt.wiki.hadoop.WikiLinkCASExtractor;
+import de.tudarmstadt.lt.wiki.uima.DependencyHolingAnnotator;
 import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
@@ -68,7 +69,7 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
  *
  */
 public class ClusterEvaluation {
-	static Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki.uima");
+	static Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki.eval");
 	
 	String clusterMappingFile;
 	String baselineMappingFile;
