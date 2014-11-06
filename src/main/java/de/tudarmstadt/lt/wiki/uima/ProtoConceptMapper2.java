@@ -85,7 +85,7 @@ public class ProtoConceptMapper2 {
 		String clusterFileName = args[1];
 		String instanceOutputFile = args[2];
 		String clusterMappingFile = args[3];
-		boolean testMode = args[4].toLowerCase().equals("test");
+		boolean testMode = args[4].toLowerCase().equals("true");
 		String wordFile = args[5];
 		ProtoConceptMapper2 mapper = new ProtoConceptMapper2(clusterFileName, instanceOutputFile, clusterMappingFile, testMode, wordFile);
 
@@ -114,6 +114,7 @@ public class ProtoConceptMapper2 {
 	}
 
 	public ProtoConceptMapper2(String clusterFileName, String instanceOutputFile, String clusterMappingFile, boolean testMode, String wordFile) {
+		this.testMode = testMode;
 		this.instanceOutputFile = instanceOutputFile;
 		this.clusterMappingFile = clusterMappingFile;
 		this.baselineMappingFile = clusterMappingFile + "-baseline";
@@ -163,11 +164,7 @@ public class ProtoConceptMapper2 {
 					}
 				}
 				
-				if (!words.contains(jo)) {
-					continue;
-				}
-				
-				if (jo != null) {
+				if (jo != null && words.contains(jo)) {
 					handleInstance(s.getCoveredText(), jo, bims, resource);
 				}
 			}
@@ -322,11 +319,11 @@ public class ProtoConceptMapper2 {
 		log.info("# - No clusters found at all:          " + numMissingSenseClusters + "/" + numInstances);
 		log.info("");
 		log.info("# Evaluation");
-		log.info("# Correct mappings:                    " + numMappingMatches + "/" + numMappingSuccesses);
-		log.info("# Incorrect mappings:                  " + numMappingMatchesFails + "/" + numMappingSuccesses);
+		log.info("# Correct mappings:                    " + numMappingMatches + "/" + numInstances);
+		log.info("# Incorrect mappings:                  " + numMappingMatchesFails + "/" + numInstances);
 		log.info("");
 		log.info("# Baseline comparison");
-		log.info("# Correct baseline mappings:           " + numBaselineMappingMatches + "/" + numMappingSuccesses);
-		log.info("# Incorrect baseline mappings:         " + numBaselineMappingMatchesFails + "/" + numMappingSuccesses);
+		log.info("# Correct baseline mappings:           " + numBaselineMappingMatches + "/" + numInstances);
+		log.info("# Incorrect baseline mappings:         " + numBaselineMappingMatchesFails + "/" + numInstances);
 	}
 }
