@@ -5,8 +5,6 @@ import static org.apache.uima.fit.factory.TypeSystemDescriptionFactory.createTyp
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -38,6 +36,7 @@ import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 import de.tudarmstadt.lt.wsi.WSD;
+import de.tudarmstadt.lt.wsi.WSD.ContextClueScoreAggregation;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Lemma;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
@@ -257,7 +256,7 @@ public class ClusterEvaluation {
 			numMissingSenseClusters++;
 		} else {
 			Set<Integer> contextOverlap = new HashSet<Integer>();
-			Cluster<Integer> highestRankedSense = WSD.chooseCluster(senseClusters, bimsIndices, contextOverlap);
+			Cluster<Integer> highestRankedSense = WSD.chooseCluster(senseClusters, bimsIndices, contextOverlap, ContextClueScoreAggregation.Max);
 			List<String> contextOverlapStr = IndexUtil.map(contextOverlap, strIndex);
 
 			if (highestRankedSense == null) {
@@ -307,38 +306,6 @@ public class ClusterEvaluation {
 	private <T> void registerMapping(Map<T, Map<String, Integer>> map, T key, String resource) {
 		Map<String, Integer> conceptMapping = MapUtil.getOrCreate(map, key, HashMap.class);
 		MapUtil.addIntTo(conceptMapping, resource, 1);
-	}
-	
-	private void postProcessClusters(Map<Integer, List<Cluster<Integer>>> clusters) {
-		for (List<Cluster<Integer>> wordClusters : clusters.values()) {
-			int numSenses = wordClusters.size();
-			Map<Integer, Double[]> featureFreqsPerCluster = new HashMap<>();
-			for (int i = 0; i < wordClusters.size(); i++) {
-				Cluster<Integer> cluster = wordClusters.get(i);
-				for (Entry<Integer, Integer> featureCount : cluster.featureCounts.entrySet()) {
-					int feature = featureCount.getKey();
-					int count = featureCount.getValue();
-					Double[] featureArr = featureFreqsPerCluster.get(feature);
-					if (featureArr == null) {
-						featureArr = new Double[numSenses];
-						for (int sense = 0; sense < numSenses; sense++) {
-							featureArr[sense] = 0.0;
-						}
-						featureFreqsPerCluster.put(feature, featureArr);
-					}
-					featureArr[i] = count / (double) cluster.nodes.size();
-				}
-				cluster.featureCounts.clear();
-			}
-		
-			for (Entry<Integer, Double[]> featureFreqPerCluster : featureFreqsPerCluster.entrySet()) {
-				Integer feature = featureFreqPerCluster.getKey();
-				List<Double> freqPerCluster = Arrays.asList(featureFreqPerCluster.getValue());
-				int bestClusterIndex = freqPerCluster.indexOf(Collections.max(freqPerCluster));
-				Cluster<Integer> bestCluster = wordClusters.get(bestClusterIndex);
-				bestCluster.featureCounts.put(feature, 1);
-			}
-		}
 	}
 	
 	private static class LemmaTextExtractor extends JobimAnnotationExtractor {
