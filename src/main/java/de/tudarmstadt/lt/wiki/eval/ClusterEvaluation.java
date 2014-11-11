@@ -39,6 +39,7 @@ import de.tudarmstadt.lt.wiki.uima.type.WikiLink;
 import de.tudarmstadt.lt.wsi.Cluster;
 import de.tudarmstadt.lt.wsi.ClusterReaderWriter;
 import de.tudarmstadt.lt.wsi.WSD;
+import de.tudarmstadt.lt.wsi.WSD.ContextClueScoreAggregation;
 import de.tudarmstadt.ukp.dkpro.core.maltparser.MaltParser;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
@@ -211,7 +212,7 @@ public class ClusterEvaluation {
 		if (senseClusters == null) {
 			numMissingSenseClusters++;
 		} else {
-			Cluster<Integer> highestRankedSense = WSD.chooseCluster(senseClusters, bimsIndices);
+			Cluster<Integer> highestRankedSense = WSD.chooseCluster(senseClusters, bimsIndices, ContextClueScoreAggregation.Max);
 
 			if (highestRankedSense == null) {
 				numMappingFails++;
