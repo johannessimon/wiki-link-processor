@@ -25,6 +25,7 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 	private int maxSentenceLength;
 	private int maxPageLength;
 	private int maxNumLinksPerPage;
+	private int maxNumImplicitLinksPerPage;
 	
 	Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");
 	
@@ -36,6 +37,7 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 		maxSentenceLength = conf.getInt("wiki.sentence.maxlength", 1_000);
 		maxPageLength = conf.getInt("wiki.page.maxlength", 1_000_000);
 		maxNumLinksPerPage = conf.getInt("wiki.links.maxperpage", 1_000);
+		maxNumImplicitLinksPerPage = conf.getInt("wiki.implicitlinks.maxperpage", 10_000);
 		log.info("Max sentence length is " + maxSentenceLength);
 		log.info("Max page length is " + maxPageLength);
 		log.info("Max num links per page is " + maxNumLinksPerPage);
@@ -92,8 +94,9 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 						}
 						
 						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
+						implicitLinks.addAll(links); // these include all links, also the "explicit" ones
 						if (implicitLinks != null) {
-							if (implicitLinks.size() < maxNumLinksPerPage) {
+							if (implicitLinks.size() < maxNumImplicitLinksPerPage) {
 								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
 							} else {
 								log.error("(" + pageTitle + ") too many implicit links: " + implicitLinks.subList(0, 100));
