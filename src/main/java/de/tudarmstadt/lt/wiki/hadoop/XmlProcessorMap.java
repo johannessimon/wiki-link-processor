@@ -94,8 +94,8 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 						}
 						
 						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
-						implicitLinks.addAll(links); // these include all links, also the "explicit" ones
 						if (implicitLinks != null) {
+							implicitLinks.addAll(links); // these include all links, also the "explicit" ones
 							if (implicitLinks.size() < maxNumImplicitLinksPerPage) {
 								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
 							} else {
