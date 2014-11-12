@@ -84,8 +84,12 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 						Text sentenceText = new Text(sentence);
 						mos.write("sentences", sentenceText, NullWritable.get());
 						
-						List<String> links = sentenceLinks.get(sIndex);
-						if (links != null) {
+						List<String> links = new LinkedList<String>();
+						List<String> explicitLinks = sentenceLinks.get(sIndex);
+						if (explicitLinks != null) {
+							links.addAll(explicitLinks);
+						}
+						if (!links.isEmpty()) {
 							if (links.size() < maxNumLinksPerPage) {
 								mos.write("links", sentenceText, new Text(StringUtils.join(links, "  ")));
 							} else {
@@ -95,11 +99,13 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 						
 						List<String> implicitLinks = implicitSentenceLinks.get(sIndex);
 						if (implicitLinks != null) {
-							implicitLinks.addAll(links); // these include all links, also the "explicit" ones
-							if (implicitLinks.size() < maxNumImplicitLinksPerPage) {
-								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(implicitLinks, "  ")));
+							links.addAll(implicitLinks);
+						}
+						if (!links.isEmpty()) {
+							if (links.size() < maxNumImplicitLinksPerPage) {
+								mos.write("implicitlinks", sentenceText, new Text(StringUtils.join(links, "  ")));
 							} else {
-								log.error("(" + pageTitle + ") too many implicit links: " + implicitLinks.subList(0, 100));
+								log.error("(" + pageTitle + ") too many implicit links: " + links.subList(0, 100));
 							}
 						}
 						sIndex++;
