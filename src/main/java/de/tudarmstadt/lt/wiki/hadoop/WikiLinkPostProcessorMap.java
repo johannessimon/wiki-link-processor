@@ -65,8 +65,10 @@ class WikiLinkPostProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 				String fileName = filePath.getName();
 				log.info("Processing redirects file: " + filePath);
 				InputStream in = fs.open(filePath);
+				context.progress(); // Avoid getting time outs
                 BufferedReader reader = new BufferedReader(new MonitoredFileReader(fileName, in, fileLen, "UTF-8", 0.01));
                 redirects = MapUtil.readMapFromReader(reader, "\t");
+				context.progress();
 			} catch (Exception e) {
 				log.error("Error reading redirect files", e);
 			}
@@ -76,7 +78,9 @@ class WikiLinkPostProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 		}
 		try {
 			engine = AnalysisEngineFactory.createEngine(buildAnalysisEngine());
+			context.progress();
 			jCas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
+			context.progress();
 		} catch (ResourceInitializationException e) {
 			log.error("Couldn't initialize analysis engine", e);
 		} catch (CASException e) {
