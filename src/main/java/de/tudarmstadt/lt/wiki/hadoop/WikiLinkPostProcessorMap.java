@@ -19,6 +19,7 @@ import org.apache.hadoop.io.LongWritable;
 import org.apache.hadoop.io.Text;
 import org.apache.hadoop.mapreduce.Mapper;
 import org.apache.log4j.Logger;
+import org.apache.uima.UIMAException;
 import org.apache.uima.analysis_engine.AnalysisEngine;
 import org.apache.uima.analysis_engine.AnalysisEngineDescription;
 import org.apache.uima.cas.CASException;
@@ -127,7 +128,7 @@ class WikiLinkPostProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 			if (!redirectedLinks.isEmpty()) {
 				context.write(new Text(text), new Text(StringUtils.join(redirectedLinks, "  ")));
 			}
-		} catch (Exception e) {
+		} catch (RuntimeException | UIMAException e) {
 			log.error("Can't process line: " + value.toString(), e);
 		}
 	}
