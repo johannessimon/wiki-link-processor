@@ -77,9 +77,13 @@ class WikiLinkPostProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 					+ "pattern (on HDFS) using -Dwiki.redirects.file=...");
 		}
 		try {
+			log.info("Initializing analysis engine...");
 			engine = AnalysisEngineFactory.createEngine(buildAnalysisEngine());
+			log.info("Done initializing analysis engine");
 			context.progress();
+			log.info("Initializing CAS and type system..");
 			jCas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
+			log.info("Done initializing CAS and type system..");
 			context.progress();
 		} catch (ResourceInitializationException e) {
 			log.error("Couldn't initialize analysis engine", e);
