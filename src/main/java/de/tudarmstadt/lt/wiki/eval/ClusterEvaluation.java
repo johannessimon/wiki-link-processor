@@ -83,8 +83,8 @@ public class ClusterEvaluation {
 	String clusterMappingFile;
 	String baselineMappingFile;
 	JobimAnnotationExtractor extractor;
-	final StringIndex strIndex = new StringIndex();
-	Map<Integer, List<Cluster<Integer>>> clusters;
+	final static StringIndex strIndex = new StringIndex();
+	static Map<Integer, List<Cluster<Integer>>> clusters;
 	// (jo, sense) -> resource (MFS)
 	Map<Cluster<Integer>, String> clusterMapping;
 	// jo -> resource (MFS)
@@ -92,7 +92,7 @@ public class ClusterEvaluation {
 	BufferedWriter writer;
 	boolean testMode;
 	
-	Set<String> words;
+	static Set<String> words;
 	
 	Statistics stats;
 	
@@ -118,7 +118,9 @@ public class ClusterEvaluation {
 		
 		FileFilter fileFilter = new WildcardFileFilter(linkedSentenceFile);
 		File[] files = new File(".").listFiles(fileFilter);
-		
+
+		words = MapUtil.readSetFromFile(wordFile);
+		clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 		for (int i = 0; i < files.length; i++) {
 			File testFile = files[i];
 			Collection<InputStream> trainInputs = new ArrayList<InputStream>();
@@ -130,10 +132,10 @@ public class ClusterEvaluation {
 			}
 			SequenceInputStream trainInput = new SequenceInputStream(Collections.enumeration(trainInputs));
 			BufferedReader trainReader = new BufferedReader(new InputStreamReader(trainInput, org.apache.commons.io.Charsets.UTF_8));
-			
-			ClusterEvaluation train = new ClusterEvaluation(clusterFileName, instanceOutputFile, clusterMappingFile, false, wordFile, trainStats);
+
+			ClusterEvaluation train = new ClusterEvaluation(instanceOutputFile, clusterMappingFile, false, trainStats);
 			train.run(trainReader, engine);
-			ClusterEvaluation test = new ClusterEvaluation(clusterFileName, instanceOutputFile, clusterMappingFile, true, wordFile, testStats);
+			ClusterEvaluation test = new ClusterEvaluation(instanceOutputFile, clusterMappingFile, true, testStats);
 			test.run(testReader, engine);
 			trainStats.print();
 		}
@@ -142,14 +144,12 @@ public class ClusterEvaluation {
 		testStats.print();
 	}
 
-	public ClusterEvaluation(String clusterFileName, String instanceOutputFile, String clusterMappingFile, boolean testMode, String wordFile, Statistics stats) {
+	public ClusterEvaluation(String instanceOutputFile, String clusterMappingFile, boolean testMode, Statistics stats) {
 		this.testMode = testMode;
 		this.stats = stats;
 		this.clusterMappingFile = clusterMappingFile;
 		this.baselineMappingFile = clusterMappingFile + "-baseline";
 		try {
-			words = MapUtil.readSetFromFile(wordFile);
-			clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 //			postProcessClusters(clusters); // this turned out not to work too well
 			if (testMode) {
 				log.info("Reading concept mappings from " + clusterMappingFile + " and " + baselineMappingFile);
