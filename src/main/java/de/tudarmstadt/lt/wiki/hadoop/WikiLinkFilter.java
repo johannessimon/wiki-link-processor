@@ -41,7 +41,7 @@ public class WikiLinkFilter extends Configured implements Tool {
 
 	public int run(String[] args) throws Exception {
 		System.out.println("args:" + Arrays.asList(args));
-		if (args.length != 2) {
+		if (args.length != 3) {
 			System.out.println("Usage: </path/to/wiki-links> </path/to/output> <words>");
 			System.exit(1);
 		}
