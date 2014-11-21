@@ -102,7 +102,7 @@ public class ClusterEvaluation {
 	Map<Integer, Map<String, Integer>> baselineConceptMappings = new HashMap<Integer, Map<String, Integer>>();
 	
 	public static void main(String[] args) throws Exception {
-		if (args.length != 5) {
+		if (args.length != 6) {
 			System.out.println("Usage: ClusterEvaluation <linked sentence file> <cluster file> <instance output file> <cluster mapping file> <word file>");
 			return;
 		}
@@ -111,6 +111,7 @@ public class ClusterEvaluation {
 		String instanceOutputFile = args[2];
 		String clusterMappingFile = args[3];
 		String wordFile = args[4];
+		String wikiSenseFile = args[5];
 		AnalysisEngine engine = AnalysisEngineFactory.createEngine(buildAnalysisEngine());
 		
 		Statistics trainStats = new Statistics();
@@ -120,6 +121,7 @@ public class ClusterEvaluation {
 		File[] files = new File(".").listFiles(fileFilter);
 
 		words = MapUtil.readSetFromFile(wordFile);
+		Set<String> wikiSenses = MapUtil.readSetFromFile(wikiSenseFile);
 		clusters = ClusterReaderWriter.readClusters(new MonitoredFileReader(clusterFileName), strIndex, words);
 		for (int i = 0; i < files.length; i++) {
 			File testFile = files[i];
@@ -134,9 +136,9 @@ public class ClusterEvaluation {
 			BufferedReader trainReader = new BufferedReader(new InputStreamReader(trainInput, org.apache.commons.io.Charsets.UTF_8));
 
 			ClusterEvaluation train = new ClusterEvaluation(instanceOutputFile, clusterMappingFile, false, trainStats);
-			train.run(trainReader, engine);
+			train.run(trainReader, engine, wikiSenses);
 			ClusterEvaluation test = new ClusterEvaluation(instanceOutputFile, clusterMappingFile, true, testStats);
-			test.run(testReader, engine);
+			test.run(testReader, engine, wikiSenses);
 			trainStats.print();
 		}
 		
@@ -171,7 +173,7 @@ public class ClusterEvaluation {
 		extractor = new LemmaTextExtractor(extractorConf);
 	}
 	
-	public void run(BufferedReader reader, AnalysisEngine engine) {
+	public void run(BufferedReader reader, AnalysisEngine engine, Set<String> wikiSenses) {
 		try {
 			JCas jCas = CasCreationUtils.createCas(createTypeSystemDescription(), null, null).getJCas();
 			WikiLinkCASExtractor linkExtractor = new WikiLinkCASExtractor();
@@ -185,7 +187,7 @@ public class ClusterEvaluation {
 				s.addToIndexes();
 				linkExtractor.extractAnnotations(line, jCas.getCas());
 				engine.process(jCas);
-				processCas(jCas);
+				processCas(jCas, wikiSenses);
 			}
 			reader.close();
 			writeResults();
@@ -194,7 +196,7 @@ public class ClusterEvaluation {
 		}
 	}
 
-	public void processCas(JCas aJCas) {
+	public void processCas(JCas aJCas, Set<String> wikiSenses) {
 		for (Sentence s : JCasUtil.select(aJCas, Sentence.class)) {
 			stats.numProcessesSentences++;
 //			if (stats.numProcessesSentences % 1000 == 0) {
@@ -202,6 +204,11 @@ public class ClusterEvaluation {
 //			}
 			for (WikiLink link : JCasUtil.selectCovered(WikiLink.class, s)) {
 				String resource = WikiUtil.getLinkedResource(link.getResource());
+				
+				if (!wikiSenses.contains(resource)) {
+					continue;
+				}
+				
 				List<Token> tokens = JCasUtil.selectCovered(Token.class, link);
 				
 				String jo = null;
