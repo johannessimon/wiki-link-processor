@@ -37,7 +37,8 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 			int numSenses = 0;
 			int totalCount = 0;
 			for (Text targetCount : targetCounts) {
-				int count = Integer.parseInt(targetCount.toString().split(":")[1]);
+				String tc = targetCount.toString();
+				int count = Integer.parseInt(tc.substring(tc.lastIndexOf(":") + 1));
 				totalCount += count;
 				numSenses++;
 			}
