@@ -26,12 +26,17 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 		@Override
 		public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
-			String[] cols = value.toString().split("\t");
-			String word = cols[0].split("@@")[0];
-			String target = cols[0].split("@@")[1];
-			String count = cols[1];
-			
-			context.write(new Text(word), new Text(target + ":" + count));
+			try {
+				String[] cols = value.toString().split("\t");
+				String word = cols[0].split("@@")[0];
+				String target = cols[0].split("@@")[1];
+				String count = cols[1];
+				
+				context.write(new Text(word), new Text(target + ":" + count));
+			} catch (Exception e) {
+				e.printStackTrace();
+				context.getCounter("de.tudarmstadt.lt.wiki.hadoop", "MALFORMATTED_MAP_INPUTS").increment(1);
+			}
 		}
 	}
 
