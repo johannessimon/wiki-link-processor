@@ -30,7 +30,7 @@ public class SurfaceFormDictionary extends Configured implements Tool {
 				String links[] = valueParts[1].split("  ");
 				for (String link : links) {
 					String linkParts[] = link.split("@@");
-					String surfaceFormLemma = linkParts[0];
+					String surfaceFormLemma = linkParts[0].replace("\t", "");
 					String rightParts[] = linkParts[1].split("@");
 					String target = rightParts[0];
 					
