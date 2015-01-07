@@ -5,6 +5,7 @@ PACKAGE=de.tudarmstadt.lt.wiki.hadoop
 
 # preprocess wikipedia dump (wiki/ folder must contain enwiki-pages-articles.xml)
 hadoop jar $JAR $PACKAGE.HadoopWikiXmlProcessor\
+   -Dmapred.job.queue.name=longrunning
    wiki\
    wiki-links &&
 

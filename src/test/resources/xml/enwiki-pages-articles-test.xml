@@ -408,4 +408,50 @@ and its interaction with the aggressive statist society on Terra.<ref>{{cite web
 ]]></text>
 		</revision>
 	</page>
+	<page>
+		<title>R</title>
+		<ns>0</ns>
+		<id>8</id>
+		<revision>
+			<text xml:space="preserve">
+	[[Pascal's rule]] provides a recursive definition which can also be implemented in [[Python (programming language)|Python]], although it is less efficient:
+&lt;syntaxhighlight lang=&quot;python&quot;&gt;
+def binomialCoefficient(n, k):
+    if k &lt; 0 or k &gt; n:
+        return 0
+    if k &gt; n - k: # take advantage of symmetry
+        k = n - k
+    if k == 0 or n &lt;= 1:
+        return 1
+    return binomialCoefficient(n-1, k) + binomialCoefficient(n-1, k-1)
+&lt;/syntaxhighlight&gt;
+
+The example mentioned above can be also written in functional style. The following [[Scheme (programming language)|Scheme]] example uses the recursive definition
+:&lt;math&gt;{n \choose k+1} = \frac{n-k}{k+1} {n \choose k} &lt;/math&gt;
+Rational arithmetic can be easily avoided using integer division
+:&lt;math&gt;{n \choose k+1} = \left[(n-k) {n \choose k}\right] \div (k+1) &lt;/math&gt;
+The following implementation uses all these ideas
+&lt;syntaxhighlight lang=&quot;scheme&quot;&gt;
+(define (binomial n k)
+;; Helper function to compute C(n,k) via forward recursion
+  (define (binomial-iter n k i prev)
+    (if (&gt;= i k)
+      prev
+     (binomial-iter n k (+ i 1) (/ (* (- n i) prev) (+ i 1)))))
+;; Use symmetry property C(n,k)=C(n, n-k)
+  (if (&lt; k (-  n k))
+    (binomial-iter n k 0 1)
+    (binomial-iter n (- n k) 0 1)))
+&lt;/syntaxhighlight&gt;
+
+Another way to compute the binomial coefficient when using large numbers is to recognize that
+
+:&lt;math&gt;
+  {n \choose k} = \frac{n!}{k!\,(n-k)!} = \frac{\Gamma(n+1)}{\Gamma(k+1)\,\Gamma(n-k+1)} = \exp(\ln\Gamma(n+1)-\ln\Gamma(k+1)-\ln\Gamma(n-k+1)),&lt;/math&gt;
+
+where &lt;math&gt;\ln&lt;/math&gt;&amp;thinsp;&lt;math&gt;\Gamma(n)&lt;/math&gt; denotes the [[natural logarithm]] of the [[gamma function]] at &lt;math&gt;n&lt;/math&gt;. It is a special function that is easily computed and is standard in some programming languages such as using ''log_gamma'' in [[Maxima (software)|Maxima]], ''LogGamma'' in [[Mathematica]], ''gammaln'' in [[MATLAB]], or ''lgamma'' in [[R_(programming_language)|R]]. Roundoff error may cause the returned value to not be an integer.
+	
+		</text>
+		</revision>
+		</page>
 </mediawiki>

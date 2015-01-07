@@ -15,10 +15,10 @@
 		</repository>
 	    <repository>
 	        <id>johannessimon-mvn-repo</id>
-	        <url>https://raw.github.com/johannessimon/mvn-repo/master/</url>
+	        <url>https://raw.github.com/johannessimon/mvn-repo/master</url>
 	        <snapshots>
 	            <enabled>true</enabled>
-	            <!-- <updatePolicy>always</updatePolicy> -->
+	            <updatePolicy>always</updatePolicy>
 	        </snapshots>
 	    </repository>
 	    <repository>
