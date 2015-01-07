@@ -21,7 +21,7 @@ import org.apache.hadoop.util.ToolRunner;
 
 import de.tudarmstadt.lt.util.MapUtil;
 
-public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
+public class SurfaceFormDictionaryFilter extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, Text> {
 		@Override
 		public void map(LongWritable key, Text value, Context context)
@@ -44,6 +44,7 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 		@Override
 		public void reduce(Text word, Iterable<Text> targetCounts, Context context)
 			throws IOException, InterruptedException {
+			int numSenses = 0;
 			int totalCount = 0;
 			Map<String, Integer> targetCountMap = new HashMap<String, Integer>();
 			for (Text targetCount : targetCounts) {
@@ -52,18 +53,10 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 				int count = Integer.parseInt(tc.substring(tc.lastIndexOf(":") + 1));
 				targetCountMap.put(target, count);
 				totalCount += count;
+				numSenses++;
 			}
 			
-			int minSenseFreq = (int)(totalCount * 0.1);
-			Map<String, Integer> targetCountMapFiltered = new HashMap<String, Integer>();
-			for (Entry<String, Integer> targetCount : targetCountMap.entrySet()) {
-				if (targetCount.getValue() >= minSenseFreq) {
-					targetCountMapFiltered.put(targetCount.getKey(), targetCount.getValue());
-				}
-			}
-			int numSenses = targetCountMapFiltered.size();
-			
-			Map<String, Integer> targetCountMapSorted = MapUtil.sortMapByValue(targetCountMapFiltered);
+			Map<String, Integer> targetCountMapSorted = MapUtil.sortMapByValue(targetCountMap);
 			String targetCountsString = "";
 			for (Entry<String, Integer> targetCount : targetCountMapSorted.entrySet()) {
 				targetCountsString += targetCount.getKey() + ":" + targetCount.getValue() + "  ";
@@ -85,7 +78,7 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 		conf.setBoolean("mapred.output.compress", true);
 		conf.set("mapred.output.compression.codec", "org.apache.hadoop.io.compress.GzipCodec");
 		Job job = Job.getInstance(conf);
-		job.setJarByClass(SurfaceFormDictionaryWordCount.class);
+		job.setJarByClass(SurfaceFormDictionaryFilter.class);
 		FileInputFormat.addInputPath(job, new Path(inDir));
 		FileOutputFormat.setOutputPath(job, new Path(_outDir));
 		job.setMapperClass(HadoopSurfaceFormDictionaryMap.class);
@@ -112,7 +105,7 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 
 	public static void main(final String[] args) throws Exception {
 		Configuration conf = new Configuration();
-		int res = ToolRunner.run(conf, new SurfaceFormDictionaryWordCount(), args);
+		int res = ToolRunner.run(conf, new SurfaceFormDictionaryFilter(), args);
 		System.exit(res);
 	}
 }
