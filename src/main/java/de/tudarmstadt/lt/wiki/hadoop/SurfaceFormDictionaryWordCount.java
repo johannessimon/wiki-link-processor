@@ -24,13 +24,12 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 		@Override
 		public void map(LongWritable key, Text value, Context context)
 			throws IOException, InterruptedException {
-			String word = value.toString().split("@@")[0];
-			String target = value.toString().split("@@")[1];
-			String count = value.toString().split("\t")[1];
+			String[] cols = value.toString().split("\t");
+			String word = cols[0].split("@@")[0];
+			String target = cols[0].split("@@")[1];
+			String count = cols[1];
 			
-			if (!word.contains(" ")) {
-				context.write(new Text(word), new Text(target + ":" + count));
-			}
+			context.write(new Text(word), new Text(target + ":" + count));
 		}
 	}
 
