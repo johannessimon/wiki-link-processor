@@ -1,6 +1,8 @@
 package de.tudarmstadt.lt.wiki.hadoop;
 import java.io.IOException;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 
 import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
@@ -26,7 +28,9 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 			String target = value.toString().split("@@")[1];
 			String count = value.toString().split("\t")[1];
 			
-			context.write(new Text(word), new Text(target + ":" + count));
+			if (!word.contains(" ")) {
+				context.write(new Text(word), new Text(target + ":" + count));
+			}
 		}
 	}
 
@@ -36,14 +40,16 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 			throws IOException, InterruptedException {
 			int numSenses = 0;
 			int totalCount = 0;
+			List<String> targetCountStrings = new ArrayList<String>();
 			for (Text targetCount : targetCounts) {
 				String tc = targetCount.toString();
+				targetCountStrings.add(tc);
 				int count = Integer.parseInt(tc.substring(tc.lastIndexOf(":") + 1));
 				totalCount += count;
 				numSenses++;
 			}
 			
-			context.write(word, new Text(totalCount + "\t" + numSenses + "\t" + StringUtils.join(targetCounts.iterator(), "  ")));
+			context.write(word, new Text(totalCount + "\t" + numSenses + "\t" + StringUtils.join(targetCountStrings, "  ")));
 		}
 	}
 
