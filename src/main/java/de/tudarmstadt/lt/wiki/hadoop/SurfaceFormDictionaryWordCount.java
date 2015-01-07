@@ -1,10 +1,10 @@
 package de.tudarmstadt.lt.wiki.hadoop;
 import java.io.IOException;
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
+import java.util.HashMap;
+import java.util.Map;
+import java.util.Map.Entry;
 
-import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.conf.Configured;
 import org.apache.hadoop.fs.FileSystem;
@@ -18,6 +18,8 @@ import org.apache.hadoop.mapreduce.lib.input.FileInputFormat;
 import org.apache.hadoop.mapreduce.lib.output.FileOutputFormat;
 import org.apache.hadoop.util.Tool;
 import org.apache.hadoop.util.ToolRunner;
+
+import de.tudarmstadt.lt.util.MapUtil;
 
 public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 	private static class HadoopSurfaceFormDictionaryMap extends Mapper<LongWritable, Text, Text, Text> {
@@ -39,16 +41,23 @@ public class SurfaceFormDictionaryWordCount extends Configured implements Tool {
 			throws IOException, InterruptedException {
 			int numSenses = 0;
 			int totalCount = 0;
-			List<String> targetCountStrings = new ArrayList<String>();
+			Map<String, Integer> targetCountMap = new HashMap<String, Integer>();
 			for (Text targetCount : targetCounts) {
 				String tc = targetCount.toString();
-				targetCountStrings.add(tc);
+				String target = tc.substring(0, tc.lastIndexOf(":"));
 				int count = Integer.parseInt(tc.substring(tc.lastIndexOf(":") + 1));
+				targetCountMap.put(target, count);
 				totalCount += count;
 				numSenses++;
 			}
 			
-			context.write(word, new Text(totalCount + "\t" + numSenses + "\t" + StringUtils.join(targetCountStrings, "  ")));
+			Map<String, Integer> targetCountMapSorted = MapUtil.sortMapByValue(targetCountMap);
+			String targetCountsString = "";
+			for (Entry<String, Integer> targetCount : targetCountMapSorted.entrySet()) {
+				targetCountsString += targetCount.getKey() + ":" + targetCount.getValue() + "  ";
+			}
+			
+			context.write(word, new Text(totalCount + "\t" + numSenses + "\t" + targetCountsString));
 		}
 	}
 
