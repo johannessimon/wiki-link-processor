@@ -31,10 +31,10 @@ import org.apache.uima.util.CasCreationUtils;
 
 import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
+import de.tudarmstadt.lt.wiki.uima.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
-import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
 
 class WikiLinkPostProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 	Logger log = Logger.getLogger("de.tudarmstadt.lt.wiki");

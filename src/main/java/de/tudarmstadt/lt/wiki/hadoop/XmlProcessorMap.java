@@ -41,6 +41,7 @@ public class XmlProcessorMap extends Mapper<LongWritable, Text, Text, Text> {
 		log.info("Max sentence length is " + maxSentenceLength);
 		log.info("Max page length is " + maxPageLength);
 		log.info("Max num links per page is " + maxNumLinksPerPage);
+		log.info("Max num implicit links per page is " + maxNumImplicitLinksPerPage);
 	}
 	
 	@Override
