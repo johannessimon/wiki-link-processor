@@ -58,7 +58,7 @@ import de.tudarmstadt.ukp.dkpro.core.stanfordnlp.StanfordLemmatizer;
  * <br/>
  * <b>How it works:</b><br/>
  * Upfront, Wikipedia sentences are extracted that contain links having certain
- * target words as text. These are the words that you want to evaluate against.
+ * words as text. These are the words that you want to evaluate against.
  * The targets of these links are then assumed to be the "gold" senses of the
  * words in their specific context.<br/>
  * <br/>

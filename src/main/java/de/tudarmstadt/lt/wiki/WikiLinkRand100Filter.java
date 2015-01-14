@@ -12,7 +12,7 @@ import de.tudarmstadt.lt.util.MonitoredFileReader;
 
 public class WikiLinkRand100Filter {
 	public static void main(String[] args) throws IOException {
-		if (args.length != 3) {
+		if (args.length != 2) {
 			System.out.println("Usage: SurfaceFormDictionary <wiki-link-file-randomized> <out>");
 			return;
 		}
