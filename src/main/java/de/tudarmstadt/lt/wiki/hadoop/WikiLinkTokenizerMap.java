@@ -100,7 +100,7 @@ class WikiLinkTokenizerMap extends Mapper<LongWritable, Text, Text, Text> {
 			String linkTextLemma = valueParts[0];
 			String text = valueParts[1];
 			String link = valueParts[2];
-			String target = link.split("@@")[0].split("@")[0];
+			String target = link.split("@@")[1].split("@")[0];
 			jCas.reset();
 			jCas.setDocumentText(text);
 			jCas.setDocumentLanguage("en");
