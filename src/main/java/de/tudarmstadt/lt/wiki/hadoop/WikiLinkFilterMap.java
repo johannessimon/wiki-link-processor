@@ -37,9 +37,12 @@ class WikiLinkFilterMap extends Mapper<LongWritable, Text, Text, Text> {
 		String links[] = valueParts[1].split("  ");
 		linksToKeep.clear();
 		for (String link : links) {
-			String linkParts[] = link.split("@@");
-			String lemma = linkParts[0];
-			if (lemmaWhitelist.contains(lemma)) {
+			int sep = link.lastIndexOf('@');
+			String lemmaWithTarget = link.substring(0, sep);
+			//String linkParts[] = lemmaWithTarget.split("@@");
+			//String lemma = linkParts[0];
+			//String target = linkParts[1];
+			if (lemmaWhitelist.contains(lemmaWithTarget)) {
 				linksToKeep.add(link);
 			}
 		}
