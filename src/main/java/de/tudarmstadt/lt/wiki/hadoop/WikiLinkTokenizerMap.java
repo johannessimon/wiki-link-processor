@@ -6,10 +6,12 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
+import org.apache.commons.lang.StringUtils;
 import org.apache.hadoop.conf.Configuration;
 import org.apache.hadoop.fs.FileStatus;
 import org.apache.hadoop.fs.FileSystem;
@@ -32,6 +34,8 @@ import de.tudarmstadt.lt.util.MapUtil;
 import de.tudarmstadt.lt.util.MonitoredFileReader;
 import de.tudarmstadt.lt.wiki.uima.StanfordLemmatizer;
 import de.tudarmstadt.ukp.dkpro.core.api.segmentation.type.Token;
+import de.tudarmstadt.ukp.dkpro.core.api.syntax.type.dependency.Dependency;
+import de.tudarmstadt.ukp.dkpro.core.maltparser.MaltParser;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpPosTagger;
 import de.tudarmstadt.ukp.dkpro.core.opennlp.OpenNlpSegmenter;
 
@@ -46,9 +50,47 @@ class WikiLinkTokenizerMap extends Mapper<LongWritable, Text, Text, Text> {
 		AnalysisEngineDescription segmenter = AnalysisEngineFactory.createEngineDescription(OpenNlpSegmenter.class);
 		AnalysisEngineDescription pos = AnalysisEngineFactory.createEngineDescription(OpenNlpPosTagger.class);
 		AnalysisEngineDescription lemmatizer = AnalysisEngineFactory.createEngineDescription(StanfordLemmatizer.class);
+		AnalysisEngineDescription depParser = AnalysisEngineFactory.createEngineDescription(MaltParser.class);
 
 		return AnalysisEngineFactory.createEngineDescription(
-				segmenter, pos, lemmatizer);
+				segmenter, pos, lemmatizer, depParser);
+	}
+	
+	private Collection<Dependency> collapseDependencies(JCas jCas, Collection<Dependency> deps, Collection<Token> tokens) {
+		List<Dependency> collapsedDeps = new ArrayList<>(deps);
+		for (Token token : tokens) {
+			if (token.getPos().getPosValue().equals("IN")) {
+				List<Dependency> toRemove = new ArrayList<>();
+				String depType = "prep_" + token.getCoveredText().toLowerCase();
+				Token source = null;
+				Token target = null;
+				int begin = -1;
+				int end = -1;
+				for (Dependency dep : collapsedDeps) {
+					if (dep.getGovernor() == token && dep.getDependencyType().toLowerCase().equals("mwe")) {
+						depType = "prep_" + dep.getDependent().getCoveredText() + "_" + token.getCoveredText().toLowerCase();
+						toRemove.add(dep);
+					} else if (dep.getGovernor() == token && dep.getDependencyType().toLowerCase().equals("pobj")) {
+						end = dep.getEnd();
+						target = dep.getDependent();
+						toRemove.add(dep);
+					} else if (dep.getDependent() == token && dep.getDependencyType().toLowerCase().equals("prep")) {
+						begin = dep.getBegin();
+						source = dep.getGovernor();
+						toRemove.add(dep);
+					}
+				}
+				if (source != null && target != null) {
+					Dependency collapsedDep = new Dependency(jCas, begin, end);
+					collapsedDep.setGovernor(source);
+					collapsedDep.setDependent(target);
+					collapsedDep.setDependencyType(depType);
+					collapsedDeps.add(collapsedDep);
+					collapsedDeps.removeAll(toRemove);
+				}
+			}
+		}
+		return collapsedDeps;
 	}
 	
 	@Override
@@ -106,17 +148,34 @@ class WikiLinkTokenizerMap extends Mapper<LongWritable, Text, Text, Text> {
 			jCas.setDocumentLanguage("en");
 			engine.process(jCas);
 			List<Token> tokens = new ArrayList<Token>(JCasUtil.select(jCas, Token.class));
-			StringBuilder tokenizedText = new StringBuilder();
+			List<String> tokenLemmas = new ArrayList<String>();
 			for (int i = 0; i < tokens.size(); i++) {
 				Token token = tokens.get(i);
-				String tokenLemma = token.getLemma().getValue();
-				tokenizedText.append(tokenLemma);
-				if (i != tokens.size() - 1) {
-					tokenizedText.append(" ");
+				tokenLemmas.add(token.getLemma().getValue());
+			}
+			String tokenizedText = StringUtils.join(tokenLemmas, " ");
+
+			List<String> bims = new ArrayList<String>();
+			Collection<Dependency> deps = JCasUtil.select(jCas, Dependency.class);
+			Collection<Dependency> depsCollapsed = collapseDependencies(jCas, deps, tokens);
+			for (Dependency dep : depsCollapsed) {
+				Token sourceToken = dep.getGovernor();
+				Token targetToken = dep.getDependent();
+				String sourceLemma = sourceToken.getLemma().getValue();
+				String targetLemma = targetToken.getLemma().getValue();
+				if (sourceLemma.equals(linkTextLemma)) {
+					String rel = dep.getDependencyType();
+					String bim = rel + "(@@," + targetLemma + ")";
+					bims.add(bim);
+				}
+				if (targetLemma.equals(linkTextLemma)) {
+					String rel = dep.getDependencyType();
+					String bim = rel + "(" + sourceLemma + ",@@)";
+					bims.add(bim);
 				}
 			}
-			
-			context.write(new Text(linkTextLemma), new Text(target + "\t" + tokenizedText));
+			String bimsText = StringUtils.join(bims, "  ");
+			context.write(new Text(linkTextLemma), new Text(target + "\t" + tokenizedText + "\t" + bimsText));
 		} catch (RuntimeException | UIMAException e) {
 			log.error("Can't process line: " + value.toString(), e);
 		}
