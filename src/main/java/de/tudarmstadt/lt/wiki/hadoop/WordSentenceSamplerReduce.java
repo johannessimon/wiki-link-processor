@@ -22,7 +22,7 @@ class WordSentenceSamplerReduce extends Reducer<Text, Text, Text, Text> {
 	final static int MAX_WORD_SAMPLES = 5;
 	final static int MAX_WORD_SENSE_SAMPLES = 3;
 	final static int MAX_WORD_SENSES = 10;
-	final static int MIN_WORD_SENSES = 3;
+	final static int MIN_WORD_SENSES = 2;
 	
 	@Override
 	public void reduce(Text key, Iterable<Text> values, Context context)
