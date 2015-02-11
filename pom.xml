@@ -127,7 +127,7 @@
 	  		<artifactId>
 	  			de.tudarmstadt.ukp.dkpro.core.maltparser-asl
 	  		</artifactId>
-	  		<version>1.7.0</version>
+	  		<version>1.6.2</version>
 	  	</dependency>
 	</dependencies>
 
