@@ -174,7 +174,7 @@ class WikiLinkTokenizerMap extends Mapper<LongWritable, Text, Text, Text> {
 					bims.add(bim);
 				}
 			}
-			String bimsText = StringUtils.join(bims, "  ");
+			String bimsText = StringUtils.join(bims, " ");
 			context.write(new Text(linkTextLemma), new Text(target + "\t" + tokenizedText + "\t" + bimsText));
 		} catch (RuntimeException | UIMAException e) {
 			log.error("Can't process line: " + value.toString(), e);
